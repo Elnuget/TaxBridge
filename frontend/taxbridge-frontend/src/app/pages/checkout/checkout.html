@@ -1,0 +1,315 @@
+<div class="checkout-page">
+  <c-container>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-section">
+      <a routerLink="/">Inicio</a>
+      <span class="separator">›</span>
+      <span>Pasarela de Pago</span>
+    </div>
+
+    <h1 class="page-title">Finalizar Compra</h1>
+
+    <c-row class="g-4">
+      <!-- Left Column - Payment Form -->
+      <c-col lg="8">
+        <!-- Personal Information -->
+        <c-card class="mb-4">
+          <c-card-header>
+            <h3 class="section-title">
+              <span class="icon">👤</span>
+              Información Personal
+            </h3>
+          </c-card-header>
+          <c-card-body>
+            <c-row class="g-3">
+              <c-col md="6">
+                <label class="form-label">Nombre Completo *</label>
+                <input 
+                  class="form-control" 
+                  type="text" 
+                  [(ngModel)]="fullName"
+                  placeholder="Juan Pérez"
+                  required>
+              </c-col>
+              <c-col md="6">
+                <label class="form-label">Cédula/RUC *</label>
+                <input 
+                  class="form-control" 
+                  type="text" 
+                  [(ngModel)]="identification"
+                  placeholder="1234567890"
+                  required>
+              </c-col>
+              <c-col md="6">
+                <label class="form-label">Email *</label>
+                <input 
+                  class="form-control" 
+                  type="email" 
+                  [(ngModel)]="email"
+                  placeholder="tu@email.com"
+                  required>
+              </c-col>
+              <c-col md="6">
+                <label class="form-label">Teléfono *</label>
+                <input 
+                  class="form-control" 
+                  type="tel" 
+                  [(ngModel)]="phone"
+                  placeholder="0987654321"
+                  required>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </c-card>
+
+        <!-- Payment Method Selection -->
+        <c-card class="mb-4">
+          <c-card-header>
+            <h3 class="section-title">
+              <span class="icon">💳</span>
+              Método de Pago
+            </h3>
+          </c-card-header>
+          <c-card-body>
+            <div class="payment-methods">
+              <button 
+                class="payment-method-btn"
+                [class.active]="paymentMethod() === 'card'"
+                (click)="setPaymentMethod('card')">
+                <span class="method-icon">💳</span>
+                <span class="method-text">
+                  <strong>Tarjeta</strong>
+                  <small>Crédito o Débito</small>
+                </span>
+              </button>
+
+              <button 
+                class="payment-method-btn"
+                [class.active]="paymentMethod() === 'transfer'"
+                (click)="setPaymentMethod('transfer')">
+                <span class="method-icon">🏦</span>
+                <span class="method-text">
+                  <strong>Transferencia</strong>
+                  <small>SPE/SPI</small>
+                </span>
+              </button>
+
+              <button 
+                class="payment-method-btn"
+                [class.active]="paymentMethod() === 'cash'"
+                (click)="setPaymentMethod('cash')">
+                <span class="method-icon">🏪</span>
+                <span class="method-text">
+                  <strong>Efectivo</strong>
+                  <small>Corresponsales</small>
+                </span>
+              </button>
+
+              <button 
+                class="payment-method-btn"
+                [class.active]="paymentMethod() === 'wallet'"
+                (click)="setPaymentMethod('wallet')">
+                <span class="method-icon">💰</span>
+                <span class="method-text">
+                  <strong>Saldo</strong>
+                  <small>Prepagado</small>
+                </span>
+              </button>
+            </div>
+
+            <!-- Card Payment Form -->
+            @if (paymentMethod() === 'card') {
+              <div class="payment-form">
+                <c-row class="g-3">
+                  <c-col cols="12">
+                    <label class="form-label">Número de Tarjeta *</label>
+                    <input 
+                      class="form-control" 
+                      type="text" 
+                      [(ngModel)]="cardNumber"
+                      placeholder="1234 5678 9012 3456"
+                      maxlength="19"
+                      required>
+                  </c-col>
+                  <c-col cols="12">
+                    <label class="form-label">Nombre en la Tarjeta *</label>
+                    <input 
+                      class="form-control" 
+                      type="text" 
+                      [(ngModel)]="cardName"
+                      placeholder="JUAN PEREZ"
+                      required>
+                  </c-col>
+                  <c-col md="6">
+                    <label class="form-label">Fecha de Expiración *</label>
+                    <input 
+                      class="form-control" 
+                      type="text" 
+                      [(ngModel)]="cardExpiry"
+                      placeholder="MM/AA"
+                      maxlength="5"
+                      required>
+                  </c-col>
+                  <c-col md="6">
+                    <label class="form-label">CVV *</label>
+                    <input 
+                      class="form-control" 
+                      type="text" 
+                      [(ngModel)]="cardCvv"
+                      placeholder="123"
+                      maxlength="4"
+                      required>
+                  </c-col>
+                </c-row>
+                <div class="secure-payment">
+                  <span class="lock-icon">🔒</span>
+                  <span>Pago seguro encriptado SSL</span>
+                </div>
+              </div>
+            }
+
+            <!-- Transfer Payment Info -->
+            @if (paymentMethod() === 'transfer') {
+              <div class="payment-form">
+                <div class="info-box">
+                  <h4>Instrucciones de Transferencia</h4>
+                  <p>Realiza una transferencia a la siguiente cuenta:</p>
+                  <div class="account-details">
+                    <div class="detail-item">
+                      <strong>Banco:</strong> Banco Pichincha
+                    </div>
+                    <div class="detail-item">
+                      <strong>Cuenta:</strong> 1234567890
+                    </div>
+                    <div class="detail-item">
+                      <strong>Beneficiario:</strong> TaxBridge Ecuador S.A.
+                    </div>
+                    <div class="detail-item">
+                      <strong>RUC:</strong> 1791234567001
+                    </div>
+                  </div>
+                  <p class="mt-3">Después de realizar la transferencia, envíanos el comprobante al correo: pagos&#64;taxbridge.ec</p>
+                </div>
+              </div>
+            }
+
+            <!-- Cash Payment Info -->
+            @if (paymentMethod() === 'cash') {
+              <div class="payment-form">
+                <div class="info-box">
+                  <h4>Pago en Efectivo</h4>
+                  <p>Puedes realizar tu pago en cualquiera de estos corresponsales:</p>
+                  <div class="correspondents-list">
+                    <div class="correspondent-item">🏪 Mi Vecino</div>
+                    <div class="correspondent-item">🏪 Banco del Barrio</div>
+                    <div class="correspondent-item">🏪 Servipagos</div>
+                    <div class="correspondent-item">🏪 PayPhone</div>
+                  </div>
+                  <div class="code-box">
+                    <strong>Código de pago:</strong>
+                    <div class="payment-code">{{ paymentCode }}</div>
+                  </div>
+                  <p class="mt-3 small">Presenta este código en el corresponsal para realizar tu pago.</p>
+                </div>
+              </div>
+            }
+
+            <!-- Wallet Payment Info -->
+            @if (paymentMethod() === 'wallet') {
+              <div class="payment-form">
+                <div class="info-box success">
+                  <h4>Saldo Disponible</h4>
+                  <div class="wallet-balance">
+                    <span class="balance-label">Tu saldo:</span>
+                    <span class="balance-amount">$150.00</span>
+                  </div>
+                  <p class="mt-3">✅ Tienes saldo suficiente para completar esta compra.</p>
+                  <p class="small">Después del pago, tu nuevo saldo será: <strong>USD {{ (150 - total).toFixed(2) }}</strong></p>
+                </div>
+              </div>
+            }
+          </c-card-body>
+        </c-card>
+
+        <!-- Terms and Conditions -->
+        <div class="terms-section">
+          <label class="form-check-label">
+            <input type="checkbox" class="form-check-input" required>
+            Acepto los <a href="#" class="link">Términos y Condiciones</a> y la 
+            <a href="#" class="link">Política de Privacidad</a>
+          </label>
+        </div>
+      </c-col>
+
+      <!-- Right Column - Order Summary -->
+      <c-col lg="4">
+        <div class="summary-sticky">
+          <c-card class="order-summary">
+            <c-card-header>
+              <h3 class="section-title">Resumen de Compra</h3>
+            </c-card-header>
+            <c-card-body>
+              <!-- Cart Items -->
+              <div class="cart-items">
+                @for (item of cartItems(); track item.id) {
+                  <div class="cart-item">
+                    <div class="item-info">
+                      <h4>{{ item.name }}</h4>
+                      <p class="quantity">Cantidad: {{ item.quantity }}</p>
+                    </div>
+                    <div class="item-price">
+                      <span class="price">USD {{ item.price.toFixed(2) }}</span>
+                      <button class="remove-btn" (click)="removeItem(item.id)">✕</button>
+                    </div>
+                  </div>
+                }
+
+                @if (cartItems().length === 0) {
+                  <div class="empty-cart">
+                    <p>Tu carrito está vacío</p>
+                    <a routerLink="/" cButton color="primary" size="sm">Ver Productos</a>
+                  </div>
+                }
+              </div>
+
+              <!-- Price Breakdown -->
+              @if (cartItems().length > 0) {
+                <div class="price-breakdown">
+                  <div class="price-row">
+                    <span>Subtotal:</span>
+                    <span>USD {{ subtotal.toFixed(2) }}</span>
+                  </div>
+                  <div class="price-row">
+                    <span>IVA (12%):</span>
+                    <span>USD {{ tax.toFixed(2) }}</span>
+                  </div>
+                  <div class="price-row total">
+                    <span>Total:</span>
+                    <span>USD {{ total.toFixed(2) }}</span>
+                  </div>
+                </div>
+
+                <!-- Payment Button -->
+                <button 
+                  cButton 
+                  color="primary" 
+                  class="w-100 pay-btn"
+                  (click)="onSubmitPayment()">
+                  <span class="icon">🔒</span>
+                  Pagar USD {{ total.toFixed(2) }}
+                </button>
+
+                <!-- Security Badges -->
+                <div class="security-badges">
+                  <div class="badge-item">🔒 Pago Seguro</div>
+                  <div class="badge-item">✓ Encriptado SSL</div>
+                  <div class="badge-item">🛡️ Protegido</div>
+                </div>
+              }
+            </c-card-body>
+          </c-card>
+        </div>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

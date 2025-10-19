@@ -27,12 +27,14 @@
         </a>
         
         <!-- Cart Button -->
-        <button cButton color="light" class="cart-button">
-          <span class="cart-icon">🛒</span>
-          @if (cartItemsCount > 0) {
-            <c-badge color="danger" class="cart-badge">{{ cartItemsCount }}</c-badge>
-          }
-        </button>
+        <a routerLink="/checkout">
+          <button cButton color="light" class="cart-button">
+            <span class="cart-icon">🛒</span>
+            @if (cartItemsCount > 0) {
+              <c-badge color="danger" class="cart-badge">{{ cartItemsCount }}</c-badge>
+            }
+          </button>
+        </a>
       </div>
     </div>
   </c-container>

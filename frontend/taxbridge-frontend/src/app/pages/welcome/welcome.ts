@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { 
   RowComponent, 
   ColComponent, 
@@ -25,6 +26,7 @@ interface Product {
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     RowComponent,
     ColComponent,
     CardComponent,
