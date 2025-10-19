@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+
+// Bootstrap imports
+@import "bootstrap/dist/css/bootstrap.min.css";
+// FontAwesome imports
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+// TaxBridge custom styles
+:root {
+  --taxbridge-primary: #0d6efd;
+  --taxbridge-secondary: #6c757d;
+  --taxbridge-success: #198754;
+  --taxbridge-info: #0dcaf0;
+  --taxbridge-warning: #ffc107;
+  --taxbridge-danger: #dc3545;
+}
+
+// Global styles for TaxBridge
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.taxbridge-brand {
+  color: var(--taxbridge-primary);
+  font-weight: 600;
+}
+
+// Custom layout styles
+.sidebar {
+  background-color: #343a40;
+  min-height: calc(100vh - 56px);
+  width: 250px;
+}
+
+.sidebar .nav-link {
+  color: #adb5bd;
+  &:hover, &.active {
+    background-color: var(--taxbridge-primary);
+    color: white;
+  }
+}

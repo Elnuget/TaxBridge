@@ -1,0 +1,177 @@
+<!-- Dashboard de TaxBridge -->
+<div class="dashboard">
+  <!-- Header del Dashboard -->
+  <div class="dashboard-header mb-4">
+    <h1 class="h2 mb-0">Dashboard</h1>
+    <p class="text-muted">Bienvenido al sistema de gestión tributaria TaxBridge</p>
+  </div>
+
+  <!-- Tarjetas de resumen -->
+  <c-row class="mb-4">
+    <c-col xl="3" md="6">
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="card-title mb-0">15</h4>
+              <p class="text-muted small">Declaraciones Pendientes</p>
+            </div>
+            <div class="icon-container bg-primary">
+              <i class="cil-file text-white"></i>
+            </div>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <c-col xl="3" md="6">
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="card-title mb-0">8</h4>
+              <p class="text-muted small">Pagos Vencidos</p>
+            </div>
+            <div class="icon-container bg-danger">
+              <i class="cil-credit-card text-white"></i>
+            </div>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <c-col xl="3" md="6">
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="card-title mb-0">42</h4>
+              <p class="text-muted small">Clientes Activos</p>
+            </div>
+            <div class="icon-container bg-success">
+              <i class="cil-people text-white"></i>
+            </div>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <c-col xl="3" md="6">
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="card-title mb-0">$125,430</h4>
+              <p class="text-muted small">Ingresos del Mes</p>
+            </div>
+            <div class="icon-container bg-info">
+              <i class="cil-chart-line text-white"></i>
+            </div>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+
+  <!-- Contenido principal del dashboard -->
+  <c-row>
+    <!-- Próximos vencimientos -->
+    <c-col lg="8">
+      <c-card class="mb-4">
+        <c-card-header>
+          <h5 class="mb-0">Próximos Vencimientos</h5>
+        </c-card-header>
+        <c-card-body>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Tipo</th>
+                  <th>Fecha Vencimiento</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Empresa ABC S.A.</td>
+                  <td>IVA Mensual</td>
+                  <td>2024-01-20</td>
+                  <td><c-badge color="warning">Pendiente</c-badge></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" cButton>Ver</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Juan Pérez</td>
+                  <td>Renta Anual</td>
+                  <td>2024-01-25</td>
+                  <td><c-badge color="danger">Vencido</c-badge></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" cButton>Ver</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Comercial XYZ</td>
+                  <td>Retención ICA</td>
+                  <td>2024-01-30</td>
+                  <td><c-badge color="success">Al día</c-badge></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" cButton>Ver</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <!-- Panel de actividad -->
+    <c-col lg="4">
+      <c-card class="mb-4">
+        <c-card-header>
+          <h5 class="mb-0">Actividad Reciente</h5>
+        </c-card-header>
+        <c-card-body>
+          <div class="activity-item mb-3">
+            <div class="d-flex">
+              <div class="activity-icon bg-primary">
+                <i class="cil-file text-white"></i>
+              </div>
+              <div class="ms-3">
+                <p class="mb-1 small">Nueva declaración creada</p>
+                <p class="text-muted small mb-0">Hace 2 horas</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="activity-item mb-3">
+            <div class="d-flex">
+              <div class="activity-icon bg-success">
+                <i class="cil-credit-card text-white"></i>
+              </div>
+              <div class="ms-3">
+                <p class="mb-1 small">Pago procesado exitosamente</p>
+                <p class="text-muted small mb-0">Hace 4 horas</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="activity-item">
+            <div class="d-flex">
+              <div class="activity-icon bg-info">
+                <i class="cil-user text-white"></i>
+              </div>
+              <div class="ms-3">
+                <p class="mb-1 small">Nuevo cliente registrado</p>
+                <p class="text-muted small mb-0">Ayer</p>
+              </div>
+            </div>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>
