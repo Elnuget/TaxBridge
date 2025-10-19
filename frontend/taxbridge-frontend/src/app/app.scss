@@ -1,31 +1,11 @@
-// TaxBridge App Layout Styles
+// TaxBridge E-commerce Layout Styles
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.app-body {
-  display: flex;
+.main-content {
   flex: 1;
-  padding-top: 56px; // Height of fixed header
-}
-
-.main {
-  flex: 1;
-  padding: 1rem;
   background-color: #f8f9fa;
-  overflow-x: auto;
-}
-
-.content-container {
-  max-width: 100%;
-  padding: 0;
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
-  .app-body {
-    flex-direction: column;
-  }
 }

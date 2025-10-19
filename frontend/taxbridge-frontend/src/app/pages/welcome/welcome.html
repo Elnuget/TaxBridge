@@ -1,0 +1,136 @@
+<!-- Products Section -->
+<section class="products-section">
+  <c-container>
+    <div class="section-header">
+      <h2>Nuestros Productos</h2>
+      <p>Soluciones diseñadas para PYMEs ecuatorianas</p>
+    </div>
+
+    <c-row class="g-4">
+      @for (product of products; track product.name) {
+        <c-col md="6" lg="4">
+          <c-card class="product-card h-100">
+            <c-card-header class="product-header">
+              <h3>{{ product.name }}</h3>
+              @if (product.badge) {
+                <c-badge [color]="product.badgeColor || 'primary'">
+                  {{ product.badge }}
+                </c-badge>
+              }
+            </c-card-header>
+            <c-card-body class="product-body">
+              <div class="product-price">
+                <span class="price">{{ product.price }}</span>
+                <span class="price-description">{{ product.description }}</span>
+              </div>
+              
+              <ul class="product-features">
+                @for (feature of product.features; track feature) {
+                  <li>
+                    <span class="check-icon">✓</span>
+                    {{ feature }}
+                  </li>
+                }
+              </ul>
+              
+              <button cButton color="primary" class="w-100 mt-3">
+                🛒 Agregar al Carrito
+              </button>
+            </c-card-body>
+          </c-card>
+        </c-col>
+      }
+    </c-row>
+  </c-container>
+</section>
+
+<!-- About Section -->
+<section class="about-section">
+  <c-container>
+    <c-row class="align-items-center">
+      <c-col md="6">
+        <h2>Nuestra Misión</h2>
+        <p class="lead">
+          Democratizar la gestión tributaria y contable en Ecuador mediante 
+          tecnología accesible, automatizando procesos fiscales complejos.
+        </p>
+        <p>
+          Ayudamos a pequeñas y medianas empresas a cumplir sus obligaciones 
+          con el SRI de manera eficiente, económica y sin errores, liberando 
+          tiempo valioso que pueden invertir en el crecimiento de sus negocios.
+        </p>
+      </c-col>
+      <c-col md="6">
+        <c-card>
+          <c-card-body>
+            <h3 class="mb-4">¿Por qué TaxBridge?</h3>
+            <div class="stat-item">
+              <div class="stat-value">5 minutos</div>
+              <div class="stat-label">vs 15-20 horas manuales</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">$2 dólares</div>
+              <div class="stat-label">por uso (Pay-Per-Use)</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">850,000+</div>
+              <div class="stat-label">PYMEs en Ecuador</div>
+            </div>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</section>
+
+<!-- Payment Methods Section -->
+<section class="payment-section">
+  <c-container>
+    <div class="section-header">
+      <h2>Formas de Pago</h2>
+      <p>Flexibilidad para tu negocio</p>
+    </div>
+    
+    <c-row class="g-4">
+      <c-col md="3" sm="6">
+        <div class="payment-method">
+          <div class="payment-icon">💳</div>
+          <h4>Tarjetas</h4>
+          <p>Crédito y débito</p>
+        </div>
+      </c-col>
+      <c-col md="3" sm="6">
+        <div class="payment-method">
+          <div class="payment-icon">🏦</div>
+          <h4>Transferencias</h4>
+          <p>SPE/SPI locales</p>
+        </div>
+      </c-col>
+      <c-col md="3" sm="6">
+        <div class="payment-method">
+          <div class="payment-icon">🏪</div>
+          <h4>Corresponsales</h4>
+          <p>Mi Vecino, etc.</p>
+        </div>
+      </c-col>
+      <c-col md="3" sm="6">
+        <div class="payment-method">
+          <div class="payment-icon">💰</div>
+          <h4>Saldo Prepagado</h4>
+          <p>Recarga y usa</p>
+        </div>
+      </c-col>
+    </c-row>
+  </c-container>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <c-container>
+    <div class="cta-content">
+      <h2>¿Listo para simplificar tu gestión tributaria?</h2>
+      <p>Únete a cientos de PYMEs que ya confían en TaxBridge</p>
+      <button cButton color="light" size="lg">Comenzar Gratis</button>
+    </div>
+  </c-container>
+</section>

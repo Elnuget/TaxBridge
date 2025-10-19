@@ -1,0 +1,35 @@
+<nav class="navbar-shop">
+  <c-container fluid>
+    <div class="navbar-content">
+      <!-- Logo/Brand -->
+      <a class="navbar-brand" routerLink="/">
+        <span class="brand-text">TaxBridge</span>
+      </a>
+
+      <!-- Navigation Links -->
+      <div class="navbar-links">
+        <a routerLink="/" class="nav-link">Productos</a>
+        <a routerLink="/about" class="nav-link">Nosotros</a>
+        <a routerLink="/contact" class="nav-link">Contacto</a>
+      </div>
+
+      <!-- Right Side Actions -->
+      <div class="navbar-actions">
+        <button cButton color="light" variant="outline" size="sm" class="me-2">
+          Iniciar Sesión
+        </button>
+        <button cButton color="primary" size="sm" class="me-3">
+          Registrarse
+        </button>
+        
+        <!-- Cart Button -->
+        <button cButton color="light" class="cart-button">
+          <span class="cart-icon">🛒</span>
+          @if (cartItemsCount > 0) {
+            <c-badge color="danger" class="cart-badge">{{ cartItemsCount }}</c-badge>
+          }
+        </button>
+      </div>
+    </div>
+  </c-container>
+</nav>

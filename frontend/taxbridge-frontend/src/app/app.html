@@ -1,20 +1,12 @@
-﻿<!-- TaxBridge Layout -->
+﻿<!-- TaxBridge E-commerce Layout -->
 <div class="app">
-  <!-- Header -->
-  <app-header></app-header>
+  <!-- Shop Navbar -->
+  <app-navbar-shop></app-navbar-shop>
 
-  <!-- Main Layout -->
-  <div class="app-body">
-    <!-- Sidebar -->
-    <app-sidebar></app-sidebar>
-    
-    <!-- Main Content -->
-    <main class="main">
-      <div class="container-fluid content-container">
-        <router-outlet></router-outlet>
-      </div>
-    </main>
-  </div>
+  <!-- Main Content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
   
   <!-- Footer -->
   <app-footer></app-footer>
