@@ -1,0 +1,219 @@
+<div class="auth-page">
+  <c-container>
+    <c-row class="justify-content-center align-items-center min-vh-100">
+      <c-col md="10" lg="8" xl="6">
+        <c-card class="auth-card">
+          <c-card-body class="p-0">
+            <c-row class="g-0">
+              <!-- Left Side - Branding -->
+              <c-col md="5" class="auth-branding">
+                <div class="branding-content">
+                  <h2 class="brand-title">TaxBridge</h2>
+                  <p class="brand-subtitle">Soluciones Tributarias Inteligentes</p>
+                  <div class="brand-features">
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>Gestión automatizada</span>
+                    </div>
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>Cumplimiento SRI</span>
+                    </div>
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>Ahorra tiempo y dinero</span>
+                    </div>
+                  </div>
+                </div>
+              </c-col>
+
+              <!-- Right Side - Forms -->
+              <c-col md="7" class="auth-forms">
+                <div class="forms-content">
+                  <!-- Tabs Navigation -->
+                  <div class="auth-tabs">
+                    <button 
+                      class="tab-button"
+                      [class.active]="activeTab() === 'login'"
+                      (click)="setActiveTab('login')">
+                      Iniciar Sesión
+                    </button>
+                    <button 
+                      class="tab-button"
+                      [class.active]="activeTab() === 'register'"
+                      (click)="setActiveTab('register')">
+                      Registrarse
+                    </button>
+                  </div>
+
+                  <!-- Login Form -->
+                  @if (activeTab() === 'login') {
+                    <form cForm class="auth-form" (ngSubmit)="onLoginSubmit()">
+                      <h3 class="form-title">Bienvenido de vuelta</h3>
+                      <p class="form-subtitle">Ingresa a tu cuenta</p>
+
+                      <!-- Google Auth Button -->
+                      <button 
+                        type="button" 
+                        cButton 
+                        color="light" 
+                        class="w-100 mb-3 google-btn"
+                        (click)="onGoogleAuth()">
+                        <img 
+                          src="https://www.google.com/favicon.ico" 
+                          alt="Google" 
+                          class="google-icon">
+                        Continuar con Google
+                      </button>
+
+                      <div class="divider">
+                        <span>O con tu email</span>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="loginEmail">Correo Electrónico</label>
+                        <input
+                          class="form-control"
+                          type="email"
+                          id="loginEmail"
+                          name="loginEmail"
+                          [(ngModel)]="loginEmail"
+                          placeholder="tu@email.com"
+                          required
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="loginPassword">Contraseña</label>
+                        <input
+                          class="form-control"
+                          type="password"
+                          id="loginPassword"
+                          name="loginPassword"
+                          [(ngModel)]="loginPassword"
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="rememberMe">
+                          <label class="form-check-label" for="rememberMe">
+                            Recordarme
+                          </label>
+                        </div>
+                        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                      </div>
+
+                      <button cButton color="primary" class="w-100" type="submit">
+                        Iniciar Sesión
+                      </button>
+                    </form>
+                  }
+
+                  <!-- Register Form -->
+                  @if (activeTab() === 'register') {
+                    <form cForm class="auth-form" (ngSubmit)="onRegisterSubmit()">
+                      <h3 class="form-title">Crea tu cuenta</h3>
+                      <p class="form-subtitle">Comienza gratis hoy</p>
+
+                      <!-- Google Auth Button -->
+                      <button 
+                        type="button" 
+                        cButton 
+                        color="light" 
+                        class="w-100 mb-3 google-btn"
+                        (click)="onGoogleAuth()">
+                        <img 
+                          src="https://www.google.com/favicon.ico" 
+                          alt="Google" 
+                          class="google-icon">
+                        Registrarse con Google
+                      </button>
+
+                      <div class="divider">
+                        <span>O con tu email</span>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="registerName">Nombre Completo</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="registerName"
+                          name="registerName"
+                          [(ngModel)]="registerName"
+                          placeholder="Juan Pérez"
+                          required
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="registerEmail">Correo Electrónico</label>
+                        <input
+                          class="form-control"
+                          type="email"
+                          id="registerEmail"
+                          name="registerEmail"
+                          [(ngModel)]="registerEmail"
+                          placeholder="tu@email.com"
+                          required
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="registerPassword">Contraseña</label>
+                        <input
+                          class="form-control"
+                          type="password"
+                          id="registerPassword"
+                          name="registerPassword"
+                          [(ngModel)]="registerPassword"
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="registerConfirmPassword">Confirmar Contraseña</label>
+                        <input
+                          class="form-control"
+                          type="password"
+                          id="registerConfirmPassword"
+                          name="registerConfirmPassword"
+                          [(ngModel)]="registerConfirmPassword"
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="acceptTerms" required>
+                          <label class="form-check-label small" for="acceptTerms">
+                            Acepto los <a href="#">Términos y Condiciones</a> y la 
+                            <a href="#">Política de Privacidad</a>
+                          </label>
+                        </div>
+                      </div>
+
+                      <button cButton color="primary" class="w-100" type="submit">
+                        Crear Cuenta
+                      </button>
+                    </form>
+                  }
+
+                  <!-- Back to Home -->
+                  <div class="back-to-home">
+                    <a routerLink="/">← Volver a la tienda</a>
+                  </div>
+                </div>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>
