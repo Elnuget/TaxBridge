@@ -41,3 +41,20 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Package manager lock files (opcional)
+# package-lock.json
+# yarn.lock
+
+# Build artifacts
+*.js.map
+*.css.map
+
+# Angular SSR
+.angular/
+dist/taxbridge-frontend/

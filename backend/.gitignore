@@ -91,3 +91,21 @@ typings/
 # Uploads directory
 uploads/
 temp/
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+*.lcov
