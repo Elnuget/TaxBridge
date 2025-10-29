@@ -4,9 +4,10 @@
   "description": "TaxBridge - Sistema de Gestión Tributaria (Frontend + Backend)",
   "scripts": {
     "install:all": "npm install --prefix backend && npm install --prefix frontend/taxbridge-frontend",
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "cd backend && npm run dev",
-    "start:frontend": "cd frontend/taxbridge-frontend && npm start",
+    "prestart": "echo =============================== && echo   TaxBridge: Dev Environment   && echo =============================== && echo Iniciando Backend y Frontend...",
+  "start": "cross-env NODE_NO_WARNINGS=1 concurrently -n BACKEND,FRONTEND -c magenta,cyan \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && echo [BACKEND] Iniciando servidor de desarrollo... && npm run dev",
+    "start:frontend": "cd frontend/taxbridge-frontend && echo [FRONTEND] Iniciando Angular dev server... && npm start",
     "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "build:frontend": "cd frontend/taxbridge-frontend && npm run build",
     "test:backend": "cd backend && npm test",
@@ -22,6 +23,7 @@
   "author": "TaxBridge Team",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
   }
 }

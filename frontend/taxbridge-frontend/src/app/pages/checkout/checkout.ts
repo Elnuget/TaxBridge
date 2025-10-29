@@ -9,8 +9,7 @@ import {
   CardComponent,
   CardBodyComponent,
   CardHeaderComponent,
-  ButtonDirective,
-  BadgeComponent
+  ButtonDirective
 } from '@coreui/angular';
 
 interface CartItem {
@@ -33,8 +32,7 @@ interface CartItem {
     CardComponent,
     CardBodyComponent,
     CardHeaderComponent,
-    ButtonDirective,
-    BadgeComponent
+    ButtonDirective
   ],
   templateUrl: './checkout.html',
   styleUrl: './checkout.scss'

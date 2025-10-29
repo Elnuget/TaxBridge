@@ -9,7 +9,6 @@ import {
   CardComponent,
   CardBodyComponent,
   FormDirective,
-  FormControlDirective,
   ButtonDirective
 } from '@coreui/angular';
 
@@ -26,7 +25,6 @@ import {
     CardComponent,
     CardBodyComponent,
     FormDirective,
-    FormControlDirective,
     ButtonDirective
   ],
   templateUrl: './auth.html',
