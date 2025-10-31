@@ -8,7 +8,10 @@
     "dev": "nodemon src/server.js",
     "test": "jest",
     "lint": "eslint src/**/*.js",
-    "lint:fix": "eslint src/**/*.js --fix"
+    "lint:fix": "eslint src/**/*.js --fix",
+    "db:clear": "node src/seeds/index.js clear",
+    "db:seed": "node src/seeds/index.js seed",
+    "db:reset": "node src/seeds/index.js reset"
   },
   "keywords": [
     "nodejs",

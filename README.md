@@ -93,6 +93,9 @@ TaxBridge/
 - `npm start` - Ejecuta el servidor (producción)
 - `npm run dev` - Ejecuta con nodemon (desarrollo)
 - `npm test` - Ejecuta tests
+- `npm run db:clear` - Limpia toda la base de datos
+- `npm run db:seed` - Ejecuta las semillas (datos de prueba)
+- `npm run db:reset` - Limpia y ejecuta las semillas (recomendado)
 
 ### Frontend:
 - `npm start` - Servidor de desarrollo
@@ -103,6 +106,30 @@ TaxBridge/
 
 1. Copia el archivo `.env.example` a `.env` en la carpeta `backend/`
 2. Configura las variables de entorno según tu entorno
+
+## 🌱 Base de Datos y Semillas
+
+### Ejecutar semillas (datos de prueba)
+
+Las semillas poblarán la base de datos con datos de ejemplo para desarrollo y pruebas.
+
+```bash
+cd backend
+
+# Opción 1: Limpiar BD y cargar semillas (RECOMENDADO)
+npm run db:reset
+
+# Opción 2: Solo cargar semillas (sin limpiar)
+npm run db:seed
+
+# Opción 3: Solo limpiar la base de datos
+npm run db:clear
+```
+
+### Semillas disponibles:
+- **Testimonios**: 12 testimonios de clientes con diferentes productos y calificaciones
+
+💡 **Tip**: Usa `npm run db:reset` cada vez que necesites reiniciar la base de datos con datos frescos.
 
 ## 🌐 URLs por defecto
 
