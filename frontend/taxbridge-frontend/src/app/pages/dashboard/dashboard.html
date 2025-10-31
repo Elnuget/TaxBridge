@@ -1,177 +1,213 @@
 <!-- Dashboard de TaxBridge -->
 <div class="dashboard">
-  <!-- Header del Dashboard -->
-  <div class="dashboard-header mb-4">
-    <h1 class="h2 mb-0">Dashboard</h1>
-    <p class="text-muted">Bienvenido al sistema de gestión tributaria TaxBridge</p>
-  </div>
-
-  <!-- Tarjetas de resumen -->
-  <c-row class="mb-4">
-    <c-col xl="3" md="6">
-      <c-card class="mb-4">
-        <c-card-body>
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="card-title mb-0">15</h4>
-              <p class="text-muted small">Declaraciones Pendientes</p>
-            </div>
-            <div class="icon-container bg-primary">
-              <i class="cil-file text-white"></i>
-            </div>
-          </div>
-        </c-card-body>
-      </c-card>
-    </c-col>
-
-    <c-col xl="3" md="6">
-      <c-card class="mb-4">
-        <c-card-body>
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="card-title mb-0">8</h4>
-              <p class="text-muted small">Pagos Vencidos</p>
-            </div>
-            <div class="icon-container bg-danger">
-              <i class="cil-credit-card text-white"></i>
-            </div>
-          </div>
-        </c-card-body>
-      </c-card>
-    </c-col>
-
-    <c-col xl="3" md="6">
-      <c-card class="mb-4">
-        <c-card-body>
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="card-title mb-0">42</h4>
-              <p class="text-muted small">Clientes Activos</p>
-            </div>
-            <div class="icon-container bg-success">
-              <i class="cil-people text-white"></i>
-            </div>
-          </div>
-        </c-card-body>
-      </c-card>
-    </c-col>
-
-    <c-col xl="3" md="6">
-      <c-card class="mb-4">
-        <c-card-body>
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="card-title mb-0">$125,430</h4>
-              <p class="text-muted small">Ingresos del Mes</p>
-            </div>
-            <div class="icon-container bg-info">
-              <i class="cil-chart-line text-white"></i>
-            </div>
-          </div>
-        </c-card-body>
-      </c-card>
-    </c-col>
-  </c-row>
-
-  <!-- Contenido principal del dashboard -->
-  <c-row>
-    <!-- Próximos vencimientos -->
-    <c-col lg="8">
-      <c-card class="mb-4">
-        <c-card-header>
-          <h5 class="mb-0">Próximos Vencimientos</h5>
-        </c-card-header>
-        <c-card-body>
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Tipo</th>
-                  <th>Fecha Vencimiento</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Empresa ABC S.A.</td>
-                  <td>IVA Mensual</td>
-                  <td>2024-01-20</td>
-                  <td><c-badge color="warning">Pendiente</c-badge></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary" cButton>Ver</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Juan Pérez</td>
-                  <td>Renta Anual</td>
-                  <td>2024-01-25</td>
-                  <td><c-badge color="danger">Vencido</c-badge></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary" cButton>Ver</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Comercial XYZ</td>
-                  <td>Retención ICA</td>
-                  <td>2024-01-30</td>
-                  <td><c-badge color="success">Al día</c-badge></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary" cButton>Ver</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </c-card-body>
-      </c-card>
-    </c-col>
-
-    <!-- Panel de actividad -->
-    <c-col lg="4">
-      <c-card class="mb-4">
-        <c-card-header>
-          <h5 class="mb-0">Actividad Reciente</h5>
-        </c-card-header>
-        <c-card-body>
-          <div class="activity-item mb-3">
-            <div class="d-flex">
-              <div class="activity-icon bg-primary">
-                <i class="cil-file text-white"></i>
+  <c-container>
+    <!-- Credentials Alert (mostrar solo la primera vez) -->
+    @if (showCredentials && temporaryPassword) {
+      <div class="credentials-alert">
+        <c-card class="credentials-card">
+          <c-card-header class="credentials-header">
+            <h4>🎉 ¡Tu cuenta ha sido creada exitosamente!</h4>
+          </c-card-header>
+          <c-card-body>
+            <div class="credentials-info">
+              <h5>📋 Tus credenciales de acceso:</h5>
+              <div class="credential-item">
+                <strong>📧 Email:</strong>
+                <span class="credential-value">{{ customerEmail }}</span>
               </div>
-              <div class="ms-3">
-                <p class="mb-1 small">Nueva declaración creada</p>
-                <p class="text-muted small mb-0">Hace 2 horas</p>
+              <div class="credential-item">
+                <strong>🔑 Contraseña Temporal:</strong>
+                <span class="credential-value password">{{ temporaryPassword }}</span>
               </div>
+              <div class="credential-note">
+                <p>⚠️ <strong>IMPORTANTE:</strong> Guarda esta información en un lugar seguro.</p>
+                <p>Puedes iniciar sesión con tu email y esta contraseña temporal.</p>
+                <p>Te recomendamos cambiar tu contraseña después de iniciar sesión.</p>
+              </div>
+              <button cButton color="primary" (click)="hideCredentials()">
+                Entendido, cerrar este mensaje
+              </button>
             </div>
-          </div>
-          
-          <div class="activity-item mb-3">
-            <div class="d-flex">
-              <div class="activity-icon bg-success">
-                <i class="cil-credit-card text-white"></i>
+          </c-card-body>
+        </c-card>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="loading-state">
+        <h3>Cargando información...</h3>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (error && !loading) {
+      <div class="error-state">
+        <h3>❌ {{ error }}</h3>
+        <p>Por favor verifica tu número de cliente</p>
+      </div>
+    }
+
+    <!-- Customer Dashboard -->
+    @if (customer && !loading) {
+      <!-- Header del Dashboard -->
+      <div class="dashboard-header mb-4">
+        <h1 class="h2 mb-0">¡Bienvenido, {{ customer.fullName }}!</h1>
+        <p class="text-muted">Número de Cliente: <strong>{{ customer.customerNumber }}</strong></p>
+      </div>
+
+      <!-- Tarjetas de resumen -->
+      <c-row class="mb-4">
+        <c-col md="4">
+          <c-card class="summary-card">
+            <c-card-body>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h4 class="card-title mb-0">{{ customer.purchasedProducts.length }}</h4>
+                  <p class="text-muted small">Productos Adquiridos</p>
+                </div>
+                <div class="icon-container bg-primary">
+                  📦
+                </div>
               </div>
-              <div class="ms-3">
-                <p class="mb-1 small">Pago procesado exitosamente</p>
-                <p class="text-muted small mb-0">Hace 4 horas</p>
+            </c-card-body>
+          </c-card>
+        </c-col>
+
+        <c-col md="4">
+          <c-card class="summary-card">
+            <c-card-body>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h4 class="card-title mb-0">${{ customer.totalPurchases.toFixed(2) }}</h4>
+                  <p class="text-muted small">Total Invertido</p>
+                </div>
+                <div class="icon-container bg-success">
+                  💰
+                </div>
               </div>
-            </div>
-          </div>
-          
-          <div class="activity-item">
-            <div class="d-flex">
-              <div class="activity-icon bg-info">
-                <i class="cil-user text-white"></i>
+            </c-card-body>
+          </c-card>
+        </c-col>
+
+        <c-col md="4">
+          <c-card class="summary-card">
+            <c-card-body>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h4 class="card-title mb-0">{{ getPaymentMethodName(customer.paymentMethod) }}</h4>
+                  <p class="text-muted small">Método de Pago</p>
+                </div>
+                <div class="icon-container bg-info">
+                  💳
+                </div>
               </div>
-              <div class="ms-3">
-                <p class="mb-1 small">Nuevo cliente registrado</p>
-                <p class="text-muted small mb-0">Ayer</p>
+            </c-card-body>
+          </c-card>
+        </c-col>
+      </c-row>
+
+      <!-- Productos Adquiridos -->
+      <c-row>
+        <c-col cols="12">
+          <c-card>
+            <c-card-header>
+              <h5 class="mb-0">📋 Mis Productos</h5>
+            </c-card-header>
+            <c-card-body>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Categoría</th>
+                      <th>Cantidad</th>
+                      <th>Precio Unitario</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (product of customer.purchasedProducts; track product.productId) {
+                      <tr>
+                        <td><strong>{{ product.productName }}</strong></td>
+                        <td>
+                          <c-badge [color]="getCategoryColor(product.category)">
+                            {{ getCategoryName(product.category) }}
+                          </c-badge>
+                        </td>
+                        <td>{{ product.quantity }}</td>
+                        <td>${{ product.unitPrice.toFixed(2) }}</td>
+                        <td><strong>${{ product.totalPrice.toFixed(2) }}</strong></td>
+                      </tr>
+                    }
+                  </tbody>
+                  <tfoot>
+                    <tr class="table-active">
+                      <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                      <td><strong>${{ (customer.totalPurchases / 1.12).toFixed(2) }}</strong></td>
+                    </tr>
+                    <tr class="table-active">
+                      <td colspan="4" class="text-end"><strong>IVA (12%):</strong></td>
+                      <td><strong>${{ (customer.totalPurchases - (customer.totalPurchases / 1.12)).toFixed(2) }}</strong></td>
+                    </tr>
+                    <tr class="table-primary">
+                      <td colspan="4" class="text-end"><strong>TOTAL:</strong></td>
+                      <td><strong>${{ customer.totalPurchases.toFixed(2) }}</strong></td>
+                    </tr>
+                  </tfoot>
+                </table>
               </div>
-            </div>
-          </div>
-        </c-card-body>
-      </c-card>
-    </c-col>
-  </c-row>
+            </c-card-body>
+          </c-card>
+        </c-col>
+      </c-row>
+
+      <!-- Información del Cliente -->
+      <c-row class="mt-4">
+        <c-col md="6">
+          <c-card>
+            <c-card-header>
+              <h5 class="mb-0">👤 Información Personal</h5>
+            </c-card-header>
+            <c-card-body>
+              <div class="info-row">
+                <strong>Nombre:</strong> {{ customer.fullName }}
+              </div>
+              <div class="info-row">
+                <strong>Email:</strong> {{ customer.email }}
+              </div>
+              <div class="info-row">
+                <strong>Teléfono:</strong> {{ customer.phone }}
+              </div>
+              <div class="info-row">
+                <strong>Cédula/RUC:</strong> {{ customer.identification }}
+              </div>
+            </c-card-body>
+          </c-card>
+        </c-col>
+
+        <c-col md="6">
+          <c-card>
+            <c-card-header>
+              <h5 class="mb-0">📊 Detalles de Compra</h5>
+            </c-card-header>
+            <c-card-body>
+              <div class="info-row">
+                <strong>Fecha de compra:</strong> {{ customer.lastPurchaseDate | date:'dd/MM/yyyy HH:mm' }}
+              </div>
+              <div class="info-row">
+                <strong>Estado:</strong> 
+                <c-badge [color]="customer.status === 'active' ? 'success' : 'secondary'">
+                  {{ customer.status === 'active' ? 'Activo' : 'Inactivo' }}
+                </c-badge>
+              </div>
+              <div class="info-row">
+                <strong>Método de Pago:</strong> {{ getPaymentMethodName(customer.paymentMethod) }}
+              </div>
+            </c-card-body>
+          </c-card>
+        </c-col>
+      </c-row>
+    }
+  </c-container>
 </div>

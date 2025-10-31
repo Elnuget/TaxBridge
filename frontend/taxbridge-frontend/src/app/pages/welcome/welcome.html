@@ -44,7 +44,7 @@
             class="filter-select"
           >
             <option value="all">💰 Todos los precios</option>
-            <option value="low">💵 Menos de $10</option>
+            <option value="low">💵 $5 - $10</option>
             <option value="medium">💳 $10 - $50</option>
             <option value="high">💎 Más de $50</option>
           </select>
@@ -90,9 +90,6 @@
                 <div class="product-price">
                   <span class="price">{{ product.price }}</span>
                   <span class="price-description">{{ product.description }}</span>
-                  @if (product.priceValue < 1) {
-                    <span class="minimum-purchase">💡 Compra mínima: $5.00</span>
-                  }
                 </div>
                 
                 <ul class="product-features">

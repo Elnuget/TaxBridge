@@ -52,6 +52,11 @@ const testimonialRoutes = require('./routes/testimonial.routes');
 app.use('/api/testimonials', testimonialRoutes);
 // ------------------------------------
 
+// --- RUTA DE CLIENTES AÑADIDA ---
+const customerRoutes = require('./routes/customer.routes');
+app.use('/api/customers', customerRoutes);
+// ---------------------------------
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

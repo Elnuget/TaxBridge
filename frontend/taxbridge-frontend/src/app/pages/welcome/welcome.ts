@@ -59,34 +59,36 @@ export class WelcomeComponent {
 
   allProducts: Product[] = [
     {
-      name: 'API de Consulta de RUC',
-      price: '$0.10',
-      description: 'Por consulta (desde 50)',
+      name: 'Paquete API de Consulta de RUC',
+      price: '$5.00',
+      description: '50 consultas incluidas',
       features: [
         'Valida RUC en tiempo real',
         'Obtiene datos del contribuyente',
         'Obligaciones activas y estado fiscal',
-        'Validación de clientes/proveedores'
+        'Validación de clientes/proveedores',
+        'Costo: $0.10 por consulta'
       ],
       badge: 'Económico',
       badgeColor: 'success',
       category: 'apis',
-      priceValue: 0.10
+      priceValue: 5
     },
     {
-      name: 'API de Consulta de Comprobantes',
-      price: '$0.15',
-      description: 'Por consulta o incluida en Premium',
+      name: 'Paquete API de Consulta de Comprobantes',
+      price: '$5.00',
+      description: '34 consultas incluidas',
       features: [
         'Verifica autenticidad de comprobantes',
         'Obtiene XML completo',
         'Detecta duplicados o fraudes',
-        'Ideal para auditorías'
+        'Ideal para auditorías',
+        'Costo: $0.15 por consulta'
       ],
       badge: 'Seguridad',
       badgeColor: 'info',
       category: 'apis',
-      priceValue: 0.15
+      priceValue: 5
     },
     {
       name: 'API de Facturación Electrónica',
@@ -102,19 +104,20 @@ export class WelcomeComponent {
       priceValue: 15
     },
     {
-      name: 'API de Retenciones',
-      price: '$0.20',
-      description: 'Por consulta',
+      name: 'Paquete API de Retenciones',
+      price: '$5.00',
+      description: '25 consultas incluidas',
       features: [
         'Generación automática de retenciones',
         'Cálculo de porcentajes según normativa',
         'Envío al SRI',
-        'Historial de retenciones'
+        'Historial de retenciones',
+        'Costo: $0.20 por consulta'
       ],
       badge: 'Nuevo',
       badgeColor: 'success',
       category: 'apis',
-      priceValue: 0.20
+      priceValue: 5
     },
     {
       name: 'Plan Pay-Per-Use',
@@ -246,7 +249,7 @@ export class WelcomeComponent {
       // Filtro por rango de precio
       let matchesPrice = true;
       if (this.priceRange === 'low') {
-        matchesPrice = product.priceValue < 10;
+        matchesPrice = product.priceValue >= 5 && product.priceValue < 10;
       } else if (this.priceRange === 'medium') {
         matchesPrice = product.priceValue >= 10 && product.priceValue < 50;
       } else if (this.priceRange === 'high') {
@@ -264,63 +267,27 @@ export class WelcomeComponent {
   }
 
   addToCart(product: Product): void {
-    // Calcular cantidad mínima si el producto cuesta menos de $1
-    let quantity = 1;
-    const minimumPurchase = 5; // $5 mínimo
-    
-    if (product.priceValue < 1) {
-      // Calcular cuántas unidades se necesitan para llegar al mínimo de $5
-      quantity = Math.ceil(minimumPurchase / product.priceValue);
-    }
-
-    // Agregar al carrito con la cantidad calculada
-    const cartItem = {
+    this.cartService.addToCart({
       id: this.generateProductId(product),
       name: product.name,
       price: product.priceValue,
       priceString: product.price,
       description: product.description,
       category: product.category
-    };
-
-    // Agregar al carrito
-    this.cartService.addToCart(cartItem);
+    });
     
-    // Si necesita más de 1 unidad, actualizar la cantidad
-    if (quantity > 1) {
-      this.cartService.updateQuantity(cartItem.id, quantity);
-      alert(`✅ "${product.name}" agregado al carrito\n\n💡 Compra mínima: $${minimumPurchase}\nCantidad agregada: ${quantity} unidades (${(product.priceValue * quantity).toFixed(2)} USD)`);
-    } else {
-      alert(`✅ "${product.name}" agregado al carrito`);
-    }
+    alert(`✅ "${product.name}" agregado al carrito`);
   }
 
   buyNow(product: Product): void {
-    // Calcular cantidad mínima si el producto cuesta menos de $1
-    let quantity = 1;
-    const minimumPurchase = 5; // $5 mínimo
-    
-    if (product.priceValue < 1) {
-      // Calcular cuántas unidades se necesitan para llegar al mínimo de $5
-      quantity = Math.ceil(minimumPurchase / product.priceValue);
-    }
-
-    // Agregar al carrito con la cantidad calculada
-    const cartItem = {
+    this.cartService.addToCart({
       id: this.generateProductId(product),
       name: product.name,
       price: product.priceValue,
       priceString: product.price,
       description: product.description,
       category: product.category
-    };
-
-    this.cartService.addToCart(cartItem);
-    
-    // Si necesita más de 1 unidad, actualizar la cantidad
-    if (quantity > 1) {
-      this.cartService.updateQuantity(cartItem.id, quantity);
-    }
+    });
     
     // Redirigir al checkout
     this.router.navigate(['/checkout']);
