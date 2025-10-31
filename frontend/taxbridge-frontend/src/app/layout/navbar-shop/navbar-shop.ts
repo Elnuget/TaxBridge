@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { 
@@ -6,6 +6,7 @@ import {
   BadgeComponent,
   ButtonDirective
 } from '@coreui/angular';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-navbar-shop',
@@ -22,5 +23,7 @@ import {
   styleUrl: './navbar-shop.scss'
 })
 export class NavbarShopComponent {
-  cartItemsCount = 0;
+  cartItemsCount = computed(() => this.cartService.itemCount());
+
+  constructor(private cartService: CartService) {}
 }

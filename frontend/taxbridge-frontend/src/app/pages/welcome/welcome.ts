@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { 
   RowComponent, 
@@ -14,6 +14,7 @@ import {
   FormControlDirective,
   FormSelectDirective
 } from '@coreui/angular';
+import { CartService } from '../../services/cart.service';
 
 interface Product {
   name: string;
@@ -31,7 +32,6 @@ interface Product {
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
     RowComponent,
     ColComponent,
@@ -51,6 +51,11 @@ export class WelcomeComponent {
   searchTerm: string = '';
   selectedCategory: string = 'all';
   priceRange: string = 'all';
+
+  constructor(
+    private cartService: CartService,
+    private router: Router
+  ) {}
 
   allProducts: Product[] = [
     {
@@ -256,5 +261,37 @@ export class WelcomeComponent {
     this.searchTerm = '';
     this.selectedCategory = 'all';
     this.priceRange = 'all';
+  }
+
+  addToCart(product: Product): void {
+    this.cartService.addToCart({
+      id: this.generateProductId(product),
+      name: product.name,
+      price: product.priceValue,
+      priceString: product.price,
+      description: product.description,
+      category: product.category
+    });
+    
+    // Mostrar notificación (opcional)
+    alert(`✅ "${product.name}" agregado al carrito`);
+  }
+
+  buyNow(product: Product): void {
+    this.cartService.addToCart({
+      id: this.generateProductId(product),
+      name: product.name,
+      price: product.priceValue,
+      priceString: product.price,
+      description: product.description,
+      category: product.category
+    });
+    
+    // Redirigir al checkout
+    this.router.navigate(['/checkout']);
+  }
+
+  private generateProductId(product: Product): string {
+    return product.name.toLowerCase().replace(/\s+/g, '-');
   }
 }

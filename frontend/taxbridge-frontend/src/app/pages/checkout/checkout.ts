@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -11,13 +11,7 @@ import {
   CardHeaderComponent,
   ButtonDirective
 } from '@coreui/angular';
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-}
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-checkout',
@@ -38,10 +32,13 @@ interface CartItem {
   styleUrl: './checkout.scss'
 })
 export class CheckoutComponent {
-  // Cart items (simulados)
-  cartItems = signal<CartItem[]>([
-    { id: 1, name: 'Plan Pay-Per-Use', price: 2, quantity: 1 },
-  ]);
+  // Cart items from service
+  cartItems = computed(() => this.cartService.items());
+  subtotal = computed(() => this.cartService.subtotal());
+  tax = computed(() => this.cartService.tax());
+  total = computed(() => this.cartService.total());
+
+  constructor(private cartService: CartService) {}
 
   // Payment method
   paymentMethod = signal<'card' | 'transfer' | 'cash' | 'wallet'>('card');
@@ -70,32 +67,25 @@ export class CheckoutComponent {
   city = '';
   address = '';
 
-  get subtotal(): number {
-    return this.cartItems().reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  }
-
-  get tax(): number {
-    return this.subtotal * 0.12; // IVA 12%
-  }
-
-  get total(): number {
-    return this.subtotal + this.tax;
-  }
-
   setPaymentMethod(method: 'card' | 'transfer' | 'cash' | 'wallet') {
     this.paymentMethod.set(method);
   }
 
-  removeItem(id: number) {
-    this.cartItems.update(items => items.filter(item => item.id !== id));
+  removeItem(id: string) {
+    this.cartService.removeFromCart(id);
+  }
+
+  updateQuantity(id: string, quantity: number) {
+    this.cartService.updateQuantity(id, quantity);
   }
 
   onSubmitPayment() {
     console.log('Processing payment...', {
       method: this.paymentMethod(),
-      total: this.total,
+      total: this.total(),
       items: this.cartItems()
     });
     alert('¡Pago procesado exitosamente! (Esto es una simulación)');
+    this.cartService.clearCart();
   }
 }

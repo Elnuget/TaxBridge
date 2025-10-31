@@ -101,11 +101,26 @@
                   }
                 </ul>
                 
-                <a routerLink="/checkout">
-                  <button cButton color="primary" class="w-100 mt-3">
+                <div class="product-actions">
+                  <button 
+                    cButton 
+                    color="primary" 
+                    variant="outline"
+                    class="btn-add-cart"
+                    (click)="addToCart(product)"
+                  >
                     🛒 Agregar al Carrito
                   </button>
-                </a>
+                  
+                  <button 
+                    cButton 
+                    color="primary" 
+                    class="btn-buy-now"
+                    (click)="buyNow(product)"
+                  >
+                    ⚡ Comprar Ahora
+                  </button>
+                </div>
               </c-card-body>
             </c-card>
           </c-col>
