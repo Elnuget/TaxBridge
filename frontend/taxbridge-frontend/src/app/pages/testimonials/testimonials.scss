@@ -1,0 +1,133 @@
+// Encabezado de sección (reutilizado)
+.section-header-modern {
+    .section-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .section-title-modern {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #212529;
+        margin-bottom: 0.75rem;
+    }
+}
+
+// Reemplazo de <c-container> para tener márgenes
+.custom-container {
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+// Reemplazo de <c-alert>
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+}
+
+.alert-danger {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+// --- NUEVA CUADRÍCULA DE TESTIMONIOS ---
+// (Reemplaza el carrusel)
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); // 3 columnas en escritorio
+    gap: 2rem; // Espacio entre tarjetas
+
+    @media (max-width: 991px) {
+        grid-template-columns: repeat(2, 1fr); // 2 columnas en tablet
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr; // 1 columna en móvil
+    }
+}
+
+// Wrapper para la tarjeta, para que el grid funcione bien
+.testimonial-card-wrapper {
+    display: flex; // Permite que la tarjeta crezca
+}
+
+// Tarjeta de Testimonio (El diseño es el mismo)
+.testimonial-card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2.5rem; // Padding más pequeño para la cuadrícula
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eee;
+    height: 100%; // Para que todas las tarjetas tengan la misma altura
+    width: 100%; // Asegura que ocupe el wrapper
+
+    // Estrellas
+    .rating-stars {
+        color: #ffc107;
+        font-size: 1.25rem;
+
+        .empty {
+            color: #e0e0e0;
+        }
+    }
+
+    // La Cita (Reseña)
+    .testimonial-quote {
+        font-size: 1.15rem; // Un poco más pequeño para la tarjeta
+        font-weight: 500;
+        color: #212529;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+
+    // Info del usuario (Sin foto)
+    .user-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+
+        .user-details {
+            text-align: center;
+
+            .user-name {
+                font-weight: 700;
+                color: #212529;
+                margin-bottom: 0.25rem;
+            }
+
+            .user-role-company {
+                color: #6c757d;
+                margin-bottom: 0.5rem;
+            }
+
+            .product-badge {
+                display: inline-block;
+                background: #f8f9fa;
+                border: 1px solid #e0e0e0;
+                color: #667eea;
+                font-size: 0.8rem;
+                font-weight: 600;
+                padding: 0.25rem 0.75rem;
+                border-radius: 1rem;
+
+                i {
+                    color: #28a745;
+                }
+            }
+        }
+    }
+}

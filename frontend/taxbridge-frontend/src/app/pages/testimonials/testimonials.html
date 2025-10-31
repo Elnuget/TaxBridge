@@ -1,0 +1,76 @@
+<!--
+  Usamos el HTML simple (divs) que sí renderizó,
+  pero le aplicamos las clases de diseño del SCSS.
+-->
+<div class="testimonials-section py-5">
+    <div class="custom-container"> <!-- Reemplazamos <c-container> -->
+
+        <!-- Encabezado de la Sección -->
+        <div class="section-header-modern text-center mb-5">
+            <span class="section-badge">
+                <i class="cil-star me-2"></i>
+                Nuestros Clientes Opinan
+            </span>
+            <h2 class="section-title-modern mt-3">La Confianza de Quienes Ya Automatizan</h2>
+        </div>
+
+        <!-- Mensaje de Carga -->
+        <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3">Cargando testimonios...</p>
+        </div>
+
+        <!-- Mensaje de Error -->
+        <div *ngIf="error && !isLoading" class="text-center py-5">
+            <!-- Reemplazamos <c-alert> con un div estilizado -->
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        </div>
+
+        <!--
+      No usamos <c-carousel>. Mostraremos TODAS las reseñas en una cuadrícula (grid).
+      Esto es más simple y evita el componente que falla.
+    -->
+        <div *ngIf="!isLoading && !error && testimonials.length > 0" class="testimonial-grid">
+
+            <!-- CAMBIO AQUÍ: Se eliminó .slice(0, 3) para mostrar todos los testimonios -->
+            <div *ngFor="let testimonial of testimonials" class="testimonial-card-wrapper">
+                <div class="testimonial-card">
+
+                    <!-- Rating (Estrellas) -->
+                    <div class="rating-stars mb-3">
+                        <i *ngFor="let star of getStars(testimonial.rating)" class="cil-star"></i>
+                        <span *ngIf="testimonial.rating < 5">
+                            <i *ngFor="let star of [].constructor(5 - testimonial.rating)" class="cil-star empty"></i>
+                        </span>
+                    </div>
+
+                    <!-- La Cita (Testimonio) -->
+                    <p class="testimonial-quote">"{{ testimonial.quote }}"</p>
+
+                    <!-- Info del Usuario (Sin Foto) -->
+                    <div class="user-info">
+                        <div class="user-details">
+                            <h5 class="user-name">{{ testimonial.name }}</h5>
+                            <p class="user-role-company">{{ testimonial.role }} en {{ testimonial.company }}</p>
+                            <span class="product-badge">
+                                <i class="cil-check-circle me-1"></i>
+                                Usó: {{ testimonial.productUsed }}
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje si no hay testimonios -->
+        <div *ngIf="!isLoading && !error && testimonials.length === 0" class="text-center py-5">
+            <p>Aún no hay testimonios para mostrar.</p>
+        </div>
+
+    </div>
+</div>

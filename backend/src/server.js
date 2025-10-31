@@ -35,7 +35,7 @@ mongoose.connection.on('error', (err) => {
 
 // Routes
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'TaxBridge API v1.0',
     status: 'OK',
     timestamp: new Date().toISOString()
@@ -44,13 +44,18 @@ app.get('/', (req, res) => {
 
 // API Routes
 // app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/users', require('./routes/users'));
+// app.Guse('/api/users', require('./routes/users'));
 // app.use('/api/taxes', require('./routes/taxes'));
+
+// --- RUTA DE TESTIMONIOS AÑADIDA ---+
+const testimonialRoutes = require('./routes/testimonial.routes');
+app.use('/api/testimonials', testimonialRoutes);
+// ------------------------------------
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
+  res.status(500).json({
     error: 'Algo salió mal!',
     message: process.env.NODE_ENV === 'development' ? err.message : 'Error interno del servidor'
   });
@@ -58,7 +63,7 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Ruta no encontrada',
     path: req.originalUrl
   });
@@ -72,3 +77,4 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+

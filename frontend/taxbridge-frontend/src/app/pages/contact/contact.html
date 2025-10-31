@@ -1,0 +1,127 @@
+<div class="contact-page py-5">
+    <c-container>
+
+        <!-- Encabezado de la sección -->
+        <div class="section-header-modern text-center mb-5">
+            <span class="section-badge">
+                <i class="cil-envelope-open me-2"></i>
+                ¿Hablamos?
+            </span>
+            <h2 class="section-title-modern mt-3">Ponte en Contacto</h2>
+            <p class="section-subtitle-modern">
+                Completa el formulario o utiliza uno de nuestros canales directos. Estamos aquí para ayudarte.
+            </p>
+        </div>
+
+        <c-row>
+            <!-- Columna del Formulario (Izquierda) -->
+            <c-col lg="7" class="mb-4">
+                <div class="contact-form-card">
+                    <h4 class="card-title-modern mb-4">Envíanos un Mensaje</h4>
+
+                    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+
+                        <!-- === ALERTA DE ÉXITO (AÑADIDA AQUÍ) === -->
+                        <c-alert *ngIf="submitMessage && submitStatus === 'success'" color="success" dismissible
+                            (alertClose)="submitMessage = ''">
+                            {{ submitMessage }}
+                        </c-alert>
+
+                        <!-- Alerta de Error (solo para errores) -->
+                        <c-alert *ngIf="submitMessage && submitStatus === 'danger'" [color]="submitStatus" dismissible
+                            (alertClose)="submitMessage = ''">
+                            {{ submitMessage }}
+                        </c-alert>
+
+                        <!-- Campo Nombre -->
+                        <c-input-group class="form-group-modern">
+                            <span cInputGroupText>
+                                <i class="cil-user"></i>
+                            </span>
+                            <input cFormControl type="text" placeholder="Nombre Completo" formControlName="name" />
+                        </c-input-group>
+                        <!-- Mensaje de Error -->
+                        <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched"
+                            class="text-danger mb-3 small">
+                            El nombre es requerido.
+                        </div>
+
+                        <!-- Campo Email -->
+                        <c-input-group class="form-group-modern">
+                            <span cInputGroupText>
+                                <i class="cil-envelope-closed"></i>
+                            </span>
+                            <input cFormControl type="email" placeholder="Correo Electrónico" formControlName="email" />
+                        </c-input-group>
+                        <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched"
+                            class="text-danger mb-3 small">
+                            <span *ngIf="contactForm.get('email')?.errors?.['required']">El correo es requerido.</span>
+                            <span *ngIf="contactForm.get('email')?.errors?.['email']">Por favor, ingresa un correo
+                                válido.</span>
+                        </div>
+
+                        <!-- Campo Asunto -->
+                        <c-input-group class="form-group-modern">
+                            <span cInputGroupText>
+                                <i class="cil-bookmark"></i>
+                            </span>
+                            <input cFormControl type="text" placeholder="Asunto" formControlName="subject" />
+                        </c-input-group>
+                        <div *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched"
+                            class="text-danger mb-3 small">
+                            El asunto es requerido.
+                        </div>
+
+                        <!-- Campo Mensaje -->
+                        <c-input-group class="form-group-modern">
+                            <span cInputGroupText>
+                                <i class="cil-pencil"></i>
+                            </span>
+                            <textarea cFormControl rows="6" placeholder="Tu mensaje..."
+                                formControlName="message"></textarea>
+                        </c-input-group>
+                        <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched"
+                            class="text-danger mb-3 small">
+                            <span *ngIf="contactForm.get('message')?.errors?.['required']">El mensaje es
+                                requerido.</span>
+                            <span *ngIf="contactForm.get('message')?.errors?.['minlength']">El mensaje debe tener al
+                                menos 10 caracteres.</span>
+                        </div>
+
+                        <!-- Botón de Envío -->
+                        <div class="d-grid">
+                            <button cButton type="submit" class="btn-submit-gradient" size="lg"
+                                [disabled]="contactForm.invalid">
+                                <i class="cil-paper-plane me-2"></i>
+                                Enviar Mensaje
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </c-col>
+
+            <!-- Columna de Información (Derecha) -->
+            <c-col lg="5">
+                <div class="contact-info-modern">
+                    <h4 class="card-title-modern mb-4">Información Directa</h4>
+                    <p class="card-text-modern mb-4">
+                        Si prefieres un contacto más directo, aquí tienes nuestros canales.
+                    </p>
+
+                    <div *ngFor="let item of contactItems" class="contact-item-modern mb-3">
+                        <div class="contact-icon-modern" [ngClass]="item.colorClass">
+                            <i [class]="item.icon"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h6 class="contact-label">{{ item.label }}</h6>
+                            <a *ngIf="item.link" [href]="item.link" target="_blank" class="contact-value">{{ item.value
+                                }}</a>
+                            <p *ngIf="!item.link" class="contact-value mb-0">{{ item.value }}</p>
+                        </div>
+                    </div>
+                </div>
+            </c-col>
+        </c-row>
+
+    </c-container>
+</div>

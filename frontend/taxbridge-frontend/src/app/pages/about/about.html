@@ -1,0 +1,212 @@
+<div class="about-page">
+
+    <div class="hero-section mb-5">
+        <div class="hero-overlay">
+            <div class="hero-content text-center">
+                <div class="hero-badge mb-3">
+                    <c-badge color="light" class="px-4 py-2">
+                        <i class="cil-check-circle me-2"></i>
+                        Certificados por el SRI - Fundados en {{ companyInfo.founded }}
+                    </c-badge>
+                </div>
+                <h1 class="hero-title display-3 mb-3">{{ companyInfo.name }}</h1>
+                <p class="hero-subtitle lead mb-4">Automatización Tributaria Inteligente para el Futuro de tu Empresa
+                </p>
+                <div class="hero-actions">
+                    <button cButton color="light" size="lg" class="me-3 shadow" routerLink="/contacto">
+                        <i class="cil-envelope-closed me-2"></i>
+                        Contáctanos Ahora
+                    </button>
+                    <button cButton color="success" size="lg" class="shadow" (click)="contactWhatsApp()">
+                        <i class="cib-whatsapp me-2"></i>
+                        Chatea por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <c-container>
+
+        <c-row class="mb-5 stats-row">
+            <c-col xl="3" md="6" *ngFor="let stat of companyInfo.stats; let i = index">
+                <div class="stat-card-modern mb-4" [attr.data-aos]="'fade-up'" [attr.data-aos-delay]="i * 100">
+                    <div class="stat-icon-wrapper">
+                        <i [class]="stat.icon"></i>
+                    </div>
+                    <h2 class="stat-number">{{ stat.number }}</h2>
+                    <p class="stat-label">{{ stat.label }}</p>
+                    <div class="stat-decoration"></div>
+                </div>
+            </c-col>
+        </c-row>
+
+        <c-row class="mb-5">
+            <c-col lg="6" class="mb-4">
+                <div class="mission-vision-modern mission-card">
+                    <div class="card-decoration"></div>
+                    <div class="icon-badge mission-badge">
+                        <i class="cil-send"></i>
+                    </div>
+                    <h3 class="card-title-modern mb-3">{{ companyInfo.mission.title }}</h3>
+                    <p class="card-text-modern">{{ companyInfo.mission.description }}</p>
+                    <div class="card-shine"></div>
+                </div>
+            </c-col>
+            <c-col lg="6" class="mb-4">
+                <div class="mission-vision-modern vision-card">
+                    <div class="card-decoration"></div>
+                    <div class="icon-badge vision-badge">
+                        <i class="cil-lightbulb"></i>
+                    </div>
+                    <h3 class="card-title-modern mb-3">{{ companyInfo.vision.title }}</h3>
+                    <p class="card-text-modern">{{ companyInfo.vision.description }}</p>
+                    <div class="card-shine"></div>
+                </div>
+            </c-col>
+        </c-row>
+
+    </c-container>
+    <div class="value-proposition-hero mb-5">
+        <div class="vp-content">
+            <c-container>
+                <div class="text-center mb-5">
+                    <span class="vp-badge">
+                        <i class="cil-star me-2"></i>
+                        {{ companyInfo.valueProposition.title }}
+                    </span>
+                    <h2 class="vp-title mt-3">{{ companyInfo.valueProposition.description }}</h2>
+                </div>
+
+                <c-row class="justify-content-center">
+                    <c-col xl="3" lg="6" *ngFor="let feature of companyInfo.valueProposition.features; let i = index"
+                        class="mb-4">
+                        <div class="feature-card-modern" [attr.data-aos]="'zoom-in'" [attr.data-aos-delay]="i * 100">
+                            <div class="feature-icon-modern">
+                                <i [class]="feature.icon"></i>
+                            </div>
+                            <h3 class="feature-stat-modern">{{ feature.stat }}</h3>
+                            <h5 class="feature-title-modern">{{ feature.title }}</h5>
+                            <p class="feature-desc-modern">{{ feature.description }}</p>
+                        </div>
+                    </c-col>
+                </c-row>
+            </c-container>
+        </div>
+    </div>
+
+
+    <c-container>
+
+        <div class="values-section mb-5">
+            <div class="section-header-modern text-center mb-5">
+                <span class="section-badge">
+                    <i class="cil-heart me-2"></i>
+                    Lo que nos define
+                </span>
+                <h2 class="section-title-modern mt-3">Nuestros Valores</h2>
+                <p class="section-subtitle-modern">Los principios que guían cada decisión que tomamos</p>
+            </div>
+            <c-row>
+                <c-col lg="4" md="6" *ngFor="let value of companyInfo.values; let i = index" class="mb-4">
+                    <div class="value-card-modern" [attr.data-aos]="'fade-up'" [attr.data-aos-delay]="i * 50">
+                        <div class="value-icon-modern">
+                            <i [class]="value.icon"></i>
+                        </div>
+                        <h5 class="value-title-modern">{{ value.title }}</h5>
+                        <p class="value-desc-modern">{{ value.description }}</p>
+                        <div class="value-border"></div>
+                    </div>
+                </c-col>
+            </c-row>
+        </div>
+
+        <div class="history-section mb-5">
+            <div class="section-header-modern text-center mb-5">
+                <span class="section-badge">
+                    <i class="cil-history me-2"></i>
+                    Nuestro camino
+                </span>
+                <h2 class="section-title-modern mt-3">Nuestra Historia</h2>
+            </div>
+            <div class="timeline-modern">
+                <div class="timeline-item-modern"
+                    *ngFor="let milestone of companyInfo.history; let i = index; let last = last">
+                    <div class="timeline-marker-modern">
+                        <div class="timeline-dot"></div>
+                    </div>
+                    <div class="timeline-content-modern">
+                        <span class="timeline-year">{{ milestone.year }}</span>
+                        <h5 class="timeline-title-modern">{{ milestone.title }}</h5>
+                        <p class="timeline-desc-modern">{{ milestone.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <c-row class="contact-modern-section">
+            <c-col lg="8" class="mb-4">
+                <div class="contact-info-modern">
+                    <div class="section-header-modern mb-4">
+                        <span class="section-badge">
+                            <i class="cil-location-pin me-2"></i>
+                            ¿Cómo encontrarnos?
+                        </span>
+                        <h2 class="section-title-modern mt-3">Información de Contacto</h2>
+                    </div>
+                    <c-row>
+                        <c-col md="6" class="mb-4" *ngFor="let item of contactItems">
+                            <div class="contact-item-modern">
+                                <div class="contact-icon-modern" [ngClass]="item.colorClass">
+                                    <i [class]="item.icon"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h6 class="contact-label">{{ item.label }}</h6>
+                                    <a *ngIf="item.link" [href]="item.link" class="contact-value">{{ item.value }}</a>
+                                    <p *ngIf="!item.link" class="contact-value mb-0">{{ item.value }}</p>
+                                </div>
+                            </div>
+                        </c-col>
+                    </c-row>
+                </div>
+            </c-col>
+            <c-col lg="4" class="mb-4">
+                <div class="cta-card-modern">
+                    <div class="cta-icon-modern">
+                        <i class="cil-paper-plane"></i>
+                    </div>
+                    <h4 class="cta-title-modern">¿Listo para comenzar?</h4>
+                    <p class="cta-text-modern">Únete a cientos de empresas que ya simplifican su gestión tributaria</p>
+                    <div class="d-grid gap-3 mb-4">
+                        <button cButton color="primary" size="lg" class="w-100" routerLink="/contacto">
+                            <i class="cil-envelope-closed me-2"></i>
+                            Enviar Mensaje
+                        </button>
+                        <button cButton color="success" size="lg" class="w-100" (click)="contactWhatsApp()">
+                            <i class="cib-whatsapp me-2"></i>
+                            Chatea con Nosotros
+                        </button>
+                    </div>
+                    <div class="social-modern">
+                        <p class="social-title">Síguenos en:</p>
+                        <div class="social-icons-modern">
+                            <button class="social-btn-modern facebook" (click)="openSocialMedia('facebook')">
+                                <i class="cib-facebook"></i>
+                            </button>
+                            <button class="social-btn-modern twitter" (click)="openSocialMedia('twitter')">
+                                <i class="cib-twitter"></i>
+                            </button>
+                            <button class="social-btn-modern linkedin" (click)="openSocialMedia('linkedin')">
+                                <i class="cib-linkedin"></i>
+                            </button>
+                            <button class="social-btn-modern instagram" (click)="openSocialMedia('instagram')">
+                                <i class="cib-instagram"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </c-col>
+        </c-row>
+
+    </c-container>
+</div>
