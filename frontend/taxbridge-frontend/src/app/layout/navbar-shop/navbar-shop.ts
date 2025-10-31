@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { 
   ContainerComponent,
   BadgeComponent,
@@ -13,6 +13,7 @@ import {
   imports: [
     CommonModule,
     RouterLink,
+    RouterLinkActive,
     ContainerComponent,
     BadgeComponent,
     ButtonDirective
