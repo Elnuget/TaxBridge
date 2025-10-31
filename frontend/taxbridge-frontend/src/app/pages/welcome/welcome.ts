@@ -264,28 +264,63 @@ export class WelcomeComponent {
   }
 
   addToCart(product: Product): void {
-    this.cartService.addToCart({
+    // Calcular cantidad mínima si el producto cuesta menos de $1
+    let quantity = 1;
+    const minimumPurchase = 5; // $5 mínimo
+    
+    if (product.priceValue < 1) {
+      // Calcular cuántas unidades se necesitan para llegar al mínimo de $5
+      quantity = Math.ceil(minimumPurchase / product.priceValue);
+    }
+
+    // Agregar al carrito con la cantidad calculada
+    const cartItem = {
       id: this.generateProductId(product),
       name: product.name,
       price: product.priceValue,
       priceString: product.price,
       description: product.description,
       category: product.category
-    });
+    };
+
+    // Agregar al carrito
+    this.cartService.addToCart(cartItem);
     
-    // Mostrar notificación (opcional)
-    alert(`✅ "${product.name}" agregado al carrito`);
+    // Si necesita más de 1 unidad, actualizar la cantidad
+    if (quantity > 1) {
+      this.cartService.updateQuantity(cartItem.id, quantity);
+      alert(`✅ "${product.name}" agregado al carrito\n\n💡 Compra mínima: $${minimumPurchase}\nCantidad agregada: ${quantity} unidades (${(product.priceValue * quantity).toFixed(2)} USD)`);
+    } else {
+      alert(`✅ "${product.name}" agregado al carrito`);
+    }
   }
 
   buyNow(product: Product): void {
-    this.cartService.addToCart({
+    // Calcular cantidad mínima si el producto cuesta menos de $1
+    let quantity = 1;
+    const minimumPurchase = 5; // $5 mínimo
+    
+    if (product.priceValue < 1) {
+      // Calcular cuántas unidades se necesitan para llegar al mínimo de $5
+      quantity = Math.ceil(minimumPurchase / product.priceValue);
+    }
+
+    // Agregar al carrito con la cantidad calculada
+    const cartItem = {
       id: this.generateProductId(product),
       name: product.name,
       price: product.priceValue,
       priceString: product.price,
       description: product.description,
       category: product.category
-    });
+    };
+
+    this.cartService.addToCart(cartItem);
+    
+    // Si necesita más de 1 unidad, actualizar la cantidad
+    if (quantity > 1) {
+      this.cartService.updateQuantity(cartItem.id, quantity);
+    }
     
     // Redirigir al checkout
     this.router.navigate(['/checkout']);

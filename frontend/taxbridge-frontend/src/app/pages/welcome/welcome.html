@@ -90,6 +90,9 @@
                 <div class="product-price">
                   <span class="price">{{ product.price }}</span>
                   <span class="price-description">{{ product.description }}</span>
+                  @if (product.priceValue < 1) {
+                    <span class="minimum-purchase">💡 Compra mínima: $5.00</span>
+                  }
                 </div>
                 
                 <ul class="product-features">

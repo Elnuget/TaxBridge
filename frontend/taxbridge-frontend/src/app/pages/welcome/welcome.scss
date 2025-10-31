@@ -157,6 +157,19 @@
           font-size: 0.9rem;
           color: #6c757d;
         }
+
+        .minimum-purchase {
+          display: block;
+          margin-top: 0.75rem;
+          padding: 0.5rem 1rem;
+          background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+          border-left: 3px solid #ffc107;
+          border-radius: 6px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #856404;
+          text-align: left;
+        }
       }
 
       .product-features {
