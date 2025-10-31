@@ -52,6 +52,13 @@
                       <h3 class="form-title">Bienvenido de vuelta</h3>
                       <p class="form-subtitle">Ingresa a tu cuenta</p>
 
+                      <!-- Error Alert -->
+                      @if (loginError) {
+                        <div class="alert alert-danger" role="alert">
+                          {{ loginError }}
+                        </div>
+                      }
+
                       <!-- Google Auth Button -->
                       <button 
                         type="button" 
@@ -106,8 +113,16 @@
                         <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
                       </div>
 
-                      <button cButton color="primary" class="w-100" type="submit">
-                        Iniciar Sesión
+                      <button 
+                        cButton 
+                        color="primary" 
+                        class="w-100" 
+                        type="submit"
+                        [disabled]="loginLoading">
+                        @if (loginLoading) {
+                          <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        {{ loginLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
                       </button>
                     </form>
                   }

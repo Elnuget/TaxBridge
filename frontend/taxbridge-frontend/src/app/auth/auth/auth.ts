@@ -11,6 +11,7 @@ import {
   FormDirective,
   ButtonDirective
 } from '@coreui/angular';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-auth',
@@ -36,6 +37,8 @@ export class AuthComponent {
   // Login form
   loginEmail = '';
   loginPassword = '';
+  loginError = '';
+  loginLoading = false;
 
   // Register form
   registerName = '';
@@ -43,13 +46,26 @@ export class AuthComponent {
   registerPassword = '';
   registerConfirmPassword = '';
 
+  constructor(private authService: AuthService) {}
+
   setActiveTab(tab: 'login' | 'register') {
     this.activeTab.set(tab);
+    this.loginError = '';
   }
 
-  onLoginSubmit() {
-    console.log('Login:', { email: this.loginEmail, password: this.loginPassword });
-    // Aquí iría la lógica real de login
+  async onLoginSubmit() {
+    this.loginError = '';
+    this.loginLoading = true;
+
+    try {
+      await this.authService.login(this.loginEmail, this.loginPassword);
+      // El AuthService redirige automáticamente al dashboard
+    } catch (error: any) {
+      this.loginError = error.message || 'Error al iniciar sesión';
+      console.error('Error en login:', error);
+    } finally {
+      this.loginLoading = false;
+    }
   }
 
   onRegisterSubmit() {

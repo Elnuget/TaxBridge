@@ -16,11 +16,24 @@
 
       <!-- Right Side Actions -->
       <div class="navbar-actions">
-        <a routerLink="/auth">
-          <button cButton color="light" variant="outline" size="sm" class="me-2">
-            Iniciar Sesión
+        <!-- Si el cliente está logeado, mostrar Dashboard y Cerrar Sesión -->
+        @if (isLoggedIn()) {
+          <a routerLink="/dashboard">
+            <button cButton color="success" variant="outline" size="sm" class="me-2">
+              Dashboard
+            </button>
+          </a>
+          <button cButton color="light" variant="outline" size="sm" class="me-2" (click)="logout()">
+            Cerrar Sesión
           </button>
-        </a>
+        } @else {
+          <!-- Si NO está logeado, mostrar Iniciar Sesión -->
+          <a routerLink="/auth">
+            <button cButton color="light" variant="outline" size="sm" class="me-2">
+              Iniciar Sesión
+            </button>
+          </a>
+        }
         
         <!-- Cart Button -->
         <a routerLink="/checkout">

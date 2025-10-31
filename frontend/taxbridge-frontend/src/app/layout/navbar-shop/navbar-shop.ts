@@ -7,6 +7,7 @@ import {
   ButtonDirective
 } from '@coreui/angular';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-navbar-shop',
@@ -24,6 +25,14 @@ import { CartService } from '../../services/cart.service';
 })
 export class NavbarShopComponent {
   cartItemsCount = computed(() => this.cartService.itemCount());
+  isLoggedIn = computed(() => this.authService.loggedIn());
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    public authService: AuthService
+  ) {}
+
+  logout() {
+    this.authService.logout();
+  }
 }

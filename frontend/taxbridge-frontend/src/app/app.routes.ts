@@ -6,6 +6,7 @@ import { CheckoutComponent } from './pages/checkout/checkout';
 import { AboutComponent } from './pages/about/about';
 import { ContactComponent } from './pages/contact/contact';
 import { TestimonialsSliderComponent } from './pages/testimonials/testimonials';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -15,7 +16,7 @@ export const routes: Routes = [
   { path: 'checkout', component: CheckoutComponent },
   { path: 'pasarela', redirectTo: 'checkout', pathMatch: 'full' },
   { path: 'pago', redirectTo: 'checkout', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'taxes', component: DashboardComponent }, // Placeholder
   { path: 'clients', component: DashboardComponent }, // Placeholder
   { path: 'reports', component: DashboardComponent }, // Placeholder

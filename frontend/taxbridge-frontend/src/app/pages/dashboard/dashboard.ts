@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { 
   RowComponent, 
@@ -13,6 +13,7 @@ import {
   ContainerComponent
 } from '@coreui/angular';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../services/auth';
 
 interface PurchasedProduct {
   productId: string;
@@ -61,13 +62,13 @@ export class DashboardComponent implements OnInit {
   temporaryPassword = '';
   customerEmail = '';
 
-  constructor(
-    private route: ActivatedRoute,
-    private http: HttpClient
-  ) {}
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
+  private router = inject(Router);
 
   ngOnInit() {
-    // Obtener customerNumber de query params o localStorage
+    // Obtener customerNumber de query params, AuthService o localStorage
     this.route.queryParams.subscribe(params => {
       // Verificar si debe mostrar credenciales
       this.showCredentials = params['showCredentials'] === 'true';
@@ -76,13 +77,33 @@ export class DashboardComponent implements OnInit {
         this.customerEmail = localStorage.getItem('customerEmail') || '';
       }
 
-      const customerNumber = params['customerNumber'] || localStorage.getItem('customerNumber');
+      // Prioridad: queryParams > AuthService > localStorage
+      let customerNumber = params['customerNumber'];
+      
+      if (!customerNumber) {
+        // Intentar obtener del AuthService
+        customerNumber = this.authService.getCustomerNumber();
+        console.log('CustomerNumber desde AuthService:', customerNumber);
+      }
+      
+      if (!customerNumber) {
+        // Último recurso: localStorage
+        customerNumber = localStorage.getItem('customerNumber');
+        console.log('CustomerNumber desde localStorage:', customerNumber);
+      }
+
+      console.log('CustomerNumber final:', customerNumber);
       
       if (customerNumber) {
         this.loadCustomerData(customerNumber);
       } else {
-        this.error = 'No se encontró número de cliente';
+        this.error = 'No se encontró número de cliente. Por favor, inicia sesión nuevamente.';
         this.loading = false;
+        
+        // Redirigir al login después de 3 segundos
+        setTimeout(() => {
+          this.router.navigate(['/auth']);
+        }, 3000);
       }
     });
   }
@@ -95,14 +116,20 @@ export class DashboardComponent implements OnInit {
 
   loadCustomerData(customerNumber: string) {
     this.loading = true;
-    this.http.get<any>(`${environment.apiUrl}/customers/${customerNumber}`)
+    const url = `${environment.apiUrl}/customers/${customerNumber}`;
+    console.log('Cargando datos del cliente desde:', url);
+    
+    this.http.get<any>(url)
       .subscribe({
         next: (response) => {
+          console.log('Respuesta del servidor:', response);
           this.customer = response.data;
           this.loading = false;
         },
         error: (error) => {
           console.error('Error al cargar datos del cliente:', error);
+          console.error('Error status:', error.status);
+          console.error('Error message:', error.message);
           this.error = 'Error al cargar los datos del cliente';
           this.loading = false;
         }

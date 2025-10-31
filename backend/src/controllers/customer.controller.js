@@ -137,3 +137,58 @@ exports.getAllCustomers = async (req, res) => {
     });
   }
 };
+
+// Login de cliente
+exports.loginCustomer = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validar datos requeridos
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email y contraseña son requeridos'
+      });
+    }
+
+    // Buscar cliente por email
+    const customer = await Customer.findOne({ email: email.toLowerCase() });
+
+    if (!customer) {
+      return res.status(401).json({
+        success: false,
+        message: 'Credenciales inválidas'
+      });
+    }
+
+    // Verificar contraseña
+    const isPasswordValid = await customer.comparePassword(password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Credenciales inválidas'
+      });
+    }
+
+    // Login exitoso
+    res.status(200).json({
+      success: true,
+      message: 'Login exitoso',
+      data: {
+        customerNumber: customer.customerNumber,
+        fullName: customer.fullName,
+        email: customer.email,
+        isTemporaryPassword: customer.isTemporaryPassword
+      }
+    });
+
+  } catch (error) {
+    console.error('Error al hacer login:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al procesar el login',
+      error: error.message
+    });
+  }
+};
