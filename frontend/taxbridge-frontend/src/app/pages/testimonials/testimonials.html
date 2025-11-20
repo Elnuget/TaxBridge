@@ -24,10 +24,24 @@
 
         <!-- Mensaje de Error -->
         <div *ngIf="error && !isLoading" class="text-center py-5">
-            <!-- Reemplazamos <c-alert> con un div estilizado -->
-            <div class="alert alert-danger">
-                {{ error }}
+            <!-- Alert de error con información detallada -->
+            <div class="alert alert-danger" role="alert">
+                <h5 class="alert-heading">
+                    <i class="cil-warning me-2"></i>
+                    Error al cargar testimonios
+                </h5>
+                <hr>
+                <p class="mb-2"><strong>{{ error }}</strong></p>
+                <small class="text-muted d-block mt-3">
+                    💡 Abre la consola del navegador (F12) para ver información detallada del error
+                </small>
             </div>
+            
+            <!-- Botón para reintentar -->
+            <button class="btn btn-primary mt-3" (click)="fetchTestimonials()">
+                <i class="cil-reload me-2"></i>
+                Reintentar Carga
+            </button>
         </div>
 
         <!--

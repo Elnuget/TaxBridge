@@ -64,22 +64,57 @@ export class TestimonialsSliderComponent implements OnInit {
 
   fetchTestimonials(): void {
     this.isLoading = true;
+    
+    // 🔍 DEBUG: Mostrar información de la URL que se está usando
+    console.log('=== DEBUG TESTIMONIOS ===');
+    console.log('📍 URL de API:', this.apiUrl);
+    console.log('🌐 Environment:', environment);
+    console.log('⏰ Timestamp:', new Date().toISOString());
+    
     this.http.get<{ success: boolean, count: number, data: Testimonial[] }>(this.apiUrl)
       .subscribe({
         next: (response) => {
+          console.log('✅ Respuesta exitosa:', response);
+          console.log('📊 Cantidad de testimonios:', response.count);
+          
           if (response.success) {
             this.testimonials = response.data;
+            console.log('✅ Testimonios cargados:', this.testimonials.length);
           } else {
             this.error = 'No se pudieron cargar los testimonios.';
+            console.warn('⚠️ Respuesta no exitosa:', response);
           }
           this.isLoading = false;
-          this.cdr.markForCheck(); // <-- 3. AVISAR A ANGULAR (para zoneless)
+          this.cdr.markForCheck();
         },
         error: (err) => {
-          console.error('Error al obtener testimonios:', err);
-          this.error = 'Error de conexión al cargar testimonios.';
+          // 🔍 DEBUG DETALLADO DEL ERROR
+          console.error('❌ === ERROR DETALLADO ===');
+          console.error('📍 URL intentada:', this.apiUrl);
+          console.error('🔴 Código de estado:', err.status);
+          console.error('🔴 Mensaje de error:', err.message);
+          console.error('🔴 Error completo:', err);
+          console.error('🔴 Error response:', err.error);
+          console.error('🔴 Headers:', err.headers);
+          
+          // Mensaje de error más descriptivo
+          let errorMsg = 'Error de conexión al cargar testimonios.';
+          
+          if (err.status === 0) {
+            errorMsg = `❌ No se pudo conectar al servidor. URL: ${this.apiUrl}. Verifica que el backend esté corriendo.`;
+          } else if (err.status === 404) {
+            errorMsg = `❌ Endpoint no encontrado (404). URL: ${this.apiUrl}`;
+          } else if (err.status === 500) {
+            errorMsg = `❌ Error del servidor (500). URL: ${this.apiUrl}`;
+          } else {
+            errorMsg = `❌ Error ${err.status}: ${err.message}. URL: ${this.apiUrl}`;
+          }
+          
+          this.error = errorMsg;
+          console.error('💬 Mensaje mostrado al usuario:', errorMsg);
+          
           this.isLoading = false;
-          this.cdr.markForCheck(); // <-- 3. AVISAR A ANGULAR (para zoneless)
+          this.cdr.markForCheck();
         }
       });
   }
