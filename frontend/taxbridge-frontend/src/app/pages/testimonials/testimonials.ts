@@ -13,6 +13,9 @@ import {
 // Importar iconos
 import { IconModule } from '@coreui/icons-angular';
 
+// Importar configuración de environment
+import { environment } from '../../../environments/environment';
+
 // Interfaz para el testimonio
 interface Testimonial {
   _id: string;
@@ -48,7 +51,7 @@ export class TestimonialsSliderComponent implements OnInit {
   isLoading: boolean = true;
   error: string | null = null;
 
-  private apiUrl = 'http://localhost:3000/api/testimonials';
+  private apiUrl = `${environment.apiUrl}/testimonials`;
 
   constructor(
     private http: HttpClient,
