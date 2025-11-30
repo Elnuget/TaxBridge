@@ -46,11 +46,11 @@ export class LoginComponent {
 
     try {
       await this.authService.login(this.loginEmail, this.loginPassword);
-      // El AuthService redirige automáticamente al dashboard
+      // La redirección se maneja automáticamente en AuthService
     } catch (error: any) {
       this.loginError = error.message || 'Error al iniciar sesión';
       console.error('Error en login:', error);
-      this.cdr.detectChanges(); // Forzar actualización de la vista
+      this.cdr.detectChanges();
     } finally {
       this.loginLoading = false;
       this.cdr.detectChanges();

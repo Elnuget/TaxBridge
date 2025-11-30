@@ -1,0 +1,18 @@
+<div class="admin-dashboard">
+  <c-container>
+    <c-row>
+      <c-col>
+        <c-card>
+          <c-card-header>
+            <h1>¡Bienvenido Administrador!</h1>
+          </c-card-header>
+          <c-card-body>
+            <p>Panel de administración de TaxBridge</p>
+            <p *ngIf="user">Usuario: {{ user.nombre || user.email }}</p>
+            <p *ngIf="user">Rol: {{ user.rol }}</p>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

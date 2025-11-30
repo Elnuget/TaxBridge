@@ -70,7 +70,7 @@ export class AuthService {
           }
           this.loggedIn.set(true);
           // Redirigir según rol podría implementarse aquí
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/admin-dashboard']);
           return;
         }
 
@@ -86,7 +86,7 @@ export class AuthService {
             if (response.token) localStorage.setItem('taxbridge_token', response.token);
           }
 
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/customer-dashboard']);
           return;
         }
 

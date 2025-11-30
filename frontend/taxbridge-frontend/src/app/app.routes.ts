@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { WelcomeComponent } from './pages/welcome/welcome';
 import { DashboardComponent } from './pages/dashboard/dashboard';
+import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard';
+import { CustomerDashboardComponent } from './pages/customer-dashboard/customer-dashboard';
 import { AuthComponent } from './auth/auth/auth';
 import { LoginComponent } from './auth/login/login';
 import { CheckoutComponent } from './pages/checkout/checkout';
@@ -18,6 +20,8 @@ export const routes: Routes = [
   { path: 'pasarela', redirectTo: 'checkout', pathMatch: 'full' },
   { path: 'pago', redirectTo: 'checkout', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [authGuard] },
+  { path: 'customer-dashboard', component: CustomerDashboardComponent, canActivate: [authGuard] },
   { path: 'taxes', component: DashboardComponent }, // Placeholder
   { path: 'clients', component: DashboardComponent }, // Placeholder
   { path: 'reports', component: DashboardComponent }, // Placeholder

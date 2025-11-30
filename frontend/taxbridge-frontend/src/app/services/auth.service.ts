@@ -66,6 +66,7 @@ export class AuthService {
           // Si es customer, mantener la compatibilidad; si es user guardar token
           if (response.type === 'customer') {
             this.setSession(response.data);
+            this.router.navigate(['/customer-dashboard']);
           } else if (response.type === 'user') {
             if (typeof window !== 'undefined' && response.token) {
               localStorage.setItem('taxbridge_token', response.token);
@@ -73,6 +74,7 @@ export class AuthService {
             }
             this.isLoggedIn.set(true);
             this.currentUser.set(response.data || null);
+            this.router.navigate(['/admin-dashboard']);
           }
         }
       })
