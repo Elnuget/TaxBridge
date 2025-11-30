@@ -7,13 +7,10 @@ import { firstValueFrom } from 'rxjs';
 
 interface LoginResponse {
   success: boolean;
-  message: string;
-  data: {
-    customerNumber: string;
-    fullName: string;
-    email: string;
-    isTemporaryPassword: boolean;
-  };
+  message?: string;
+  type?: 'user' | 'customer';
+  data?: any;
+  token?: string;
 }
 
 interface CustomerSession {
@@ -58,38 +55,56 @@ export class AuthService {
   async login(email: string, password: string): Promise<void> {
     try {
       const response = await firstValueFrom(
-        this.http.post<LoginResponse>(`${environment.apiUrl}/customers/login`, {
+        this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
           email,
           password
         })
       );
 
-      if (response.success && response.data) {
-        // Guardar sesión
-        this.currentCustomer.set(response.data);
-        this.loggedIn.set(true);
-
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('taxbridge_session', JSON.stringify(response.data));
-          // Guardar customerNumber por separado para compatibilidad con dashboard
-          localStorage.setItem('customerNumber', response.data.customerNumber);
-          localStorage.setItem('customerEmail', response.data.email);
+      if (response.success) {
+        // Si es usuario (admin/contador), guardamos token y user info
+        if (response.type === 'user') {
+          if (isPlatformBrowser(this.platformId) && response.token) {
+            localStorage.setItem('taxbridge_token', response.token);
+            localStorage.setItem('taxbridge_user', JSON.stringify(response.data || {}));
+          }
+          this.loggedIn.set(true);
+          // Redirigir según rol podría implementarse aquí
+          this.router.navigate(['/dashboard']);
+          return;
         }
 
-        // Redirigir al dashboard
-        this.router.navigate(['/dashboard']);
+        // Si es customer, mantener compatibilidad con el dashboard actual
+        if (response.type === 'customer' && response.data) {
+          this.currentCustomer.set(response.data);
+          this.loggedIn.set(true);
+
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('taxbridge_session', JSON.stringify(response.data));
+            localStorage.setItem('customerNumber', response.data.customerNumber);
+            localStorage.setItem('customerEmail', response.data.email);
+            if (response.token) localStorage.setItem('taxbridge_token', response.token);
+          }
+
+          this.router.navigate(['/dashboard']);
+          return;
+        }
+
+        throw new Error(response.message || 'Error en el login');
       } else {
         throw new Error(response.message || 'Error en el login');
       }
     } catch (error: any) {
-      console.error('Error en login:', error);
-      
-      if (error.status === 401) {
-        throw new Error('Credenciales inválidas');
-      } else if (error.status === 400) {
-        throw new Error('Email y contraseña son requeridos');
+      // Loguear solo lo necesario (evitar imprimir todo el HttpErrorResponse en consola)
+      const errorMessage = error?.error?.message || error?.message || 'Error desconocido';
+      console.error('Error en login:', error?.status, errorMessage);
+
+      if (error?.status === 401) {
+        throw new Error(errorMessage);
+      } else if (error?.status === 400) {
+        throw new Error(error?.error?.message || 'Email y contraseña son requeridos');
       } else {
-        throw new Error(error.error?.message || 'Error al conectar con el servidor');
+        throw new Error(error?.error?.message || 'Error al conectar con el servidor');
       }
     }
   }

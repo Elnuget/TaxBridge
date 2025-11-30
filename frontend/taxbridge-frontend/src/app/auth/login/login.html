@@ -1,1 +1,71 @@
-<p>login works!</p>
+<div class="login-page">
+  <c-container>
+    <c-row class="justify-content-center align-items-center min-vh-100">
+      <c-col md="6" lg="5" xl="4">
+        <c-card class="login-card">
+          <c-card-body class="p-4">
+            <div class="text-center mb-4">
+              <h2 class="login-title">TaxBridge</h2>
+              <p class="login-subtitle">Inicia sesión en tu cuenta</p>
+            </div>
+
+            <form cForm class="login-form" (ngSubmit)="onLoginSubmit()">
+              <!-- Error Alert -->
+              @if (loginError) {
+                <div class="alert alert-danger" role="alert">
+                  {{ loginError }}
+                </div>
+              }
+
+              <div class="mb-3">
+                <label class="form-label" for="loginEmail">Correo Electrónico</label>
+                <input
+                  class="form-control"
+                  type="email"
+                  id="loginEmail"
+                  name="loginEmail"
+                  [(ngModel)]="loginEmail"
+                  placeholder="tu@email.com"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="loginPassword">Contraseña</label>
+                <input
+                  class="form-control"
+                  type="password"
+                  id="loginPassword"
+                  name="loginPassword"
+                  [(ngModel)]="loginPassword"
+                  placeholder="Tu contraseña"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                cButton
+                color="primary"
+                class="w-100 mb-3"
+                [disabled]="loginLoading">
+                @if (loginLoading) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                  Iniciando sesión...
+                } @else {
+                  Iniciar Sesión
+                }
+              </button>
+
+              <div class="text-center">
+                <a routerLink="/auth" class="text-decoration-none">
+                  ¿No tienes cuenta? Regístrate aquí
+                </a>
+              </div>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

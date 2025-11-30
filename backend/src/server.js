@@ -43,7 +43,9 @@ app.get('/', (req, res) => {
 });
 
 // API Routes
-// app.use('/api/auth', require('./routes/auth'));
+// Rutas de autenticación (login para usuarios y clientes)
+const authRoutes = require('./routes/auth.routes');
+app.use('/api/auth', authRoutes);
 // app.Guse('/api/users', require('./routes/users'));
 // app.use('/api/taxes', require('./routes/taxes'));
 

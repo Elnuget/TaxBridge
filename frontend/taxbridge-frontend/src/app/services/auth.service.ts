@@ -8,13 +8,15 @@ import { environment } from '../../environments/environment';
 
 interface LoginResponse {
   success: boolean;
-  message: string;
+  message?: string;
+  type?: 'user' | 'customer';
   data?: {
     customerNumber: string;
     fullName: string;
     email: string;
     token?: string;
   };
+  token?: string;
 }
 
 @Injectable({
@@ -55,13 +57,23 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/customers/login`, {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
       email,
       password
     }).pipe(
       tap(response => {
         if (response.success && response.data) {
-          this.setSession(response.data);
+          // Si es customer, mantener la compatibilidad; si es user guardar token
+          if (response.type === 'customer') {
+            this.setSession(response.data);
+          } else if (response.type === 'user') {
+            if (typeof window !== 'undefined' && response.token) {
+              localStorage.setItem('taxbridge_token', response.token);
+              localStorage.setItem('taxbridge_user', JSON.stringify(response.data || {}));
+            }
+            this.isLoggedIn.set(true);
+            this.currentUser.set(response.data || null);
+          }
         }
       })
     );
