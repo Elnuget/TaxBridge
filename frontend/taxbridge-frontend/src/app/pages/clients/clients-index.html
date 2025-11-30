@@ -5,39 +5,75 @@
         <c-card>
           <c-card-header>
             <h3>Gestionar Usuarios</h3>
-            <p class="text-muted">Lista de clientes registrados en el sistema</p>
+            <p class="text-muted">Lista de usuarios del sistema y clientes registrados</p>
           </c-card-header>
           <c-card-body>
             <div *ngIf="loading">Cargando usuarios...</div>
             <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-            <div *ngIf="!loading && clients.length === 0">No hay usuarios registrados.</div>
+            <!-- Tabla de Usuarios (Admins/Contadores) -->
+            <div *ngIf="!loading && users.length > 0">
+              <h4>Usuarios del Sistema</h4>
+              <table class="table table-hover mb-4">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ user.nombre }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.rol }}</td>
+                    <td>{{ user.telefono }}</td>
+                    <td>{{ user.activo ? 'Activo' : 'Inactivo' }}</td>
+                    <td>
+                      <button cButton size="sm" color="info">Ver</button>
+                      <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-            <table class="table table-hover" *ngIf="!loading && clients.length > 0">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Cliente Nº</th>
-                  <th>Nombre</th>
-                  <th>Email</th>
-                  <th>Teléfono</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let client of clients; let i = index">
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ client.customerNumber }}</td>
-                  <td>{{ client.fullName }}</td>
-                  <td>{{ client.email }}</td>
-                  <td>{{ client.phone }}</td>
-                  <td>
-                    <a [routerLink]="['/clients', client.customerNumber]"><button cButton size="sm" color="info">Ver</button></a>
-                    <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <!-- Tabla de Clientes -->
+            <div *ngIf="!loading && clients.length > 0">
+              <h4>Clientes</h4>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Cliente Nº</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let client of clients; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ client.customerNumber }}</td>
+                    <td>{{ client.fullName }}</td>
+                    <td>{{ client.email }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>
+                      <a [routerLink]="['/clients', client.customerNumber]"><button cButton size="sm" color="info">Ver</button></a>
+                      <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="!loading && clients.length === 0 && users.length === 0">No hay usuarios registrados.</div>
           </c-card-body>
         </c-card>
       </c-col>

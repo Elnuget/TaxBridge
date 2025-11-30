@@ -46,7 +46,8 @@ app.get('/', (req, res) => {
 // Rutas de autenticación (login para usuarios y clientes)
 const authRoutes = require('./routes/auth.routes');
 app.use('/api/auth', authRoutes);
-// app.Guse('/api/users', require('./routes/users'));
+const usersRoutes = require('./routes/users.routes');
+app.use('/api/users', usersRoutes);
 // app.use('/api/taxes', require('./routes/taxes'));
 
 // --- RUTA DE TESTIMONIOS AÑADIDA ---+
