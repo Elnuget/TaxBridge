@@ -10,9 +10,9 @@ const CUSTOMER_EMAIL = 'customer@taxbridge.com';
 // Limpiar usuarios de prueba
 async function clearUsers() {
   try {
-    const userResult = await User.deleteMany({ email: { $in: [ADMIN_EMAIL] } });
-    const custResult = await Customer.deleteMany({ email: CUSTOMER_EMAIL });
-    console.log(`✅ Eliminados usuarios: ${userResult.deletedCount}, clientes: ${custResult.deletedCount}`);
+    const userResult = await User.deleteMany({});
+    const custResult = await Customer.deleteMany({});
+    console.log(`✅ Eliminados todos los usuarios: ${userResult.deletedCount}, todos los clientes: ${custResult.deletedCount}`);
   } catch (error) {
     console.error('❌ Error al limpiar usuarios:', error);
     throw error;
