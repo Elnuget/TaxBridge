@@ -38,6 +38,10 @@ export class ClientsCreateUserComponent {
   name = '';
   email = '';
   password = '';
+  telefono = '';
+  direccion = '';
+  rol = 'contador';
+  activo = true;
   loading = false;
   error: string | null = null;
 
@@ -53,7 +57,10 @@ export class ClientsCreateUserComponent {
         nombre: this.name,
         email: this.email,
         password: this.password,
-        rol: 'user'
+        telefono: this.telefono,
+        direccion: this.direccion,
+        rol: this.rol,
+        activo: this.activo
       };
 
       await this.http.post(`${environment.apiUrl}/users`, payload).toPromise();

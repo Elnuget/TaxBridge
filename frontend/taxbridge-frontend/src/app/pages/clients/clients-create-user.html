@@ -24,10 +24,35 @@
                 <input class="form-control" name="password" [(ngModel)]="password" type="password" required />
               </div>
 
+              <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                <input class="form-control" name="telefono" [(ngModel)]="telefono" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Dirección</label>
+                <input class="form-control" name="direccion" [(ngModel)]="direccion" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Rol</label>
+                <select class="form-select" name="rol" [(ngModel)]="rol" required>
+                  <option value="contador">Contador</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" name="activo" [(ngModel)]="activo" id="activoCheck">
+                <label class="form-check-label" for="activoCheck">Activo</label>
+              </div>
+
               <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-              <button cButton color="primary" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear Usuario' }}</button>
-              <a class="ms-2" [routerLink]="['/clients']"><button cButton color="secondary" type="button">Cancelar</button></a>
+              <button cButton color="primary" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear Usuario'
+                }}</button>
+              <a class="ms-2" [routerLink]="['/clients']"><button cButton color="secondary"
+                  type="button">Cancelar</button></a>
             </form>
           </c-card-body>
         </c-card>

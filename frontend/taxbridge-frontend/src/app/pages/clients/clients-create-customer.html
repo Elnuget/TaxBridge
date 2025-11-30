@@ -24,10 +24,40 @@
                 <input class="form-control" name="phone" [(ngModel)]="phone" />
               </div>
 
+              <div class="mb-3">
+                <label class="form-label">Identificación</label>
+                <input class="form-control" name="identification" [(ngModel)]="identification" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Método de Pago</label>
+                <select class="form-select" name="paymentMethod" [(ngModel)]="paymentMethod" required>
+                  <option value="cash">Efectivo</option>
+                  <option value="card">Tarjeta</option>
+                  <option value="transfer">Transferencia</option>
+                  <option value="wallet">Billetera Digital</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input class="form-control" name="password" [(ngModel)]="password" type="password" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Estado</label>
+                <select class="form-select" name="status" [(ngModel)]="status" required>
+                  <option value="active">Activo</option>
+                  <option value="inactive">Inactivo</option>
+                </select>
+              </div>
+
               <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-              <button cButton color="success" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear Cliente' }}</button>
-              <a class="ms-2" [routerLink]="['/clients']"><button cButton color="secondary" type="button">Cancelar</button></a>
+              <button cButton color="success" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear Cliente'
+                }}</button>
+              <a class="ms-2" [routerLink]="['/clients']"><button cButton color="secondary"
+                  type="button">Cancelar</button></a>
             </form>
           </c-card-body>
         </c-card>

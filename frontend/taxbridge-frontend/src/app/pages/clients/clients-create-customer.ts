@@ -38,6 +38,10 @@ export class ClientsCreateCustomerComponent {
   fullName = '';
   email = '';
   phone = '';
+  identification = '';
+  paymentMethod = 'cash';
+  password = '';
+  status = 'active';
   loading = false;
   error: string | null = null;
 
@@ -52,7 +56,11 @@ export class ClientsCreateCustomerComponent {
       const payload = {
         fullName: this.fullName,
         email: this.email,
-        phone: this.phone
+        phone: this.phone,
+        identification: this.identification,
+        paymentMethod: this.paymentMethod,
+        password: this.password,
+        status: this.status
       };
 
       await this.http.post(`${environment.apiUrl}/customers`, payload).toPromise();
