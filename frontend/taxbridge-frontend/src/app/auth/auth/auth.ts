@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -40,6 +40,8 @@ export class AuthComponent {
   loginError = '';
   loginLoading = false;
 
+  private cdr = inject(ChangeDetectorRef);
+
   // Register form
   registerName = '';
   registerEmail = '';
@@ -63,8 +65,10 @@ export class AuthComponent {
     } catch (error: any) {
       this.loginError = error.message || 'Error al iniciar sesión';
       console.error('Error en login:', error);
+      this.cdr.detectChanges(); // Forzar actualización de la vista
     } finally {
       this.loginLoading = false;
+      this.cdr.detectChanges();
     }
   }
 

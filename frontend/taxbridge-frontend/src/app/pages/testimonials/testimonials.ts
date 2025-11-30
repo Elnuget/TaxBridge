@@ -7,7 +7,7 @@ import {
   CarouselModule, // Para <c-carousel> y <c-carousel-item>
   CardModule,     // (Lo usamos en el SCSS)
   AlertModule,    // Para <c-alert>
-  ContainerComponent // Para <c-container> (es standalone en v4)
+  // ContainerComponent eliminado porque no se usa en la plantilla
 } from '@coreui/angular';
 
 // Importar iconos
@@ -39,7 +39,6 @@ interface Testimonial {
     CarouselModule,
     CardModule,
     AlertModule,
-    ContainerComponent,
     IconModule
   ],
   templateUrl: './testimonials.html', // El nombre que tú definiste

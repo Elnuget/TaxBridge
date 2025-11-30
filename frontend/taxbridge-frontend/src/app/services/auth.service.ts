@@ -8,13 +8,15 @@ import { environment } from '../../environments/environment';
 
 interface LoginResponse {
   success: boolean;
-  message: string;
+  message?: string;
+  type?: 'user' | 'customer';
   data?: {
     customerNumber: string;
     fullName: string;
     email: string;
     token?: string;
   };
+  token?: string;
 }
 
 @Injectable({
@@ -55,13 +57,33 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/customers/login`, {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
       email,
       password
     }).pipe(
       tap(response => {
         if (response.success && response.data) {
-          this.setSession(response.data);
+          // Si es customer, mantener la compatibilidad; si es user guardar token
+          if (response.type === 'customer') {
+            if (typeof window !== 'undefined') {
+              // Remove any admin user data left in localStorage
+              localStorage.removeItem('taxbridge_user');
+            }
+            this.setSession(response.data);
+            this.router.navigate(['/customer-dashboard']);
+          } else if (response.type === 'user') {
+            if (typeof window !== 'undefined' && response.token) {
+              localStorage.setItem('taxbridge_token', response.token);
+              localStorage.setItem('taxbridge_user', JSON.stringify(response.data || {}));
+            }
+            // Remove any customer session leftover
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('taxbridge_session');
+            }
+            this.isLoggedIn.set(true);
+            this.currentUser.set(response.data || null);
+            this.router.navigate(['/admin-dashboard']);
+          }
         }
       })
     );
@@ -69,6 +91,8 @@ export class AuthService {
 
   private setSession(data: any) {
     if (isPlatformBrowser(this.platformId)) {
+      // Ensure no admin user data remains
+      localStorage.removeItem('taxbridge_user');
       localStorage.setItem('customerNumber', data.customerNumber);
       localStorage.setItem('customerEmail', data.email);
       localStorage.setItem('customerName', data.fullName);

@@ -1,65 +1,85 @@
 const Customer = require('../models/Customer');
 
 // Crear nuevo cliente con compra
+// Crear nuevo cliente
 exports.createCustomer = async (req, res) => {
   try {
-    const { 
-      fullName, 
-      email, 
-      phone, 
-      identification, 
+    const {
+      fullName,
+      email,
+      phone,
+      identification,
       products,
-      paymentMethod
+      paymentMethod,
+      password,
+      status
     } = req.body;
 
-    // Validar datos requeridos
-    if (!fullName || !email || !phone || !identification || !products || !paymentMethod) {
+    // Validar datos requeridos básicos
+    if (!fullName || !email || !phone || !identification || !paymentMethod) {
       return res.status(400).json({
         success: false,
-        message: 'Todos los campos son requeridos'
+        message: 'Nombre, email, teléfono, identificación y método de pago son requeridos'
       });
     }
 
     // Verificar si el email ya existe
     const existingCustomer = await Customer.findOne({ email });
     if (existingCustomer) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Ya existe una cuenta con este correo electrónico' 
+        message: 'Ya existe una cuenta con este correo electrónico'
       });
     }
+
+    // Verificar si la identificación ya existe (si es que debe ser única)
+    // const existingId = await Customer.findOne({ identification });
+    // if (existingId) { ... }
 
     // Generar número de cliente único
     const customerNumber = await Customer.generateCustomerNumber();
 
-    // Generar contraseña temporal
-    const temporaryPassword = Customer.generateTemporaryPassword();
+    // Manejar contraseña
+    let finalPassword = password;
+    let isTemporary = false;
 
-    // Calcular totales
-    const purchasedProducts = products.map(product => ({
-      productId: product.id,
-      productName: product.name,
-      quantity: product.quantity,
-      unitPrice: product.price,
-      totalPrice: product.price * product.quantity,
-      category: product.category
-    }));
+    if (!finalPassword) {
+      finalPassword = Customer.generateTemporaryPassword();
+      isTemporary = true;
+    }
 
-    const totalPurchases = purchasedProducts.reduce((sum, product) => sum + product.totalPrice, 0);
+    // Procesar productos si existen
+    let purchasedProducts = [];
+    let totalPurchases = 0;
+    let lastPurchaseDate = null;
+
+    if (products && Array.isArray(products) && products.length > 0) {
+      purchasedProducts = products.map(product => ({
+        productId: product.id,
+        productName: product.name,
+        quantity: product.quantity,
+        unitPrice: product.price,
+        totalPrice: product.price * product.quantity,
+        category: product.category
+      }));
+      totalPurchases = purchasedProducts.reduce((sum, product) => sum + product.totalPrice, 0);
+      lastPurchaseDate = new Date();
+    }
 
     // Crear cliente
     const customer = new Customer({
       customerNumber,
       fullName,
       email,
-      password: temporaryPassword, // Se hasheará automáticamente
+      password: finalPassword,
       phone,
       identification,
       purchasedProducts,
       totalPurchases,
       paymentMethod,
-      lastPurchaseDate: new Date(),
-      isTemporaryPassword: true
+      lastPurchaseDate: lastPurchaseDate || undefined, // Si no hay compra, no poner fecha? O poner fecha de registro? El modelo tiene default Date.now
+      isTemporaryPassword: isTemporary,
+      status: status || 'active'
     });
 
     await customer.save();
@@ -71,18 +91,38 @@ exports.createCustomer = async (req, res) => {
         customerNumber: customer.customerNumber,
         fullName: customer.fullName,
         email: customer.email,
-        temporaryPassword: temporaryPassword, // Contraseña temporal en texto plano
+        temporaryPassword: isTemporary ? finalPassword : null, // Solo devolver si fue generada
         totalPurchases: customer.totalPurchases,
         productsCount: customer.purchasedProducts.length,
-        isTemporaryPassword: true
+        isTemporaryPassword: isTemporary
       }
     });
 
   } catch (error) {
     console.error('Error al crear cliente:', error);
+
+    // Manejo de errores de validación de Mongoose
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(', '),
+        error: error.message
+      });
+    }
+
+    // Error de duplicado (si se pasó el check manual)
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'El email o número de cliente ya existe',
+        error: error.message
+      });
+    }
+
     res.status(500).json({
       success: false,
-      message: 'Error al procesar la compra',
+      message: 'Error al crear cliente',
       error: error.message
     });
   }

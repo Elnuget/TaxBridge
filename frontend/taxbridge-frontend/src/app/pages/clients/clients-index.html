@@ -1,0 +1,101 @@
+<div class="clients-index">
+  <c-container>
+    <c-row>
+      <c-col>
+        <c-card>
+          <c-card-header class="d-flex justify-content-between align-items-start">
+            <div>
+              <h3>Gestionar Usuarios</h3>
+              <p class="text-muted">Lista de usuarios del sistema y clientes registrados</p>
+            </div>
+            <div class="btn-group">
+              <a [routerLink]="['/clients/create-user']"><button cButton color="primary">+ Añadir Usuario</button></a>
+              <a [routerLink]="['/clients/create-customer']"><button cButton color="success" class="ms-2">+ Añadir Cliente</button></a>
+            </div>
+          </c-card-header>
+          <c-card-body>
+            <div *ngIf="loading">Cargando usuarios...</div>
+            <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+            <!-- Tabla de Usuarios (Admins/Contadores) -->
+            <div *ngIf="!loading && users.length > 0">
+              <h4>Usuarios del Sistema</h4>
+              <table class="table table-hover mb-4">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ user.nombre }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.rol }}</td>
+                    <td>{{ user.telefono }}</td>
+                    <td>{{ user.activo ? 'Activo' : 'Inactivo' }}</td>
+                    <td>
+                      <button cButton size="sm" color="info">Ver</button>
+                      <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Tabla de Clientes -->
+            <!-- Filtros de Búsqueda -->
+            <div *ngIf="!loading" class="mb-3">
+              <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                  <input [(ngModel)]="searchText" (ngModelChange)="onSearchChange($event)" class="form-control" placeholder="Buscar por nombre, email o teléfono" />
+                </div>
+                <div class="col-auto">
+                  <button cButton color="secondary" (click)="clearFilters()">Limpiar</button>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="!loading && filteredClients.length > 0">
+              <h4>Clientes</h4>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Cliente Nº</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let client of filteredClients; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ client.customerNumber }}</td>
+                    <td>{{ client.fullName }}</td>
+                    <td>{{ client.email }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>
+                      <a [routerLink]="['/clients', client.customerNumber]"><button cButton size="sm" color="info">Ver</button></a>
+                      <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="!loading && filteredClients.length === 0 && clients.length > 0" class="alert alert-info">No se encontraron clientes que coincidan con los filtros.</div>
+            <div *ngIf="!loading && clients.length === 0 && users.length === 0">No hay usuarios registrados.</div>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

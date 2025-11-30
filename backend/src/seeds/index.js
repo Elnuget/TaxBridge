@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // Importar todas las semillas
 const { clearTestimonials, seedTestimonials } = require('./testimonials.seed');
+const { clearUsers, seedUsers } = require('./users.seed');
 
 // Función para limpiar toda la base de datos
 async function clearDatabase() {
@@ -10,6 +11,7 @@ async function clearDatabase() {
     console.log('\n🗑️  Limpiando base de datos...\n');
     
     await clearTestimonials();
+    await clearUsers();
     
     console.log('✅ Base de datos limpiada\n');
   } catch (error) {
@@ -23,6 +25,7 @@ async function runAllSeeds() {
   try {
     console.log('\n🌱 Ejecutando todas las semillas...\n');
     
+    await seedUsers();
     await seedTestimonials();
     
     console.log('✅ Todas las semillas ejecutadas\n');

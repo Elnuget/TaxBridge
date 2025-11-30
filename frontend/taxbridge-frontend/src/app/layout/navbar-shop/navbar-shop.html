@@ -18,8 +18,8 @@
       <div class="navbar-actions">
         <!-- Si el cliente está logeado, mostrar Dashboard y Cerrar Sesión -->
         @if (isLoggedIn()) {
-          <a routerLink="/dashboard">
-            <button cButton color="success" variant="outline" size="sm" class="me-2">
+          <a [routerLink]="dashboardLink()">
+            <button cButton [attr.color]="dashboardButtonColor()" [attr.variant]="dashboardButtonVariant()" size="sm" class="me-2 dashboard-btn">
               Dashboard
             </button>
           </a>
