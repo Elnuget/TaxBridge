@@ -38,15 +38,33 @@ export class AuthService {
 
   private checkSession() {
     if (isPlatformBrowser(this.platformId)) {
+      // Primero comprobar sesión de cliente (legacy)
       const session = localStorage.getItem('taxbridge_session');
       if (session) {
         try {
           const customerData = JSON.parse(session);
           this.currentCustomer.set(customerData);
           this.loggedIn.set(true);
+          return;
         } catch (error) {
           console.error('Error al parsear sesión:', error);
           localStorage.removeItem('taxbridge_session');
+        }
+      }
+
+      // Si no hay sesión de cliente, comprobar si hay token de usuario/admin
+      const adminToken = localStorage.getItem('taxbridge_token');
+      const adminUser = localStorage.getItem('taxbridge_user');
+      if (adminToken) {
+        try {
+          const userData = adminUser ? JSON.parse(adminUser) : null;
+          // Guardamos los datos de usuario (si los hay) y marcamos como logueado
+          this.currentCustomer.set(userData);
+          this.loggedIn.set(true);
+        } catch (error) {
+          console.error('Error al parsear user admin en localStorage:', error);
+          localStorage.removeItem('taxbridge_token');
+          localStorage.removeItem('taxbridge_user');
         }
       }
     }
@@ -120,9 +138,20 @@ export class AuthService {
       localStorage.removeItem('customerNumber');
       localStorage.removeItem('customerEmail');
       localStorage.removeItem('temporaryPassword');
+      // Limpiar datos de usuario/admin también
+      localStorage.removeItem('taxbridge_token');
+      localStorage.removeItem('taxbridge_user');
     }
 
     this.router.navigate(['/']);
+  }
+
+  // Método helper para obtener el token (útil para crear un interceptor)
+  getToken(): string | null {
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('taxbridge_token');
+    }
+    return null;
   }
 
   getCustomerNumber(): string | null {
