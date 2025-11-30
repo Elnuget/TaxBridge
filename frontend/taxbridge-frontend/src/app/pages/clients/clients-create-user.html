@@ -1,0 +1,37 @@
+<div class="clients-create-user">
+  <c-container>
+    <c-row>
+      <c-col>
+        <c-card>
+          <c-card-header>
+            <h3>Crear Usuario</h3>
+            <p class="text-muted">Rellena los datos para crear un nuevo usuario (admin/contador)</p>
+          </c-card-header>
+          <c-card-body>
+            <form (ngSubmit)="onSubmit()" #form="ngForm">
+              <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input class="form-control" name="name" [(ngModel)]="name" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input class="form-control" name="email" [(ngModel)]="email" type="email" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input class="form-control" name="password" [(ngModel)]="password" type="password" required />
+              </div>
+
+              <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+              <button cButton color="primary" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear Usuario' }}</button>
+              <a class="ms-2" [routerLink]="['/clients']"><button cButton color="secondary" type="button">Cancelar</button></a>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

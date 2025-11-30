@@ -1,0 +1,37 @@
+<div class="clients-create-customer">
+  <c-container>
+    <c-row>
+      <c-col>
+        <c-card>
+          <c-card-header>
+            <h3>Crear Cliente</h3>
+            <p class="text-muted">Rellena los datos para crear un nuevo cliente</p>
+          </c-card-header>
+          <c-card-body>
+            <form (ngSubmit)="onSubmit()" #form="ngForm">
+              <div class="mb-3">
+                <label class="form-label">Nombre completo</label>
+                <input class="form-control" name="fullName" [(ngModel)]="fullName" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input class="form-control" name="email" [(ngModel)]="email" type="email" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                <input class="form-control" name="phone" [(ngModel)]="phone" />
+              </div>
+
+              <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+              <button cButton color="success" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear Cliente' }}</button>
+              <a class="ms-2" [routerLink]="['/clients']"><button cButton color="secondary" type="button">Cancelar</button></a>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

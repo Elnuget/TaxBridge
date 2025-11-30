@@ -11,6 +11,8 @@ import { ContactComponent } from './pages/contact/contact';
 import { TestimonialsSliderComponent } from './pages/testimonials/testimonials';
 import { authGuard } from './guards/auth.guard';
 import { ClientsIndexComponent } from './pages/clients/clients-index';
+import { ClientsCreateUserComponent } from './pages/clients/clients-create-user';
+import { ClientsCreateCustomerComponent } from './pages/clients/clients-create-customer';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -25,6 +27,8 @@ export const routes: Routes = [
   { path: 'customer-dashboard', component: CustomerDashboardComponent, canActivate: [authGuard] },
   { path: 'taxes', component: DashboardComponent }, // Placeholder
   { path: 'clients', component: ClientsIndexComponent, canActivate: [authGuard] }, // Users index for admin
+  { path: 'clients/create-user', component: ClientsCreateUserComponent, canActivate: [authGuard] },
+  { path: 'clients/create-customer', component: ClientsCreateCustomerComponent, canActivate: [authGuard] },
   { path: 'reports', component: DashboardComponent }, // Placeholder
   { path: 'settings', component: DashboardComponent }, // Placeholder
   { path: 'help', component: DashboardComponent }, // Placeholder

@@ -3,9 +3,15 @@
     <c-row>
       <c-col>
         <c-card>
-          <c-card-header>
-            <h3>Gestionar Usuarios</h3>
-            <p class="text-muted">Lista de usuarios del sistema y clientes registrados</p>
+          <c-card-header class="d-flex justify-content-between align-items-start">
+            <div>
+              <h3>Gestionar Usuarios</h3>
+              <p class="text-muted">Lista de usuarios del sistema y clientes registrados</p>
+            </div>
+            <div class="btn-group">
+              <a [routerLink]="['/clients/create-user']"><button cButton color="primary">+ Añadir Usuario</button></a>
+              <a [routerLink]="['/clients/create-customer']"><button cButton color="success" class="ms-2">+ Añadir Cliente</button></a>
+            </div>
           </c-card-header>
           <c-card-body>
             <div *ngIf="loading">Cargando usuarios...</div>
