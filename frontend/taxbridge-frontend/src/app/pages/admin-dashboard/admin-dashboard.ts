@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import {
   ContainerComponent,
   RowComponent,
@@ -16,6 +17,7 @@ import { AuthService } from '../../services/auth';
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     ContainerComponent,
     RowComponent,
     ColComponent,

@@ -10,6 +10,7 @@ import { AboutComponent } from './pages/about/about';
 import { ContactComponent } from './pages/contact/contact';
 import { TestimonialsSliderComponent } from './pages/testimonials/testimonials';
 import { authGuard } from './guards/auth.guard';
+import { ClientsIndexComponent } from './pages/clients/clients-index';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -23,7 +24,7 @@ export const routes: Routes = [
   { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [authGuard] },
   { path: 'customer-dashboard', component: CustomerDashboardComponent, canActivate: [authGuard] },
   { path: 'taxes', component: DashboardComponent }, // Placeholder
-  { path: 'clients', component: DashboardComponent }, // Placeholder
+  { path: 'clients', component: ClientsIndexComponent, canActivate: [authGuard] }, // Users index for admin
   { path: 'reports', component: DashboardComponent }, // Placeholder
   { path: 'settings', component: DashboardComponent }, // Placeholder
   { path: 'help', component: DashboardComponent }, // Placeholder

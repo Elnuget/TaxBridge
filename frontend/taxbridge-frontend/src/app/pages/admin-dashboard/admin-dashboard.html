@@ -10,6 +10,13 @@
             <p>Panel de administración de TaxBridge</p>
             <p *ngIf="user">Usuario: {{ user.nombre || user.email }}</p>
             <p *ngIf="user">Rol: {{ user.rol }}</p>
+            <div class="mt-3">
+              <a routerLink="/clients">
+                <button cButton color="warning" size="sm" class="me-2">
+                  Gestionar Usuarios
+                </button>
+              </a>
+            </div>
           </c-card-body>
         </c-card>
       </c-col>
