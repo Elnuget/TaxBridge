@@ -84,6 +84,8 @@ export class AuthService {
             localStorage.setItem('customerNumber', response.data.customerNumber);
             localStorage.setItem('customerEmail', response.data.email);
             if (response.token) localStorage.setItem('taxbridge_token', response.token);
+            // Asegurar que no exista información de usuario admin previa
+            localStorage.removeItem('taxbridge_user');
           }
 
           this.router.navigate(['/customer-dashboard']);

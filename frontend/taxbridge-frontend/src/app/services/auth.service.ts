@@ -65,12 +65,20 @@ export class AuthService {
         if (response.success && response.data) {
           // Si es customer, mantener la compatibilidad; si es user guardar token
           if (response.type === 'customer') {
+            if (typeof window !== 'undefined') {
+              // Remove any admin user data left in localStorage
+              localStorage.removeItem('taxbridge_user');
+            }
             this.setSession(response.data);
             this.router.navigate(['/customer-dashboard']);
           } else if (response.type === 'user') {
             if (typeof window !== 'undefined' && response.token) {
               localStorage.setItem('taxbridge_token', response.token);
               localStorage.setItem('taxbridge_user', JSON.stringify(response.data || {}));
+            }
+            // Remove any customer session leftover
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('taxbridge_session');
             }
             this.isLoggedIn.set(true);
             this.currentUser.set(response.data || null);
@@ -83,6 +91,8 @@ export class AuthService {
 
   private setSession(data: any) {
     if (isPlatformBrowser(this.platformId)) {
+      // Ensure no admin user data remains
+      localStorage.removeItem('taxbridge_user');
       localStorage.setItem('customerNumber', data.customerNumber);
       localStorage.setItem('customerEmail', data.email);
       localStorage.setItem('customerName', data.fullName);

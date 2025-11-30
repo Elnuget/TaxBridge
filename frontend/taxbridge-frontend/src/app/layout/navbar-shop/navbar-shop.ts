@@ -33,6 +33,8 @@ export class NavbarShopComponent {
   isAdmin = computed(() => {
     if (!isPlatformBrowser(this.platformId)) return false;
     try {
+      // También requerir que el sistema considere sesión activa
+      if (!this.isLoggedIn()) return false;
       const raw = localStorage.getItem('taxbridge_user');
       if (!raw) return false;
       const user = JSON.parse(raw);
