@@ -12,7 +12,7 @@ import {
   ButtonDirective,
   ContainerComponent,
   FormControlDirective,
-  FormSelectDirective
+  // FormSelectDirective eliminado porque no se usa en la plantilla
 } from '@coreui/angular';
 import { CartService } from '../../services/cart.service';
 
@@ -42,10 +42,10 @@ interface Product {
     ButtonDirective,
     ContainerComponent,
     FormControlDirective,
-    FormSelectDirective
+    // FormSelectDirective eliminado de imports porque no se usa en la plantilla
   ],
   templateUrl: './welcome.html',
-  styleUrl: './welcome.scss'
+  styleUrls: ['./welcome.scss']
 })
 export class WelcomeComponent {
   searchTerm: string = '';
