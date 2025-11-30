@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, NgZone, ApplicationRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -48,6 +48,9 @@ export class ClientsCreateUserComponent {
 
   private http = inject(HttpClient);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
+  private appRef = inject(ApplicationRef);
 
   async onSubmit() {
     if (this.loading) return;
@@ -72,9 +75,30 @@ export class ClientsCreateUserComponent {
       this.router.navigate(['/clients']);
     } catch (err: any) {
       console.error('Error creando usuario:', err);
-      this.error = err?.error?.message || 'Error al crear usuario';
+      const server = err?.error;
+      let message = '';
+      if (server?.message) {
+        message = server.message;
+      } else if (server?.errors) {
+        if (Array.isArray(server.errors)) {
+          message = server.errors.map((e: any) => e.msg || e.message || JSON.stringify(e)).join('; ');
+        } else {
+          message = Object.values(server.errors).map((v: any) => (v.msg || v.message || JSON.stringify(v))).join('; ');
+        }
+      } else {
+        message = err?.message || 'Error al crear usuario';
+      }
+      this.zone.run(() => {
+        this.error = message;
+        this.cdr.detectChanges();
+      });
+      this.appRef.tick();
     } finally {
-      this.loading = false;
+      this.zone.run(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      });
+      this.appRef.tick();
     }
   }
 }
