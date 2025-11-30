@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import {
   ContainerComponent,
   RowComponent,
@@ -49,6 +50,8 @@ export class ClientsCreateUserComponent {
   private router = inject(Router);
 
   async onSubmit() {
+    if (this.loading) return;
+    console.log('Submitting user form...');
     this.error = null;
     this.loading = true;
 
@@ -62,8 +65,10 @@ export class ClientsCreateUserComponent {
         rol: this.rol,
         activo: this.activo
       };
+      console.log('Payload:', payload);
 
-      await this.http.post(`${environment.apiUrl}/users`, payload).toPromise();
+      const response = await firstValueFrom(this.http.post(`${environment.apiUrl}/users`, payload));
+      console.log('User created successfully:', response);
       this.router.navigate(['/clients']);
     } catch (err: any) {
       console.error('Error creando usuario:', err);

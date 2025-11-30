@@ -54,7 +54,8 @@
 
               <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-              <button cButton color="success" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear Cliente'
+              <button cButton color="success" type="submit" (click)="onSubmit()" [disabled]="loading">{{
+                loading ? 'Creando...' : 'Crear Cliente'
                 }}</button>
               <a class="ms-2" [routerLink]="['/clients']"><button cButton color="secondary"
                   type="button">Cancelar</button></a>

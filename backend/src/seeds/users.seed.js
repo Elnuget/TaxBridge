@@ -63,7 +63,45 @@ async function seedUsers() {
       console.log('ℹ️ Cliente semilla ya existe:', CUSTOMER_EMAIL);
     }
 
-    return { admin, customer };
+    // Crear ~20 clientes adicionales
+    const methods = ['card', 'transfer', 'cash', 'wallet'];
+    const extraCustomers = [];
+    for (let i = 1; i <= 20; i++) {
+      try {
+        const email = `cliente${i}@taxbridge.com`;
+        const exists = await Customer.findOne({ email });
+        if (exists) {
+          console.log(`ℹ️ Cliente ya existe, se omite: ${email}`);
+          continue;
+        }
+
+        const customerNumber = await Customer.generateCustomerNumber();
+        const temporaryPassword = Customer.generateTemporaryPassword();
+        const phone = `0990000${String(i).padStart(3, '0')}`; // e.g. 0990000001
+        const identification = String(1000000000 + i);
+        const paymentMethod = methods[i % methods.length];
+
+        const c = new Customer({
+          customerNumber,
+          fullName: `Cliente Semilla ${i}`,
+          email,
+          password: temporaryPassword,
+          phone,
+          identification,
+          purchasedProducts: [],
+          totalPurchases: 0,
+          paymentMethod,
+          isTemporaryPassword: true
+        });
+
+        await c.save();
+        extraCustomers.push(c);
+        console.log('➕ Cliente creado:', email, '->', customerNumber);
+      } catch (err) {
+        console.error('❌ Error creando cliente adicional', i, err.message || err);
+      }
+    }
+    return { admin, customer, extraCustomers };
   } catch (error) {
     console.error('❌ Error al crear semillas de usuarios:', error);
     throw error;
