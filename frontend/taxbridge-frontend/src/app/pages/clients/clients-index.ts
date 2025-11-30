@@ -43,10 +43,24 @@ export class ClientsIndexComponent implements OnInit {
 
   loadClients() {
     this.loading = true;
-    const url = `${environment.apiUrl}/customers`;
+    const url = `${environment.apiUrl}/customers/all`;
     this.http.get<any>(url).subscribe({
       next: (res) => {
-        this.clients = res.data || [];
+        // Debug: asegurar formatos variados de respuesta
+        console.log('Clients API response:', res);
+        if (Array.isArray(res)) {
+          this.clients = res;
+        } else if (res && Array.isArray(res.data)) {
+          this.clients = res.data;
+        } else if (res && res.success && res.count >= 0 && Array.isArray(res.data)) {
+          this.clients = res.data;
+        } else if (res && res.data) {
+          // fallback: if data is object, try to wrap
+          this.clients = Array.isArray(res.data) ? res.data : [];
+        } else {
+          // Unknown shape: try to use res as array
+          this.clients = Array.isArray(res) ? res : [];
+        }
         this.loading = false;
       },
       error: (err) => {
