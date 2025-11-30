@@ -50,7 +50,19 @@
             </div>
 
             <!-- Tabla de Clientes -->
-            <div *ngIf="!loading && clients.length > 0">
+            <!-- Filtros de Búsqueda -->
+            <div *ngIf="!loading" class="mb-3">
+              <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                  <input [(ngModel)]="searchText" (ngModelChange)="onSearchChange($event)" class="form-control" placeholder="Buscar por nombre, email o teléfono" />
+                </div>
+                <div class="col-auto">
+                  <button cButton color="secondary" (click)="clearFilters()">Limpiar</button>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="!loading && filteredClients.length > 0">
               <h4>Clientes</h4>
               <table class="table table-hover">
                 <thead>
@@ -64,7 +76,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let client of clients; let i = index">
+                  <tr *ngFor="let client of filteredClients; let i = index">
                     <td>{{ i + 1 }}</td>
                     <td>{{ client.customerNumber }}</td>
                     <td>{{ client.fullName }}</td>
@@ -79,6 +91,7 @@
               </table>
             </div>
 
+            <div *ngIf="!loading && filteredClients.length === 0 && clients.length > 0" class="alert alert-info">No se encontraron clientes que coincidan con los filtros.</div>
             <div *ngIf="!loading && clients.length === 0 && users.length === 0">No hay usuarios registrados.</div>
           </c-card-body>
         </c-card>
