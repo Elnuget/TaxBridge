@@ -42,6 +42,17 @@ export class ClientsIndexComponent implements OnInit {
   error: string | null = null;
   private loadedCount = 0;
 
+  // KPIs
+  kpis = {
+    totalClients: 0,
+    totalUsers: 0,
+    activeUsers: 0,
+    inactiveUsers: 0,
+    totalPurchases: 0,
+    averagePurchasesPerClient: 0,
+    clientsWithPurchases: 0
+  };
+
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 
@@ -61,31 +72,41 @@ export class ClientsIndexComponent implements OnInit {
     this.http.get<any>(url).subscribe({
       next: (res) => {
         console.log('Clients API response:', res);
-        if (Array.isArray(res)) {
-          this.clients = res;
-        } else if (res && Array.isArray(res.data)) {
-          this.clients = res.data;
-        } else if (res && res.success && res.count >= 0 && Array.isArray(res.data)) {
-          this.clients = res.data;
-        } else if (res && res.data) {
-          this.clients = Array.isArray(res.data) ? res.data : [];
-        } else {
-          this.clients = Array.isArray(res) ? res : [];
+        try {
+          if (Array.isArray(res)) {
+            this.clients = res;
+          } else if (res && Array.isArray(res.data)) {
+            this.clients = res.data;
+          } else if (res && res.success && res.count >= 0 && Array.isArray(res.data)) {
+            this.clients = res.data;
+          } else if (res && res.data) {
+            this.clients = Array.isArray(res.data) ? res.data : [];
+          } else {
+            this.clients = [];
+          }
+          console.log('Clients loaded:', this.clients);
+          this.filteredClients = [...this.clients];
+          this.applyFilters();
+        } catch (e) {
+          console.error('Error procesando clientes:', e);
+          this.clients = [];
+          this.filteredClients = [];
         }
-        console.log('Clients loaded:', this.clients);
-        // Inicializar lista filtrada y aplicar filtros actuales
-        this.filteredClients = Array.isArray(this.clients) ? [...this.clients] : [];
-        this.applyFilters();
         this.loadedCount++;
         if (this.loadedCount === 2) {
+          this.calculateKPIs();
           this.loading = false;
           this.cdr.detectChanges();
         }
       },
       error: (err) => {
         console.error('Error cargando clientes:', err);
-        this.error = 'No fue posible cargar la lista de usuarios';
-        this.loading = false;
+        this.clients = [];
+        this.filteredClients = [];
+        this.loadedCount++;
+        if (this.loadedCount === 2) {
+          this.loading = false;
+        }
       }
     });
   }
@@ -95,28 +116,37 @@ export class ClientsIndexComponent implements OnInit {
     this.http.get<any>(url).subscribe({
       next: (res) => {
         console.log('Users API response:', res);
-        if (Array.isArray(res)) {
-          this.users = res;
-        } else if (res && Array.isArray(res.data)) {
-          this.users = res.data;
-        } else if (res && res.success && res.count >= 0 && Array.isArray(res.data)) {
-          this.users = res.data;
-        } else if (res && res.data) {
-          this.users = Array.isArray(res.data) ? res.data : [];
-        } else {
-          this.users = Array.isArray(res) ? res : [];
+        try {
+          if (Array.isArray(res)) {
+            this.users = res;
+          } else if (res && Array.isArray(res.data)) {
+            this.users = res.data;
+          } else if (res && res.success && res.count >= 0 && Array.isArray(res.data)) {
+            this.users = res.data;
+          } else if (res && res.data) {
+            this.users = Array.isArray(res.data) ? res.data : [];
+          } else {
+            this.users = [];
+          }
+          console.log('Users loaded:', this.users);
+        } catch (e) {
+          console.error('Error procesando usuarios:', e);
+          this.users = [];
         }
-        console.log('Users loaded:', this.users);
         this.loadedCount++;
         if (this.loadedCount === 2) {
+          this.calculateKPIs();
           this.loading = false;
           this.cdr.detectChanges();
         }
       },
       error: (err) => {
         console.error('Error cargando usuarios:', err);
-        this.error = 'No fue posible cargar la lista de usuarios';
-        this.loading = false;
+        this.users = [];
+        this.loadedCount++;
+        if (this.loadedCount === 2) {
+          this.loading = false;
+        }
       }
     });
   }
@@ -160,6 +190,35 @@ export class ClientsIndexComponent implements OnInit {
     }
     // solo filtrado por texto (email, nombre, teléfono, etc.)
     this.filteredClients = list;
+  }
+
+  calculateKPIs() {
+    // Total de clientes
+    this.kpis.totalClients = this.clients.length;
+    
+    // Total de usuarios
+    this.kpis.totalUsers = this.users.length;
+    
+    // Usuarios activos e inactivos
+    this.kpis.activeUsers = this.users.filter(u => u.activo).length;
+    this.kpis.inactiveUsers = this.users.filter(u => !u.activo).length;
+    
+    // Total de compras y clientes con compras
+    let totalPurchases = 0;
+    let clientsWithPurchases = 0;
+    
+    this.clients.forEach(client => {
+      if (client.purchases && Array.isArray(client.purchases) && client.purchases.length > 0) {
+        totalPurchases += client.purchases.length;
+        clientsWithPurchases++;
+      }
+    });
+    
+    this.kpis.totalPurchases = totalPurchases;
+    this.kpis.clientsWithPurchases = clientsWithPurchases;
+    this.kpis.averagePurchasesPerClient = this.kpis.totalClients > 0 
+      ? parseFloat((totalPurchases / this.kpis.totalClients).toFixed(2))
+      : 0;
   }
 
   deleteUser(user: any) {

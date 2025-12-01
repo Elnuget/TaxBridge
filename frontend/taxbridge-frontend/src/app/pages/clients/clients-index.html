@@ -14,8 +14,76 @@
             </div>
           </c-card-header>
           <c-card-body>
-            <div *ngIf="loading">Cargando usuarios...</div>
-            <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+            <!-- Loading Spinner Mejorado -->
+            <div *ngIf="loading" class="loading-spinner">
+              <div class="spinner"></div>
+            </div>
+            
+            <div *ngIf="error" class="alert alert-danger">
+              <strong>Error:</strong> {{ error }}
+              <button cButton color="light" size="sm" class="ms-3" (click)="loadData()">Reintentar</button>
+            </div>
+
+            <!-- KPIs Dashboard -->
+            <div *ngIf="!loading" class="kpis-dashboard mb-4">
+              <c-row class="g-3">
+                <c-col xs="12" sm="6" lg="3">
+                  <div class="kpi-card kpi-primary">
+                    <div class="kpi-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/>
+                      </svg>
+                    </div>
+                    <div class="kpi-content">
+                      <div class="kpi-value">{{ kpis.totalClients }}</div>
+                      <div class="kpi-label">Total Clientes</div>
+                    </div>
+                  </div>
+                </c-col>
+                <c-col xs="12" sm="6" lg="3">
+                  <div class="kpi-card kpi-success">
+                    <div class="kpi-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                      </svg>
+                    </div>
+                    <div class="kpi-content">
+                      <div class="kpi-value">{{ kpis.totalUsers }}</div>
+                      <div class="kpi-label">Usuarios Sistema</div>
+                      <div class="kpi-detail">{{ kpis.activeUsers }} activos</div>
+                    </div>
+                  </div>
+                </c-col>
+                <c-col xs="12" sm="6" lg="3">
+                  <div class="kpi-card kpi-info">
+                    <div class="kpi-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                      </svg>
+                    </div>
+                    <div class="kpi-content">
+                      <div class="kpi-value">{{ kpis.totalPurchases }}</div>
+                      <div class="kpi-label">Total Compras</div>
+                      <div class="kpi-detail">{{ kpis.clientsWithPurchases }} clientes compraron</div>
+                    </div>
+                  </div>
+                </c-col>
+                <c-col xs="12" sm="6" lg="3">
+                  <div class="kpi-card kpi-warning">
+                    <div class="kpi-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+                      </svg>
+                    </div>
+                    <div class="kpi-content">
+                      <div class="kpi-value">{{ kpis.averagePurchasesPerClient }}</div>
+                      <div class="kpi-label">Promedio Compras</div>
+                      <div class="kpi-detail">Por cliente</div>
+                    </div>
+                  </div>
+                </c-col>
+              </c-row>
+            </div>
 
             <!-- Tabla de Usuarios (Admins/Contadores) -->
             <div *ngIf="!loading && users.length > 0">
