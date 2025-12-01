@@ -26,10 +26,13 @@ export interface AsientoContable {
 export class AsientosService {
   private platformId = inject(PLATFORM_ID);
   private storageKey = 'taxbridge-latest-asiento';
+  private historyKey = 'taxbridge-asientos-history';
   private ultimoAsiento = signal<AsientoContable | null>(null);
+  private historial = signal<Record<string, AsientoContable[]>>({});
 
   constructor() {
     this.cargarDesdeStorage();
+    this.cargarHistorial();
   }
 
   generateRandomAsiento(customer: any): AsientoContable {
@@ -71,11 +74,20 @@ export class AsientosService {
     };
 
     this.persistir(asiento);
+    this.guardarEnHistorial(asiento);
     return asiento;
   }
 
   getLatestAsiento(): AsientoContable | null {
     return this.ultimoAsiento();
+  }
+
+  getAsientosByCustomer(customerNumber?: string): AsientoContable[] {
+    if (!customerNumber) {
+      return [];
+    }
+    const history = this.historial();
+    return history[customerNumber] ?? [];
   }
 
   private persistir(asiento: AsientoContable) {
@@ -89,6 +101,27 @@ export class AsientosService {
     }
   }
 
+  private guardarEnHistorial(asiento: AsientoContable) {
+    const key = asiento.customerNumber || 'TB-000000';
+    const history = this.historial();
+    const list = [asiento, ...(history[key] || [])].slice(0, 5);
+    this.historial.set({
+      ...history,
+      [key]: list
+    });
+    this.persistirHistorial();
+  }
+
+  private persistirHistorial() {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        sessionStorage.setItem(this.historyKey, JSON.stringify(this.historial()));
+      } catch (err) {
+        console.warn('No se pudo guardar el historial de asientos en sessionStorage', err);
+      }
+    }
+  }
+
   private cargarDesdeStorage() {
     if (isPlatformBrowser(this.platformId)) {
       try {
@@ -98,6 +131,19 @@ export class AsientosService {
         }
       } catch (err) {
         console.warn('No se pudo cargar el asiento simulado desde sessionStorage', err);
+      }
+    }
+  }
+
+  private cargarHistorial() {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const raw = sessionStorage.getItem(this.historyKey);
+        if (raw) {
+          this.historial.set(JSON.parse(raw));
+        }
+      } catch (err) {
+        console.warn('No se pudo cargar el historial de asientos desde sessionStorage', err);
       }
     }
   }

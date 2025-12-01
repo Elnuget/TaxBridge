@@ -8,10 +8,11 @@ import {
   CardComponent,
   CardBodyComponent,
   CardHeaderComponent,
-  ButtonDirective
+  ButtonDirective,
+  TableDirective
 } from '@coreui/angular';
 import { AuthService } from '../../services/auth';
-import { AsientosService } from '../../services/asientos.service';
+import { AsientosService, AsientoContable } from '../../services/asientos.service';
 
 @Component({
   selector: 'app-customer-dashboard',
@@ -24,13 +25,15 @@ import { AsientosService } from '../../services/asientos.service';
     CardComponent,
     CardBodyComponent,
     CardHeaderComponent,
-    ButtonDirective
+    ButtonDirective,
+    TableDirective
   ],
   templateUrl: './customer-dashboard.html',
   styleUrl: './customer-dashboard.scss'
 })
 export class CustomerDashboardComponent implements OnInit {
   user: any = null;
+  asientos: AsientoContable[] = [];
   isGenerating = false;
   generationError: string | null = null;
 
@@ -49,6 +52,8 @@ export class CustomerDashboardComponent implements OnInit {
     } catch (err) {
       this.user = null;
     }
+
+    this.cargarHistorial();
   }
 
   goToAsientos() {
@@ -61,6 +66,7 @@ export class CustomerDashboardComponent implements OnInit {
 
     try {
       const asiento = this.asientosService.generateRandomAsiento(this.user);
+      this.cargarHistorial();
 
       // Pequeño delay para mostrar feedback visual antes de navegar
       setTimeout(() => {
@@ -74,5 +80,23 @@ export class CustomerDashboardComponent implements OnInit {
       this.isGenerating = false;
       this.generationError = 'No pudimos generar el asiento simulado. Intenta nuevamente en unos segundos.';
     }
+  }
+
+  viewAsiento(asiento: AsientoContable) {
+    this.router.navigate(['/asientos-contables'], {
+      state: { asiento }
+    });
+  }
+
+  trackByAsiento(_index: number, asiento: AsientoContable) {
+    return asiento.id;
+  }
+
+  private cargarHistorial() {
+    if (!this.hasValidCustomer) {
+      this.asientos = [];
+      return;
+    }
+    this.asientos = this.asientosService.getAsientosByCustomer(this.user.customerNumber);
   }
 }
