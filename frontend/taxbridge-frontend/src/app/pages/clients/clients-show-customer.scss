@@ -1,0 +1,41 @@
+/* Estilos personalizados para la vista de detalles del cliente */
+.clients-show-customer {
+  .info-row {
+    margin-bottom: 1rem;
+    
+    .info-label {
+      font-weight: 600;
+      color: #6c757d;
+      margin-bottom: 0.25rem;
+    }
+    
+    .info-value {
+      font-size: 1.1rem;
+      color: #212529;
+    }
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .product-item {
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    margin-bottom: 0.75rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .badge-lg {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+}

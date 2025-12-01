@@ -15,6 +15,8 @@ import { ClientsCreateUserComponent } from './pages/clients/clients-create-user'
 import { ClientsCreateCustomerComponent } from './pages/clients/clients-create-customer';
 import { ClientsEditUserComponent } from './pages/clients/clients-edit-user';
 import { ClientsEditCustomerComponent } from './pages/clients/clients-edit-customer';
+import { ClientsShowUserComponent } from './pages/clients/clients-show-user';
+import { ClientsShowCustomerComponent } from './pages/clients/clients-show-customer';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -33,6 +35,8 @@ export const routes: Routes = [
   { path: 'clients/create-customer', component: ClientsCreateCustomerComponent, canActivate: [authGuard] },
   { path: 'clients/edit-user/:id', component: ClientsEditUserComponent, canActivate: [authGuard] },
   { path: 'clients/edit-customer/:customerNumber', component: ClientsEditCustomerComponent, canActivate: [authGuard] },
+  { path: 'clients/show-user/:id', component: ClientsShowUserComponent, canActivate: [authGuard] },
+  { path: 'clients/show-customer/:customerNumber', component: ClientsShowCustomerComponent, canActivate: [authGuard] },
   { path: 'reports', component: DashboardComponent }, // Placeholder
   { path: 'settings', component: DashboardComponent }, // Placeholder
   { path: 'help', component: DashboardComponent }, // Placeholder

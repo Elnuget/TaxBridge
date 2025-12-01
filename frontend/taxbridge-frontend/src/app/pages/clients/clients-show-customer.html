@@ -1,0 +1,194 @@
+<div class="clients-show-customer">
+  <c-container>
+    <c-row>
+      <c-col>
+        <!-- Spinner de carga -->
+        <div *ngIf="loading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-3 text-muted">Cargando información del cliente...</p>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div *ngIf="error && !loading" class="alert alert-danger">
+          {{ error }}
+          <div class="mt-3">
+            <a [routerLink]="['/clients']">
+              <button cButton color="secondary">Volver al listado</button>
+            </a>
+          </div>
+        </div>
+
+        <!-- Datos del cliente -->
+        <div *ngIf="customer && !loading">
+          <!-- Header con acciones -->
+          <c-card class="mb-4">
+            <c-card-header class="d-flex justify-content-between align-items-start">
+              <div>
+                <h3 class="mb-1">{{ customer.fullName }}</h3>
+                <p class="text-muted mb-0">Cliente {{ customer.customerNumber }}</p>
+              </div>
+              <div class="btn-group">
+                <a [routerLink]="['/clients/edit-customer', customer.customerNumber]">
+                  <button cButton color="warning">
+                    <i class="cil-pencil"></i> Editar
+                  </button>
+                </a>
+                <a [routerLink]="['/clients']">
+                  <button cButton color="secondary" class="ms-2">
+                    <i class="cil-arrow-left"></i> Volver
+                  </button>
+                </a>
+              </div>
+            </c-card-header>
+            <c-card-body>
+              <div class="text-center mb-3">
+                <c-badge [color]="getStatusBadge(customer.status)" class="badge-lg">
+                  {{ getStatusText(customer.status) }}
+                </c-badge>
+              </div>
+            </c-card-body>
+          </c-card>
+
+          <!-- Información Personal -->
+          <c-card class="mb-4">
+            <c-card-header>
+              <h4 class="section-title mb-0">Información Personal</h4>
+            </c-card-header>
+            <c-card-body>
+              <c-row>
+                <c-col md="6">
+                  <div class="info-row">
+                    <div class="info-label">Número de Cliente</div>
+                    <div class="info-value">{{ customer.customerNumber }}</div>
+                  </div>
+                </c-col>
+                <c-col md="6">
+                  <div class="info-row">
+                    <div class="info-label">Nombre Completo</div>
+                    <div class="info-value">{{ customer.fullName }}</div>
+                  </div>
+                </c-col>
+                <c-col md="6">
+                  <div class="info-row">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">{{ customer.email }}</div>
+                  </div>
+                </c-col>
+                <c-col md="6">
+                  <div class="info-row">
+                    <div class="info-label">Teléfono</div>
+                    <div class="info-value">{{ customer.phone || 'No registrado' }}</div>
+                  </div>
+                </c-col>
+                <c-col md="6">
+                  <div class="info-row">
+                    <div class="info-label">Identificación</div>
+                    <div class="info-value">{{ customer.identification }}</div>
+                  </div>
+                </c-col>
+                <c-col md="6">
+                  <div class="info-row">
+                    <div class="info-label">Método de Pago Preferido</div>
+                    <div class="info-value">{{ getPaymentMethodText(customer.paymentMethod) }}</div>
+                  </div>
+                </c-col>
+              </c-row>
+            </c-card-body>
+          </c-card>
+
+          <!-- Información de Compras -->
+          <c-card class="mb-4">
+            <c-card-header>
+              <h4 class="section-title mb-0">Información de Compras</h4>
+            </c-card-header>
+            <c-card-body>
+              <c-row>
+                <c-col md="4">
+                  <div class="info-row">
+                    <div class="info-label">Total de Compras</div>
+                    <div class="info-value text-success">{{ formatCurrency(customer.totalPurchases) }}</div>
+                  </div>
+                </c-col>
+                <c-col md="4">
+                  <div class="info-row">
+                    <div class="info-label">Productos Comprados</div>
+                    <div class="info-value">{{ customer.purchasedProducts?.length || 0 }}</div>
+                  </div>
+                </c-col>
+                <c-col md="4">
+                  <div class="info-row">
+                    <div class="info-label">Última Compra</div>
+                    <div class="info-value">{{ formatDate(customer.lastPurchaseDate) }}</div>
+                  </div>
+                </c-col>
+              </c-row>
+
+              <!-- Lista de productos comprados -->
+              <div *ngIf="customer.purchasedProducts && customer.purchasedProducts.length > 0" class="mt-4">
+                <h5 class="mb-3">Productos Adquiridos</h5>
+                <div *ngFor="let product of customer.purchasedProducts" class="product-item">
+                  <c-row class="align-items-center">
+                    <c-col md="5">
+                      <strong>{{ product.productName }}</strong>
+                      <small class="d-block text-muted">{{ product.category }}</small>
+                    </c-col>
+                    <c-col md="2" class="text-center">
+                      <span class="text-muted">Cantidad:</span> <strong>{{ product.quantity }}</strong>
+                    </c-col>
+                    <c-col md="2" class="text-end">
+                      <small class="text-muted">Precio Unit:</small><br>
+                      <strong>{{ formatCurrency(product.unitPrice) }}</strong>
+                    </c-col>
+                    <c-col md="3" class="text-end">
+                      <small class="text-muted">Total:</small><br>
+                      <strong class="text-success">{{ formatCurrency(product.totalPrice) }}</strong>
+                    </c-col>
+                  </c-row>
+                </div>
+              </div>
+
+              <div *ngIf="!customer.purchasedProducts || customer.purchasedProducts.length === 0" class="alert alert-info">
+                Este cliente aún no ha realizado compras.
+              </div>
+            </c-card-body>
+          </c-card>
+
+          <!-- Información del Sistema -->
+          <c-card>
+            <c-card-header>
+              <h4 class="section-title mb-0">Información del Sistema</h4>
+            </c-card-header>
+            <c-card-body>
+              <c-row>
+                <c-col md="4">
+                  <div class="info-row">
+                    <div class="info-label">Fecha de Registro</div>
+                    <div class="info-value">{{ formatDate(customer.createdAt) }}</div>
+                  </div>
+                </c-col>
+                <c-col md="4">
+                  <div class="info-row">
+                    <div class="info-label">Última Actualización</div>
+                    <div class="info-value">{{ formatDate(customer.updatedAt) }}</div>
+                  </div>
+                </c-col>
+                <c-col md="4">
+                  <div class="info-row">
+                    <div class="info-label">Contraseña Temporal</div>
+                    <div class="info-value">
+                      <c-badge [color]="customer.isTemporaryPassword ? 'warning' : 'success'">
+                        {{ customer.isTemporaryPassword ? 'Sí' : 'No' }}
+                      </c-badge>
+                    </div>
+                  </div>
+                </c-col>
+              </c-row>
+            </c-card-body>
+          </c-card>
+        </div>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

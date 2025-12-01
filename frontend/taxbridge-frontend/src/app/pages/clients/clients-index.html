@@ -41,7 +41,7 @@
                     <td>{{ user.telefono }}</td>
                     <td>{{ user.activo ? 'Activo' : 'Inactivo' }}</td>
                     <td>
-                      <button cButton size="sm" color="info">Ver</button>
+                      <a [routerLink]="['/clients/show-user', user._id]"><button cButton size="sm" color="info">Ver</button></a>
                       <a [routerLink]="['/clients/edit-user', user._id]"><button cButton size="sm" color="warning" class="ms-2">Editar</button></a>
                       <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
                     </td>
@@ -84,7 +84,7 @@
                     <td>{{ client.email }}</td>
                     <td>{{ client.phone }}</td>
                     <td>
-                      <a [routerLink]="['/clients', client.customerNumber]"><button cButton size="sm" color="info">Ver</button></a>
+                      <a [routerLink]="['/clients/show-customer', client.customerNumber]"><button cButton size="sm" color="info">Ver</button></a>
                       <a [routerLink]="['/clients/edit-customer', client.customerNumber]"><button cButton size="sm" color="warning" class="ms-2">Editar</button></a>
                       <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
                     </td>
