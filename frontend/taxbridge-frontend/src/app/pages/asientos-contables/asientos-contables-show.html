@@ -1,0 +1,113 @@
+<div class="asientos-show" *ngIf="!loading && asiento; else loadingOrEmpty">
+  <c-container>
+    <c-row>
+      <c-col>
+        <c-card class="mb-4">
+          <c-card-header>
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div>
+                <h2 class="mb-0">
+                  <i class="cil-calculator me-2"></i>
+                  Asiento Contable Simulado
+                </h2>
+                <small class="text-muted">ID: {{ asiento?.id }}</small>
+              </div>
+              <div class="text-end">
+                <p class="mb-0">Cliente: <strong>{{ asiento?.customerName }}</strong></p>
+                <small class="text-muted">Número: {{ asiento?.customerNumber }}</small>
+              </div>
+            </div>
+          </c-card-header>
+          <c-card-body>
+            <div class="meta-grid">
+              <div>
+                <span class="meta-label">Fecha de generación</span>
+                <p class="meta-value">{{ asiento?.fecha | date:'medium' }}</p>
+              </div>
+              <div>
+                <span class="meta-label">Moneda</span>
+                <p class="meta-value">{{ asiento?.moneda }}</p>
+              </div>
+              <div>
+                <span class="meta-label">Total Debe</span>
+                <p class="meta-value text-success">{{ asiento?.totalDebe | currency:'USD':'symbol':'1.2-2' }}</p>
+              </div>
+              <div>
+                <span class="meta-label">Total Haber</span>
+                <p class="meta-value text-primary">{{ asiento?.totalHaber | currency:'USD':'symbol':'1.2-2' }}</p>
+              </div>
+            </div>
+
+            <div class="table-responsive mt-4">
+              <table cTable class="table-modern">
+                <thead>
+                  <tr>
+                    <th>Cuenta</th>
+                    <th>Descripción</th>
+                    <th class="text-end">Debe</th>
+                    <th class="text-end">Haber</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let linea of asiento?.lineas">
+                    <td><strong>{{ linea.cuenta }}</strong></td>
+                    <td>{{ linea.descripcion }}</td>
+                    <td class="text-end">
+                      {{ linea.debe | currency:'USD':'symbol':'1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ linea.haber | currency:'USD':'symbol':'1.2-2' }}
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="2" class="text-end">Totales</td>
+                    <td class="text-end text-success">
+                      {{ asiento?.totalDebe | currency:'USD':'symbol':'1.2-2' }}
+                    </td>
+                    <td class="text-end text-primary">
+                      {{ asiento?.totalHaber | currency:'USD':'symbol':'1.2-2' }}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div class="hash-block mt-4">
+              <span>Huella resumida:</span>
+              <code>{{ asiento?.hashResumen }}</code>
+            </div>
+
+            <div class="actions mt-4 d-flex flex-wrap gap-2">
+              <button cButton color="secondary" (click)="goBack()">
+                Volver al panel del cliente
+              </button>
+              <button cButton color="primary" (click)="generarOtro()">
+                Generar otro asiento
+              </button>
+            </div>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>
+
+<ng-template #loadingOrEmpty>
+  <c-container class="empty-state">
+    <c-row>
+      <c-col>
+        <c-card>
+          <c-card-body class="text-center py-5">
+            <p class="lead mb-3" *ngIf="loading">Preparando asiento contable...</p>
+            <p class="lead mb-3" *ngIf="!loading">No encontramos un asiento para mostrar.</p>
+            <button cButton color="primary" (click)="goBack()">
+              Regresar al panel del cliente
+            </button>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</ng-template>

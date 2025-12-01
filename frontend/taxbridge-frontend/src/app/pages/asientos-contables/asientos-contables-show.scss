@@ -1,0 +1,57 @@
+.asientos-show {
+  padding: 2rem 0;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.meta-label {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #7a7f87;
+}
+
+.meta-value {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.table-modern {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.table-modern thead {
+  background: #f4f6f8;
+}
+
+.table-modern th {
+  font-weight: 600;
+  color: #3c4b64;
+}
+
+.hash-block {
+  background: #f4f6f8;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.hash-block code {
+  background: transparent;
+  padding: 0;
+  font-weight: 600;
+  color: #3c4b64;
+}
+
+.empty-state {
+  padding: 3rem 0;
+}

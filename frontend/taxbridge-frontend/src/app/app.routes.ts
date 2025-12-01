@@ -17,6 +17,7 @@ import { ClientsEditUserComponent } from './pages/clients/clients-edit-user';
 import { ClientsEditCustomerComponent } from './pages/clients/clients-edit-customer';
 import { ClientsShowUserComponent } from './pages/clients/clients-show-user';
 import { ClientsShowCustomerComponent } from './pages/clients/clients-show-customer';
+import { AsientosContablesShowComponent } from './pages/asientos-contables/asientos-contables-show';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -29,6 +30,8 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [authGuard] },
   { path: 'customer-dashboard', component: CustomerDashboardComponent, canActivate: [authGuard] },
+  { path: 'asientos-contables', component: AsientosContablesShowComponent, canActivate: [authGuard] },
+  { path: 'asientos-contables/show', component: AsientosContablesShowComponent, canActivate: [authGuard] },
   { path: 'taxes', component: DashboardComponent }, // Placeholder
   { path: 'clients', component: ClientsIndexComponent, canActivate: [authGuard] },
   { path: 'clients/create-user', component: ClientsCreateUserComponent, canActivate: [authGuard] },

@@ -11,6 +11,28 @@
             <p *ngIf="user">Número de cliente: {{ user.customerNumber }}</p>
             <p *ngIf="user">Nombre: {{ user.fullName || user.nombre }}</p>
             <p *ngIf="user">Email: {{ user.email }}</p>
+            <div class="cta-actions mt-4">
+              <button
+                cButton
+                color="primary"
+                size="lg"
+                class="cta-button"
+                (click)="goToAsientos()"
+                [disabled]="!hasValidCustomer || isGenerating"
+              >
+                <i class="cil-calculator me-2"></i>
+                {{ isGenerating ? 'Generando asiento...' : 'Generar Asientos Contables' }}
+              </button>
+              <p class="text-muted mt-2" *ngIf="!hasValidCustomer">
+                Completa tu perfil para habilitar la generación de asientos.
+              </p>
+              <p class="text-info mt-2" *ngIf="isGenerating">
+                Calculando asiento simulado en base a tu última compra...
+              </p>
+              <p class="text-danger mt-2" *ngIf="generationError">
+                {{ generationError }}
+              </p>
+            </div>
           </c-card-body>
         </c-card>
       </c-col>
