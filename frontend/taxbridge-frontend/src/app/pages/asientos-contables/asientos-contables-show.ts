@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -36,6 +36,7 @@ export class AsientosContablesShowComponent implements OnInit {
 
   private router = inject(Router);
   private asientosService = inject(AsientosService);
+  private cdr = inject(ChangeDetectorRef);
 
   async ngOnInit() {
     const nav = this.router.getCurrentNavigation();
@@ -45,12 +46,14 @@ export class AsientosContablesShowComponent implements OnInit {
       this.asientosService.cacheLatest(asientoFromState);
       this.asiento = asientoFromState;
       this.loading = false;
+      this.cdr.detectChanges();
       return;
     }
 
     this.loading = true;
     this.asiento = await this.asientosService.loadLatestFromBackend();
     this.loading = false;
+    this.cdr.detectChanges();
 
     if (!this.asiento) {
       // No hay asiento para mostrar, regresar al dashboard del cliente

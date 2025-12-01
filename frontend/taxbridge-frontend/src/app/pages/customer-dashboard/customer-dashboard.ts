@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -41,6 +41,7 @@ export class CustomerDashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private asientosService = inject(AsientosService);
+  private cdr = inject(ChangeDetectorRef);
 
   get hasValidCustomer(): boolean {
     return Boolean(this.user?.customerNumber);
@@ -72,6 +73,7 @@ export class CustomerDashboardComponent implements OnInit {
 
       // Actualizar historial en memoria inmediatamente
       this.asientos = [asiento, ...this.asientos].slice(0, 5);
+      this.cdr.detectChanges();
 
       this.isGenerating = false;
       this.router.navigate(['/asientos-contables'], {
@@ -81,6 +83,7 @@ export class CustomerDashboardComponent implements OnInit {
       console.error('Error simulando asiento contable', error);
       this.isGenerating = false;
       this.generationError = 'No pudimos generar el asiento simulado. Intenta nuevamente en unos segundos.';
+      this.cdr.detectChanges();
     }
   }
 
@@ -105,9 +108,11 @@ export class CustomerDashboardComponent implements OnInit {
       this.asientos = await firstValueFrom(
         this.asientosService.getHistory(this.user.customerNumber, 5)
       );
+      this.cdr.detectChanges();
     } catch (error) {
       console.error('Error al cargar el historial de asientos', error);
       this.asientos = [];
+      this.cdr.detectChanges();
     }
   }
 }
