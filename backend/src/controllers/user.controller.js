@@ -79,3 +79,96 @@ exports.createUser = async (req, res) => {
     });
   }
 };
+
+// Obtener usuario por ID
+exports.getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user.toPublicJSON()
+    });
+
+  } catch (error) {
+    console.error('Error al obtener usuario:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al obtener usuario',
+      error: error.message
+    });
+  }
+};
+
+// Actualizar usuario
+exports.updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nombre, email, password, rol, telefono, direccion, activo } = req.body;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Ya existe otro usuario con este email'
+        });
+      }
+    }
+
+    if (nombre) user.nombre = nombre;
+    if (email) user.email = email;
+    if (rol) user.rol = rol;
+    if (telefono !== undefined) user.telefono = telefono;
+    if (direccion !== undefined) user.direccion = direccion;
+    if (activo !== undefined) user.activo = activo;
+    
+    if (password && password.trim() !== '') {
+      user.password = password;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Usuario actualizado exitosamente',
+      data: user.toPublicJSON()
+    });
+
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(', '),
+        error: error.message
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Error al actualizar usuario',
+      error: error.message
+    });
+  }
+};

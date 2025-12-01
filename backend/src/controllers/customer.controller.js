@@ -232,3 +232,76 @@ exports.loginCustomer = async (req, res) => {
     });
   }
 };
+
+// Actualizar cliente
+exports.updateCustomer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      fullName,
+      email,
+      phone,
+      identification,
+      paymentMethod,
+      password,
+      status
+    } = req.body;
+
+    const customer = await Customer.findById(id);
+
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: 'Cliente no encontrado'
+      });
+    }
+
+    if (email && email !== customer.email) {
+      const existingCustomer = await Customer.findOne({ email });
+      if (existingCustomer) {
+        return res.status(400).json({
+          success: false,
+          message: 'Ya existe otro cliente con este email'
+        });
+      }
+    }
+
+    if (fullName) customer.fullName = fullName;
+    if (email) customer.email = email;
+    if (phone) customer.phone = phone;
+    if (identification) customer.identification = identification;
+    if (paymentMethod) customer.paymentMethod = paymentMethod;
+    if (status) customer.status = status;
+    
+    if (password && password.trim() !== '') {
+      customer.password = password;
+      customer.isTemporaryPassword = false;
+    }
+
+    await customer.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Cliente actualizado exitosamente',
+      data: customer
+    });
+
+  } catch (error) {
+    console.error('Error al actualizar cliente:', error);
+
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(', '),
+        error: error.message
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Error al actualizar cliente',
+      error: error.message
+    });
+  }
+};

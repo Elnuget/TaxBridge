@@ -1,0 +1,69 @@
+<div class="clients-edit-user">
+  <c-container>
+    <c-row>
+      <c-col>
+        <c-card>
+          <c-card-header>
+            <h3>Editar Usuario</h3>
+            <p class="text-muted">Modifica los datos del usuario del sistema</p>
+          </c-card-header>
+          <c-card-body>
+            <div *ngIf="loadingData" class="text-center py-4">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+
+            <form *ngIf="!loadingData" (ngSubmit)="onSubmit()" #form="ngForm">
+              <div class="mb-3">
+                <label class="form-label">Nombre completo</label>
+                <input class="form-control" name="nombre" [(ngModel)]="nombre" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input class="form-control" name="email" [(ngModel)]="email" type="email" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                <input class="form-control" name="telefono" [(ngModel)]="telefono" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Rol</label>
+                <select class="form-select" name="rol" [(ngModel)]="rol" required>
+                  <option value="admin">Administrador</option>
+                  <option value="contador">Contador</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Nueva Contraseña (dejar en blanco para no cambiar)</label>
+                <input class="form-control" name="password" [(ngModel)]="password" type="password" placeholder="Solo si deseas cambiarla" />
+                <small class="form-text text-muted">Solo completa este campo si deseas cambiar la contraseña del usuario.</small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Estado</label>
+                <select class="form-select" name="activo" [(ngModel)]="activo" required>
+                  <option [ngValue]="true">Activo</option>
+                  <option [ngValue]="false">Inactivo</option>
+                </select>
+              </div>
+
+              <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+              <button cButton color="primary" type="submit" [disabled]="loading">
+                {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+              </button>
+              <a class="ms-2" [routerLink]="['/clients']">
+                <button cButton color="secondary" type="button">Cancelar</button>
+              </a>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

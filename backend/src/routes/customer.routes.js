@@ -14,4 +14,7 @@ router.get('/all', customerController.getAllCustomers);
 // Obtener cliente por número
 router.get('/:customerNumber', customerController.getCustomerByNumber);
 
+// Actualizar cliente por ID
+router.put('/:id', customerController.updateCustomer);
+
 module.exports = router;
