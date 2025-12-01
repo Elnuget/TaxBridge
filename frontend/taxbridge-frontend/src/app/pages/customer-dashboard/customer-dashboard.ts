@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import {
   ContainerComponent,
   RowComponent,
@@ -56,7 +57,7 @@ export class CustomerDashboardComponent implements OnInit {
     this.cargarHistorial();
   }
 
-  goToAsientos() {
+  async goToAsientos() {
     if (!this.hasValidCustomer || this.isGenerating) {
       return;
     }
@@ -65,16 +66,17 @@ export class CustomerDashboardComponent implements OnInit {
     this.generationError = null;
 
     try {
-      const asiento = this.asientosService.generateRandomAsiento(this.user);
-      this.cargarHistorial();
+      const asiento = await firstValueFrom(
+        this.asientosService.simulateForCustomer(this.user.customerNumber)
+      );
 
-      // Pequeño delay para mostrar feedback visual antes de navegar
-      setTimeout(() => {
-        this.isGenerating = false;
-        this.router.navigate(['/asientos-contables'], {
-          state: { asiento }
-        });
-      }, 350);
+      // Actualizar historial en memoria inmediatamente
+      this.asientos = [asiento, ...this.asientos].slice(0, 5);
+
+      this.isGenerating = false;
+      this.router.navigate(['/asientos-contables'], {
+        state: { asiento }
+      });
     } catch (error) {
       console.error('Error simulando asiento contable', error);
       this.isGenerating = false;
@@ -83,20 +85,29 @@ export class CustomerDashboardComponent implements OnInit {
   }
 
   viewAsiento(asiento: AsientoContable) {
+    this.asientosService.cacheLatest(asiento);
     this.router.navigate(['/asientos-contables'], {
       state: { asiento }
     });
   }
 
   trackByAsiento(_index: number, asiento: AsientoContable) {
-    return asiento.id;
+    return asiento._id || asiento.id;
   }
 
-  private cargarHistorial() {
+  private async cargarHistorial() {
     if (!this.hasValidCustomer) {
       this.asientos = [];
       return;
     }
-    this.asientos = this.asientosService.getAsientosByCustomer(this.user.customerNumber);
+
+    try {
+      this.asientos = await firstValueFrom(
+        this.asientosService.getHistory(this.user.customerNumber, 5)
+      );
+    } catch (error) {
+      console.error('Error al cargar el historial de asientos', error);
+      this.asientos = [];
+    }
   }
 }

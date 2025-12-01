@@ -60,6 +60,11 @@ const customerRoutes = require('./routes/customer.routes');
 app.use('/api/customers', customerRoutes);
 // ---------------------------------
 
+// --- RUTA DE ASIENTOS CONTABLES ---
+const asientosRoutes = require('./routes/asientos.routes');
+app.use('/api/asientos', asientosRoutes);
+// -----------------------------------
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

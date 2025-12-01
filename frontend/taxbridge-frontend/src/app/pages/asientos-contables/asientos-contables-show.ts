@@ -37,17 +37,19 @@ export class AsientosContablesShowComponent implements OnInit {
   private router = inject(Router);
   private asientosService = inject(AsientosService);
 
-  ngOnInit() {
+  async ngOnInit() {
     const nav = this.router.getCurrentNavigation();
     const asientoFromState = nav?.extras?.state?.['asiento'] as AsientoContable | undefined;
 
     if (asientoFromState) {
+      this.asientosService.cacheLatest(asientoFromState);
       this.asiento = asientoFromState;
       this.loading = false;
       return;
     }
 
-    this.asiento = this.asientosService.getLatestAsiento();
+    this.loading = true;
+    this.asiento = await this.asientosService.loadLatestFromBackend();
     this.loading = false;
 
     if (!this.asiento) {

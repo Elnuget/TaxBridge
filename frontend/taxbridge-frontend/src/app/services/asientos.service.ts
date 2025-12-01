@@ -1,5 +1,8 @@
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { Observable, firstValueFrom, map, tap } from 'rxjs';
 
 export interface AsientoContableLinea {
   cuenta: string;
@@ -9,7 +12,8 @@ export interface AsientoContableLinea {
 }
 
 export interface AsientoContable {
-  id: string;
+  _id: string;
+  id?: string;
   customerNumber: string;
   customerName: string;
   fecha: string;
@@ -18,156 +22,100 @@ export interface AsientoContable {
   totalHaber: number;
   lineas: AsientoContableLinea[];
   hashResumen: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+type ApiResponse<T> = { success?: boolean; message?: string; data: T } | T;
+type ApiListResponse<T> = { success?: boolean; count?: number; data: T[] } | T[];
 
 @Injectable({
   providedIn: 'root'
 })
 export class AsientosService {
+  private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
-  private storageKey = 'taxbridge-latest-asiento';
-  private historyKey = 'taxbridge-asientos-history';
-  private ultimoAsiento = signal<AsientoContable | null>(null);
-  private historial = signal<Record<string, AsientoContable[]>>({});
+  private baseUrl = `${environment.apiUrl}/asientos`;
+  private latestAsiento = signal<AsientoContable | null>(null);
+  private latestAsientoIdKey = 'taxbridge-latest-asiento-id';
 
-  constructor() {
-    this.cargarDesdeStorage();
-    this.cargarHistorial();
+  simulateForCustomer(customerNumber: string): Observable<AsientoContable> {
+    return this.http
+      .post<ApiResponse<AsientoContable>>(`${this.baseUrl}/simulate`, { customerNumber })
+      .pipe(
+        map(res => this.unwrapSingle(res)),
+        tap(asiento => this.cacheLatest(asiento))
+      );
   }
 
-  generateRandomAsiento(customer: any): AsientoContable {
-    const base = this.randomInRange(120, 1500);
-    const iva = this.redondear(base * 0.12);
-    const total = this.redondear(base + iva);
-
-    const lineas: AsientoContableLinea[] = [
-      {
-        cuenta: '110101',
-        descripcion: 'Caja / Bancos',
-        debe: total,
-        haber: 0
-      },
-      {
-        cuenta: '210101',
-        descripcion: 'IVA por pagar',
-        debe: 0,
-        haber: iva
-      },
-      {
-        cuenta: '410101',
-        descripcion: 'Ventas netas',
-        debe: 0,
-        haber: base
-      }
-    ];
-
-    const asiento: AsientoContable = {
-      id: this.generarId(),
-      customerNumber: customer?.customerNumber || 'TB-000000',
-      customerName: customer?.fullName || customer?.nombre || 'Cliente TaxBridge',
-      fecha: new Date().toISOString(),
-      moneda: 'USD',
-      totalDebe: total,
-      totalHaber: total,
-      lineas,
-      hashResumen: this.crearHash(lineas)
-    };
-
-    this.persistir(asiento);
-    this.guardarEnHistorial(asiento);
-    return asiento;
+  getHistory(customerNumber: string, limit = 5): Observable<AsientoContable[]> {
+    const params = new HttpParams().set('limit', String(limit));
+    return this.http
+      .get<ApiListResponse<AsientoContable>>(`${this.baseUrl}/customer/${customerNumber}`, { params })
+      .pipe(map(res => this.unwrapList(res)));
   }
 
-  getLatestAsiento(): AsientoContable | null {
-    return this.ultimoAsiento();
+  getAsientoById(id: string): Observable<AsientoContable> {
+    return this.http
+      .get<ApiResponse<AsientoContable>>(`${this.baseUrl}/${id}`)
+      .pipe(map(res => this.unwrapSingle(res)));
   }
 
-  getAsientosByCustomer(customerNumber?: string): AsientoContable[] {
-    if (!customerNumber) {
-      return [];
-    }
-    const history = this.historial();
-    return history[customerNumber] ?? [];
+  getCachedAsiento(): AsientoContable | null {
+    return this.latestAsiento();
   }
 
-  private persistir(asiento: AsientoContable) {
-    this.ultimoAsiento.set(asiento);
-    if (isPlatformBrowser(this.platformId)) {
+  cacheLatest(asiento: AsientoContable) {
+    this.latestAsiento.set(asiento);
+    const asientoId = asiento._id || asiento.id;
+    if (asientoId && isPlatformBrowser(this.platformId)) {
       try {
-        sessionStorage.setItem(this.storageKey, JSON.stringify(asiento));
-      } catch (err) {
-        console.warn('No se pudo guardar el asiento simulado en sessionStorage', err);
+        sessionStorage.setItem(this.latestAsientoIdKey, asientoId);
+      } catch (error) {
+        console.warn('No se pudo almacenar el identificador del asiento', error);
       }
     }
   }
 
-  private guardarEnHistorial(asiento: AsientoContable) {
-    const key = asiento.customerNumber || 'TB-000000';
-    const history = this.historial();
-    const list = [asiento, ...(history[key] || [])].slice(0, 5);
-    this.historial.set({
-      ...history,
-      [key]: list
-    });
-    this.persistirHistorial();
+  async loadLatestFromBackend(): Promise<AsientoContable | null> {
+    if (this.latestAsiento()) {
+      return this.latestAsiento();
+    }
+
+    const storedId = this.getStoredAsientoId();
+    if (!storedId) {
+      return null;
+    }
+
+    try {
+      const asiento = await firstValueFrom(this.getAsientoById(storedId));
+      this.cacheLatest(asiento);
+      return asiento;
+    } catch (error) {
+      console.warn('No se pudo recuperar el asiento almacenado', error);
+      return null;
+    }
   }
 
-  private persistirHistorial() {
+  clearCache() {
+    this.latestAsiento.set(null);
     if (isPlatformBrowser(this.platformId)) {
-      try {
-        sessionStorage.setItem(this.historyKey, JSON.stringify(this.historial()));
-      } catch (err) {
-        console.warn('No se pudo guardar el historial de asientos en sessionStorage', err);
-      }
+      sessionStorage.removeItem(this.latestAsientoIdKey);
     }
   }
 
-  private cargarDesdeStorage() {
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        const raw = sessionStorage.getItem(this.storageKey);
-        if (raw) {
-          this.ultimoAsiento.set(JSON.parse(raw));
-        }
-      } catch (err) {
-        console.warn('No se pudo cargar el asiento simulado desde sessionStorage', err);
-      }
+  private unwrapSingle<T>(response: ApiResponse<T>): T {
+    return (response as any)?.data ?? (response as T);
+  }
+
+  private unwrapList<T>(response: ApiListResponse<T>): T[] {
+    return (response as any)?.data ?? (response as T[]);
+  }
+
+  private getStoredAsientoId(): string | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
     }
-  }
-
-  private cargarHistorial() {
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        const raw = sessionStorage.getItem(this.historyKey);
-        if (raw) {
-          this.historial.set(JSON.parse(raw));
-        }
-      } catch (err) {
-        console.warn('No se pudo cargar el historial de asientos desde sessionStorage', err);
-      }
-    }
-  }
-
-  private generarId(): string {
-    const random = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
-    return `TB-AS-${Date.now()}-${random}`;
-  }
-
-  private crearHash(lineas: AsientoContableLinea[]): string {
-    const raw = lineas.map(l => `${l.cuenta}-${l.debe}-${l.haber}`).join('|');
-    let hash = 0;
-    for (let i = 0; i < raw.length; i++) {
-      hash = (hash << 5) - hash + raw.charCodeAt(i);
-      hash |= 0;
-    }
-    return Math.abs(hash).toString(16).toUpperCase();
-  }
-
-  private randomInRange(min: number, max: number): number {
-    return this.redondear(Math.random() * (max - min) + min);
-  }
-
-  private redondear(value: number): number {
-    return Math.round(value * 100) / 100;
+    return sessionStorage.getItem(this.latestAsientoIdKey);
   }
 }

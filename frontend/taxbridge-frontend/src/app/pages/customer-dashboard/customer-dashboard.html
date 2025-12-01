@@ -62,7 +62,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let asiento of asientos; trackBy: trackByAsiento">
-                      <td>{{ asiento.id }}</td>
+                      <td>{{ asiento.id || asiento._id }}</td>
                       <td>{{ asiento.fecha | date:'short' }}</td>
                       <td>{{ asiento.totalDebe | currency:'USD':'symbol':'1.2-2' }}</td>
                       <td>
