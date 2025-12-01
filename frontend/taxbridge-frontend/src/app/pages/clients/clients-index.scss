@@ -43,7 +43,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 
     thead {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #2f3b52;
       
       th {
         color: white;
@@ -119,13 +119,13 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 
     &.alert-danger {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      color: white;
+      background: #fdeceb;
+      color: #a94442;
     }
 
     &.alert-info {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      color: white;
+      background: #edf4ff;
+      color: #24507a;
     }
   }
 
@@ -136,8 +136,8 @@
     border: none;
 
     c-card-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: #f5f7fb;
+      color: #1f2a37;
       padding: 1.5rem;
       border-bottom: none;
     }
@@ -233,70 +233,58 @@
 
       // Variantes de color
       &.kpi-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: #eef2ff;
+        color: #1c2753;
+        border-color: #c7d2fe;
 
         .kpi-icon {
-          background: rgba(255,255,255,0.2);
-          
-          &:hover {
-            background: rgba(255,255,255,0.3);
-          }
+          background: rgba(49, 91, 194, 0.08);
         }
 
         &:hover {
-          border-color: #667eea;
+          border-color: #a5b4fc;
         }
       }
 
       &.kpi-success {
-        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        color: white;
+        background: #e8fbf3;
+        color: #0f5132;
+        border-color: #c6f6d5;
 
         .kpi-icon {
-          background: rgba(255,255,255,0.2);
-          
-          &:hover {
-            background: rgba(255,255,255,0.3);
-          }
+          background: rgba(15, 81, 50, 0.08);
         }
 
         &:hover {
-          border-color: #11998e;
+          border-color: #9ae6b4;
         }
       }
 
       &.kpi-info {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
+        background: #edf8ff;
+        color: #0c4a6e;
+        border-color: #bae6fd;
 
         .kpi-icon {
-          background: rgba(255,255,255,0.2);
-          
-          &:hover {
-            background: rgba(255,255,255,0.3);
-          }
+          background: rgba(12, 74, 110, 0.08);
         }
 
         &:hover {
-          border-color: #4facfe;
+          border-color: #7dd3fc;
         }
       }
 
       &.kpi-warning {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
+        background: #fff3ed;
+        color: #7c2d12;
+        border-color: #fed7aa;
 
         .kpi-icon {
-          background: rgba(255,255,255,0.2);
-          
-          &:hover {
-            background: rgba(255,255,255,0.3);
-          }
+          background: rgba(124, 45, 18, 0.08);
         }
 
         &:hover {
-          border-color: #f093fb;
+          border-color: #fdba74;
         }
       }
     }
