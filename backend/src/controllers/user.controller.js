@@ -172,3 +172,34 @@ exports.updateUser = async (req, res) => {
     });
   }
 };
+
+// Eliminar usuario
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    await User.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Usuario eliminado exitosamente'
+    });
+
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al eliminar usuario',
+      error: error.message
+    });
+  }
+};

@@ -305,3 +305,34 @@ exports.updateCustomer = async (req, res) => {
     });
   }
 };
+
+// Eliminar cliente
+exports.deleteCustomer = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const customer = await Customer.findById(id);
+
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: 'Cliente no encontrado'
+      });
+    }
+
+    await Customer.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Cliente eliminado exitosamente'
+    });
+
+  } catch (error) {
+    console.error('Error al eliminar cliente:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al eliminar cliente',
+      error: error.message
+    });
+  }
+};

@@ -43,7 +43,7 @@
                     <td>
                       <a [routerLink]="['/clients/show-user', user._id]"><button cButton size="sm" color="info">Ver</button></a>
                       <a [routerLink]="['/clients/edit-user', user._id]"><button cButton size="sm" color="warning" class="ms-2">Editar</button></a>
-                      <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
+                      <button cButton size="sm" color="danger" class="ms-2" (click)="deleteUser(user)">Eliminar</button>
                     </td>
                   </tr>
                 </tbody>
@@ -86,7 +86,7 @@
                     <td>
                       <a [routerLink]="['/clients/show-customer', client.customerNumber]"><button cButton size="sm" color="info">Ver</button></a>
                       <a [routerLink]="['/clients/edit-customer', client.customerNumber]"><button cButton size="sm" color="warning" class="ms-2">Editar</button></a>
-                      <button cButton size="sm" color="danger" class="ms-2">Eliminar</button>
+                      <button cButton size="sm" color="danger" class="ms-2" (click)="deleteClient(client)">Eliminar</button>
                     </td>
                   </tr>
                 </tbody>

@@ -93,4 +93,27 @@ export class ClientsShowUserComponent implements OnInit {
       minute: '2-digit'
     });
   }
+
+  deleteUser() {
+    if (!this.user) return;
+
+    const confirmMessage = `¿Estás seguro de eliminar al usuario "${this.user.nombre}"?\n\nEsta acción no se puede deshacer.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    this.http.delete(`${environment.apiUrl}/users/${this.user._id}`).subscribe({
+      next: (res) => {
+        console.log('Usuario eliminado:', res);
+        alert('Usuario eliminado exitosamente');
+        this.router.navigate(['/clients']);
+      },
+      error: (err) => {
+        console.error('Error eliminando usuario:', err);
+        const message = err?.error?.message || 'Error al eliminar el usuario';
+        alert(message);
+      }
+    });
+  }
 }

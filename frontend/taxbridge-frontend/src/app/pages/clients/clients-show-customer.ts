@@ -102,4 +102,27 @@ export class ClientsShowCustomerComponent implements OnInit {
     };
     return methods[method] || method;
   }
+
+  deleteCustomer() {
+    if (!this.customer) return;
+
+    const confirmMessage = `¿Estás seguro de eliminar al cliente "${this.customer.fullName}" (${this.customer.customerNumber})?\n\nEsta acción eliminará toda la información del cliente incluidas sus compras.\n\nEsta acción no se puede deshacer.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    this.http.delete(`${environment.apiUrl}/customers/${this.customer._id}`).subscribe({
+      next: (res) => {
+        console.log('Cliente eliminado:', res);
+        alert('Cliente eliminado exitosamente');
+        this.router.navigate(['/clients']);
+      },
+      error: (err) => {
+        console.error('Error eliminando cliente:', err);
+        const message = err?.error?.message || 'Error al eliminar el cliente';
+        alert(message);
+      }
+    });
+  }
 }

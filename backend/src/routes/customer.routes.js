@@ -17,4 +17,7 @@ router.get('/:customerNumber', customerController.getCustomerByNumber);
 // Actualizar cliente por ID
 router.put('/:id', customerController.updateCustomer);
 
+// Eliminar cliente por ID
+router.delete('/:id', customerController.deleteCustomer);
+
 module.exports = router;

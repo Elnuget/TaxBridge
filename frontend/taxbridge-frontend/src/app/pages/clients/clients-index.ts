@@ -161,4 +161,50 @@ export class ClientsIndexComponent implements OnInit {
     // solo filtrado por texto (email, nombre, teléfono, etc.)
     this.filteredClients = list;
   }
+
+  deleteUser(user: any) {
+    const confirmMessage = `¿Estás seguro de eliminar al usuario "${user.nombre}"?\n\nEsta acción no se puede deshacer.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    const url = `${environment.apiUrl}/users/${user._id}`;
+    this.http.delete<any>(url).subscribe({
+      next: (res) => {
+        console.log('Usuario eliminado:', res);
+        // Recargar la lista de usuarios
+        this.loadUsers();
+        alert('Usuario eliminado exitosamente');
+      },
+      error: (err) => {
+        console.error('Error eliminando usuario:', err);
+        const message = err?.error?.message || 'Error al eliminar el usuario';
+        alert(message);
+      }
+    });
+  }
+
+  deleteClient(client: any) {
+    const confirmMessage = `¿Estás seguro de eliminar al cliente "${client.fullName}" (${client.customerNumber})?\n\nEsta acción eliminará toda la información del cliente incluidas sus compras.\n\nEsta acción no se puede deshacer.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    const url = `${environment.apiUrl}/customers/${client._id}`;
+    this.http.delete<any>(url).subscribe({
+      next: (res) => {
+        console.log('Cliente eliminado:', res);
+        // Recargar la lista de clientes
+        this.loadClients();
+        alert('Cliente eliminado exitosamente');
+      },
+      error: (err) => {
+        console.error('Error eliminando cliente:', err);
+        const message = err?.error?.message || 'Error al eliminar el cliente';
+        alert(message);
+      }
+    });
+  }
 }
