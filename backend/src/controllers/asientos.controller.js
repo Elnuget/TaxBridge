@@ -53,7 +53,7 @@ exports.simulateForCustomer = async (req, res) => {
     }
 
     const base = randomInRange(120, 1500);
-    const iva = Math.round(base * 0.12 * 100) / 100;
+    const iva = Math.round(base * 0.15 * 100) / 100;
     const total = Math.round((base + iva) * 100) / 100;
 
     const lineas = crearLineasBasicas(base, iva, total);
