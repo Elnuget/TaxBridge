@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Customer = require('../models/Customer');
 
-exports.login = async (req, res) => {
+exports.login = exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -16,6 +16,13 @@ exports.login = async (req, res) => {
       const valid = await user.comparePassword(password);
       if (!valid) {
         return res.status(401).json({ success: false, message: 'Credenciales inválidas' });
+      }
+
+      if (!user.activo) {
+        return res.status(403).json({
+          success: false,
+          message: 'El usuario está inactivo, contacte al administrador'
+        });
       }
 
       const token = jwt.sign(
@@ -64,4 +71,4 @@ exports.login = async (req, res) => {
     console.error('Error en auth.login:', error);
     res.status(500).json({ success: false, message: 'Error interno', error: error.message });
   }
-};
+};;
