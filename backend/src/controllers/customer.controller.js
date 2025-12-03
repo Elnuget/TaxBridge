@@ -2,7 +2,7 @@ const Customer = require('../models/Customer');
 
 // Crear nuevo cliente con compra
 // Crear nuevo cliente
-exports.createCustomer = async (req, res) => {
+exports.createCustomer = exports.createCustomer = async (req, res) => {
   try {
     const {
       fullName,
@@ -12,8 +12,13 @@ exports.createCustomer = async (req, res) => {
       products,
       paymentMethod,
       password,
-      status
+      status,
+      customerNumber: manualCustomerNumber
     } = req.body;
+
+    const providedCustomerNumber = manualCustomerNumber && manualCustomerNumber.trim() !== ''
+      ? manualCustomerNumber.trim()
+      : null;
 
     // Validar datos requeridos básicos
     if (!fullName || !email || !phone || !identification || !paymentMethod) {
@@ -42,8 +47,8 @@ exports.createCustomer = async (req, res) => {
     }
 
     // Verificar si el número de cliente ya existe (si se permite pasar uno manualmente)
-    if (customerNumber) {
-      const existingCustomerNumber = await Customer.findOne({ customerNumber });
+    if (providedCustomerNumber) {
+      const existingCustomerNumber = await Customer.findOne({ customerNumber: providedCustomerNumber });
       if (existingCustomerNumber) {
         return res.status(400).json({
           success: false,
@@ -53,7 +58,7 @@ exports.createCustomer = async (req, res) => {
     }
 
     // Generar número de cliente único
-    const customerNumber = await Customer.generateCustomerNumber();
+    const customerNumber = providedCustomerNumber || await Customer.generateCustomerNumber();
 
     // Manejar contraseña
     let finalPassword = password;
@@ -93,7 +98,7 @@ exports.createCustomer = async (req, res) => {
       purchasedProducts,
       totalPurchases,
       paymentMethod,
-      lastPurchaseDate: lastPurchaseDate || undefined, // Si no hay compra, no poner fecha? O poner fecha de registro? El modelo tiene default Date.now
+      lastPurchaseDate: lastPurchaseDate || undefined,
       isTemporaryPassword: isTemporary,
       status: status || 'active'
     });
@@ -107,7 +112,7 @@ exports.createCustomer = async (req, res) => {
         customerNumber: customer.customerNumber,
         fullName: customer.fullName,
         email: customer.email,
-        temporaryPassword: isTemporary ? finalPassword : null, // Solo devolver si fue generada
+        temporaryPassword: isTemporary ? finalPassword : null,
         totalPurchases: customer.totalPurchases,
         productsCount: customer.purchasedProducts.length,
         isTemporaryPassword: isTemporary
@@ -142,7 +147,7 @@ exports.createCustomer = async (req, res) => {
       error: error.message
     });
   }
-};
+};;
 
 // Obtener cliente por número
 exports.getCustomerByNumber = async (req, res) => {
