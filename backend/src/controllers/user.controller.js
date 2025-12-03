@@ -43,6 +43,16 @@ exports.createUser = async (req, res) => {
       });
     }
 
+    // Verificar si el teléfono ya existe (si se proporciona)
+    if (telefono) {
+      const phoneExists = await User.findOne({ telefono });
+      if (phoneExists) {
+        return res.status(400).json({
+          success: false,
+          message: 'El teléfono ya está registrado'
+        });
+      }
+    }
     // Crear usuario
     const user = await User.create({
       nombre,
@@ -130,6 +140,16 @@ exports.updateUser = async (req, res) => {
         return res.status(400).json({
           success: false,
           message: 'Ya existe otro usuario con este email'
+        });
+      }
+    }
+
+    if (telefono && telefono !== user.telefono) {
+      const existingPhoneUser = await User.findOne({ telefono });
+      if (existingPhoneUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Ya existe otro usuario con este teléfono'
         });
       }
     }

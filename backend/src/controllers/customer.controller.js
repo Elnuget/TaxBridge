@@ -33,8 +33,24 @@ exports.createCustomer = async (req, res) => {
     }
 
     // Verificar si la identificación ya existe (si es que debe ser única)
-    // const existingId = await Customer.findOne({ identification });
-    // if (existingId) { ... }
+    const existingIdentification = await Customer.findOne({ identification });
+    if (existingIdentification) {
+      return res.status(400).json({
+        success: false,
+        message: 'Ya existe una cuenta con esta identificación'
+      });
+    }
+
+    // Verificar si el número de cliente ya existe (si se permite pasar uno manualmente)
+    if (customerNumber) {
+      const existingCustomerNumber = await Customer.findOne({ customerNumber });
+      if (existingCustomerNumber) {
+        return res.status(400).json({
+          success: false,
+          message: 'El número de cliente ya existe'
+        });
+      }
+    }
 
     // Generar número de cliente único
     const customerNumber = await Customer.generateCustomerNumber();
@@ -262,6 +278,26 @@ exports.updateCustomer = async (req, res) => {
         return res.status(400).json({
           success: false,
           message: 'Ya existe otro cliente con este email'
+        });
+      }
+    }
+
+    if (identification && identification !== customer.identification) {
+      const existingIdentification = await Customer.findOne({ identification });
+      if (existingIdentification) {
+        return res.status(400).json({
+          success: false,
+          message: 'Ya existe otro cliente con esta identificación'
+        });
+      }
+    }
+
+    if (phone && phone !== customer.phone) {
+      const existingPhone = await Customer.findOne({ phone });
+      if (existingPhone) {
+        return res.status(400).json({
+          success: false,
+          message: 'Ya existe otro cliente con este teléfono'
         });
       }
     }
