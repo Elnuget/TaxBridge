@@ -19,8 +19,7 @@ import {
   ModalFooterComponent,
   FormDirective,
   FormLabelDirective,
-  FormControlDirective,
-  FormSelectDirective
+  FormControlDirective
 } from '@coreui/angular';
 import { SRICredentialService, SRICredential, CredentialGraph } from '../../services/sri-credential.service';
 
@@ -47,8 +46,7 @@ import { SRICredentialService, SRICredential, CredentialGraph } from '../../serv
     ModalFooterComponent,
     FormDirective,
     FormLabelDirective,
-    FormControlDirective,
-    FormSelectDirective
+    FormControlDirective
   ],
   templateUrl: './sri-credentials-index.html',
   styleUrl: './sri-credentials-index.scss'
