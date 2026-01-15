@@ -65,6 +65,11 @@ const asientosRoutes = require('./routes/asientos.routes');
 app.use('/api/asientos', asientosRoutes);
 // -----------------------------------
 
+// --- RUTA DE CREDENCIALES SRI (CON GRAFOS) ---
+const sriCredentialRoutes = require('./routes/sriCredential.routes');
+app.use('/api/sri-credentials', sriCredentialRoutes);
+// ---------------------------------------------
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

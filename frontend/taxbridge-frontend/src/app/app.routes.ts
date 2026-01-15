@@ -18,6 +18,8 @@ import { ClientsEditCustomerComponent } from './pages/clients/clients-edit-custo
 import { ClientsShowUserComponent } from './pages/clients/clients-show-user';
 import { ClientsShowCustomerComponent } from './pages/clients/clients-show-customer';
 import { AsientosContablesShowComponent } from './pages/asientos-contables/asientos-contables-show';
+import { SRICredentialsIndexComponent } from './pages/sri-credentials/sri-credentials-index';
+import { SRICredentialsGraphComponent } from './pages/sri-credentials/sri-credentials-graph';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -40,6 +42,11 @@ export const routes: Routes = [
   { path: 'clients/edit-customer/:customerNumber', component: ClientsEditCustomerComponent, canActivate: [authGuard] },
   { path: 'clients/show-user/:id', component: ClientsShowUserComponent, canActivate: [authGuard] },
   { path: 'clients/show-customer/:customerNumber', component: ClientsShowCustomerComponent, canActivate: [authGuard] },
+  // === CREDENCIALES SRI (CON GRAFOS) ===
+  { path: 'sri-credentials', component: SRICredentialsIndexComponent, canActivate: [authGuard] },
+  { path: 'sri-credentials/graph', component: SRICredentialsGraphComponent, canActivate: [authGuard] },
+  { path: 'sri-credentials/:id/graph', component: SRICredentialsGraphComponent, canActivate: [authGuard] },
+  // =====================================
   { path: 'reports', component: DashboardComponent }, // Placeholder
   { path: 'settings', component: DashboardComponent }, // Placeholder
   { path: 'help', component: DashboardComponent }, // Placeholder
