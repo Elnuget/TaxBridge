@@ -68,6 +68,7 @@ export class AuthService {
             if (typeof window !== 'undefined') {
               // Remove any admin user data left in localStorage
               localStorage.removeItem('taxbridge_user');
+              localStorage.removeItem('taxbridge_token');
             }
             this.setSession(response.data);
             this.router.navigate(['/customer-dashboard']);
@@ -79,10 +80,22 @@ export class AuthService {
             // Remove any customer session leftover
             if (typeof window !== 'undefined') {
               localStorage.removeItem('taxbridge_session');
+              localStorage.removeItem('customerNumber');
+              localStorage.removeItem('customerEmail');
+              localStorage.removeItem('customerName');
             }
             this.isLoggedIn.set(true);
             this.currentUser.set(response.data || null);
-            this.router.navigate(['/admin-dashboard']);
+            
+            // Redirigir según el rol del usuario
+            const userRole = response.data?.rol;
+            if (userRole === 'contador') {
+              this.router.navigate(['/contador-dashboard']);
+            } else if (userRole === 'admin') {
+              this.router.navigate(['/admin-dashboard']);
+            } else {
+              this.router.navigate(['/dashboard']);
+            }
           }
         }
       })

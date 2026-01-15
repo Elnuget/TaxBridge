@@ -8,6 +8,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { browserHttpInterceptor } from './interceptors/browser-http.interceptor';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideNoopAnimations(), 
     provideHttpClient(
       withFetch(),
-      withInterceptors([browserHttpInterceptor])
+      withInterceptors([browserHttpInterceptor, authInterceptor])
     )
   ]
 };

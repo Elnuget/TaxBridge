@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const sriCredentialController = require('../controllers/sriCredential.controller');
+const authMiddleware = require('../middleware/auth');
 
 /**
  * ================================================
@@ -36,7 +37,7 @@ router.post('/', sriCredentialController.createSRICredential);
 
 // Obtener todas las credenciales (filtradas según rol del usuario)
 // GET /api/sri-credentials
-router.get('/', sriCredentialController.getAllCredentials);
+router.get('/', authMiddleware, sriCredentialController.getAllCredentials);
 
 // Obtener credencial por ID
 // GET /api/sri-credentials/:id
@@ -63,10 +64,10 @@ router.delete('/:id', sriCredentialController.deleteCredential);
 // Retorna: nodos (credencial, cliente, contador) y aristas (relaciones)
 router.get('/:id/graph', sriCredentialController.getCredentialGraph);
 
-// Obtener grafo completo del sistema (solo admin)
+// Obtener grafo completo del sistema (requiere autenticación)
 // GET /api/sri-credentials/admin/full-graph
-// Retorna: Jerarquía completa Admin → Contadores → Clientes → Credenciales
-router.get('/admin/full-graph', sriCredentialController.getFullCredentialsGraph);
+// Retorna: Jerarquía completa filtrada según rol: Admin → Contadores → Clientes → Credenciales
+router.get('/admin/full-graph', authMiddleware, sriCredentialController.getFullCredentialsGraph);
 
 // Obtener credenciales asignadas a un contador específico
 // GET /api/sri-credentials/contador/:contadorId

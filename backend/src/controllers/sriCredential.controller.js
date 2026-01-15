@@ -160,13 +160,14 @@ exports.getAllCredentials = async (req, res) => {
     // Usar la función de grafo para obtener credenciales accesibles
     let credentials;
     
-    if (userRole === 'admin') {
-      // Admin ve todas
+    if (userRole === 'admin' || userRole === 'contador') {
+      // Admin y contadores ven TODAS las credenciales
       credentials = await SRICredential.find()
         .populate('customer', 'customerNumber fullName email')
         .populate('assignedContador', 'nombre email')
         .select('-sriPassword -accessLog');
     } else {
+      // Clientes solo ven sus propias credenciales
       credentials = await SRICredential.getAccessibleCredentials(userId, userRole);
     }
 
@@ -462,47 +463,123 @@ exports.getCredentialGraph = async (req, res) => {
 };
 
 /**
- * Obtener el grafo completo de todas las credenciales (para admin)
- * Muestra la jerarquía: Admin → Contadores → Clientes → Credenciales
+ * Obtener el grafo filtrado según el rol del usuario
+ * - ADMIN: Ve todo el sistema (Admin → Contadores → Clientes → Credenciales)
+ * - CONTADOR: Ve solo sus clientes asignados y sus credenciales
+ * - CLIENTE: Ve solo sus propias credenciales y su contador
  */
 exports.getFullCredentialsGraph = async (req, res) => {
   try {
-    const userRole = req.user?.rol || 'admin'; // Modo desarrollo: asumir admin
+    const userId = req.user?._id;
+    const userRole = req.user?.rol;
     
-    // TODO: Habilitar verificación en producción
-    // if (userRole !== 'admin') {
-    //   return res.status(403).json({
-    //     success: false,
-    //     message: 'Solo los administradores pueden ver el grafo completo'
-    //   });
-    // }
+    // Validar que el usuario esté autenticado
+    if (!userId || !userRole) {
+      return res.status(401).json({
+        success: false,
+        message: 'Usuario no autenticado. Por favor inicie sesión.'
+      });
+    }
+    
+    console.log(`[GRAFO] Usuario: ${userId}, Rol: ${userRole}`);
 
-    // Obtener todos los datos necesarios
-    const [credentials, contadores, customers] = await Promise.all([
-      SRICredential.find({ status: 'active' })
+    let credentials = [];
+    let contadores = [];
+    let customers = [];
+
+    // ==========================================
+    // FILTRADO SEGÚN ROL DEL USUARIO
+    // ==========================================
+
+    if (userRole === 'admin') {
+      // ADMIN: Ver todo el sistema
+      [credentials, contadores, customers] = await Promise.all([
+        SRICredential.find({ status: 'active' })
+          .populate('customer', 'customerNumber fullName')
+          .populate('assignedContador', 'nombre email'),
+        User.find({ rol: 'contador', activo: true }).select('nombre email'),
+        Customer.find({ status: 'active' }).select('customerNumber fullName')
+      ]);
+
+    } else if (userRole === 'contador') {
+      // CONTADOR: Solo sus clientes asignados
+      credentials = await SRICredential.find({ 
+        status: 'active',
+        assignedContador: userId 
+      })
         .populate('customer', 'customerNumber fullName')
-        .populate('assignedContador', 'nombre email'),
-      User.find({ rol: 'contador', activo: true }).select('nombre email'),
-      Customer.find({ status: 'active' }).select('customerNumber fullName')
-    ]);
+        .populate('assignedContador', 'nombre email');
 
-    // Construir estructura del grafo completo
+      // Solo este contador
+      contadores = await User.find({ 
+        _id: userId, 
+        rol: 'contador' 
+      }).select('nombre email');
+
+      // Solo clientes con credenciales asignadas a este contador
+      const customerIds = [...new Set(credentials.map(c => c.customer?._id).filter(Boolean))];
+      customers = await Customer.find({ 
+        _id: { $in: customerIds },
+        status: 'active' 
+      }).select('customerNumber fullName');
+
+    } else if (userRole === 'cliente') {
+      // CLIENTE: Solo sus propias credenciales
+      // Primero encontrar el Customer asociado a este usuario
+      const customer = await Customer.findOne({ email: req.user?.email });
+      
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message: 'Cliente no encontrado'
+        });
+      }
+
+      credentials = await SRICredential.find({ 
+        status: 'active',
+        customer: customer._id 
+      })
+        .populate('customer', 'customerNumber fullName')
+        .populate('assignedContador', 'nombre email');
+
+      // Solo el cliente actual
+      customers = [customer];
+
+      // Solo el contador asignado a este cliente
+      if (credentials.length > 0 && credentials[0].assignedContador) {
+        contadores = await User.find({ 
+          _id: credentials[0].assignedContador._id,
+          rol: 'contador' 
+        }).select('nombre email');
+      }
+
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: 'Rol de usuario no autorizado'
+      });
+    }
+
+    // ==========================================
+    // CONSTRUCCIÓN DEL GRAFO
+    // ==========================================
     const graph = {
       nodes: [],
       edges: [],
-      hierarchy: {} // Nueva estructura para organizar la jerarquía
+      hierarchy: {}
     };
 
-    // Nodo raíz: Admin
-    graph.nodes.push({
-      id: 'admin-root',
-      type: 'admin',
-      label: 'Administración TaxBridge',
-      level: 0,
-      depth: 0
-    });
-
-    graph.hierarchy['admin-root'] = { children: [] };
+    // Solo mostrar nodo Admin si el usuario ES admin
+    if (userRole === 'admin') {
+      graph.nodes.push({
+        id: 'admin-root',
+        type: 'admin',
+        label: 'Administración TaxBridge',
+        level: 0,
+        depth: 0
+      });
+      graph.hierarchy['admin-root'] = { children: [] };
+    }
 
     // Agregar contadores (nivel 1)
     contadores.forEach(contador => {
@@ -512,20 +589,24 @@ exports.getFullCredentialsGraph = async (req, res) => {
         type: 'contador',
         label: contador.nombre,
         email: contador.email,
-        level: 1,
-        depth: 1,
+        level: userRole === 'admin' ? 1 : 0, // Si no es admin, contador es nivel 0
+        depth: userRole === 'admin' ? 1 : 0,
         mongoId: contador._id.toString()
       });
       
-      graph.edges.push({
-        from: 'admin-root',
-        to: contadorId,
-        relationship: 'MANAGES',
-        label: 'gestiona'
-      });
-
-      graph.hierarchy[contadorId] = { children: [], parent: 'admin-root' };
-      graph.hierarchy['admin-root'].children.push(contadorId);
+      // Solo agregar arista Admin → Contador si es admin
+      if (userRole === 'admin') {
+        graph.edges.push({
+          from: 'admin-root',
+          to: contadorId,
+          relationship: 'MANAGES',
+          label: 'gestiona'
+        });
+        graph.hierarchy[contadorId] = { children: [], parent: 'admin-root' };
+        graph.hierarchy['admin-root'].children.push(contadorId);
+      } else {
+        graph.hierarchy[contadorId] = { children: [] };
+      }
     });
 
     // Mapear clientes por contador
@@ -541,7 +622,11 @@ exports.getFullCredentialsGraph = async (req, res) => {
       }
     });
 
-    // Agregar clientes (nivel 2) agrupados por contador
+    // Calcular niveles según el rol
+    const nivelCliente = userRole === 'admin' ? 2 : (userRole === 'contador' ? 1 : 0);
+    const nivelCredencial = userRole === 'admin' ? 3 : (userRole === 'contador' ? 2 : 1);
+
+    // Agregar clientes (nivel 2 para admin, 1 para contador, 0 para cliente)
     const clientesAgregados = new Set();
     
     Object.entries(clientesPorContador).forEach(([contadorId, clienteIds]) => {
@@ -549,7 +634,7 @@ exports.getFullCredentialsGraph = async (req, res) => {
       
       // Asegurar que el nodo contador existe en hierarchy
       if (!graph.hierarchy[contadorNodeId]) {
-        graph.hierarchy[contadorNodeId] = { children: [], parent: 'admin-root' };
+        graph.hierarchy[contadorNodeId] = { children: [] };
       }
       
       clienteIds.forEach(clienteId => {
@@ -569,25 +654,27 @@ exports.getFullCredentialsGraph = async (req, res) => {
           type: 'customer',
           label: cred.customerName,
           customerNumber: cred.customerNumber,
-          level: 2,
-          depth: 2,
+          level: nivelCliente,
+          depth: nivelCliente,
           parentContador: contadorNodeId
         });
         
-        // Arista: Contador → Cliente
-        graph.edges.push({
-          from: contadorNodeId,
-          to: customerNodeId,
-          relationship: 'ASSIGNED_TO',
-          label: 'atiende a'
-        });
+        // Solo agregar arista Contador → Cliente si hay contadores visibles
+        if (contadores.length > 0) {
+          graph.edges.push({
+            from: contadorNodeId,
+            to: customerNodeId,
+            relationship: 'ASSIGNED_TO',
+            label: 'atiende a'
+          });
+        }
 
         graph.hierarchy[customerNodeId] = { children: [], parent: contadorNodeId };
         graph.hierarchy[contadorNodeId].children.push(customerNodeId);
       });
     });
 
-    // Agregar credenciales (nivel 3) agrupadas por cliente
+    // Agregar credenciales (nivel 3 para admin, 2 para contador, 1 para cliente)
     credentials.forEach(cred => {
       const customerNodeId = `customer-${cred.customer?._id?.toString() || cred.customerNumber}`;
       const credentialNodeId = `credential-${cred._id}`;
@@ -600,8 +687,8 @@ exports.getFullCredentialsGraph = async (req, res) => {
         credentialId: cred.credentialId,
         status: cred.status,
         tipoContribuyente: cred.tipoContribuyente,
-        level: 3,
-        depth: 3,
+        level: nivelCredencial,
+        depth: nivelCredencial,
         parentCustomer: customerNodeId
       });
       
@@ -637,6 +724,8 @@ exports.getFullCredentialsGraph = async (req, res) => {
     res.json({
       success: true,
       data: graph,
+      userRole: userRole, // Enviar el rol al frontend
+      viewType: userRole === 'admin' ? 'full' : (userRole === 'contador' ? 'contador' : 'cliente'),
       stats: {
         totalNodes: graph.nodes.length,
         totalEdges: graph.edges.length,

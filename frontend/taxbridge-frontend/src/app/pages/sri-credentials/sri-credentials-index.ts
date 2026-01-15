@@ -106,12 +106,15 @@ export class SRICredentialsIndexComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
+    // Admin y contadores cargan TODAS las credenciales
+    // Clientes cargan solo las suyas
     this.sriService.getAllCredentials().subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.credentials = res.data;
           this.filteredCredentials = [...this.credentials];
           this.calculateKPIs();
+          console.log(`✅ Credenciales cargadas: ${this.credentials.length}`);
         } else {
           this.credentials = [];
           this.filteredCredentials = [];
@@ -120,7 +123,7 @@ export class SRICredentialsIndexComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Error al cargar credenciales:', err);
+        console.error('❌ Error al cargar credenciales:', err);
         this.error = 'Error al cargar las credenciales del SRI';
         this.loading = false;
         this.cdr.detectChanges();

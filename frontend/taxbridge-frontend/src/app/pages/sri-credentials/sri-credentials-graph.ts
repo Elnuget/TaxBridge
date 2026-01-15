@@ -66,6 +66,12 @@ export class SRICredentialsGraphComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  // Información del tipo de vista según el rol
+  userRole: string = '';
+  viewType: string = '';
+  viewTitle: string = '';
+  viewDescription: string = '';
+
   // Estadísticas del grafo
   stats = {
     totalNodes: 0,
@@ -100,6 +106,14 @@ export class SRICredentialsGraphComponent implements OnInit {
       next: (res) => {
         if (res.success && res.data) {
           this.graph = res.data;
+          
+          // Capturar información del rol y tipo de vista
+          this.userRole = (res as any).userRole || 'admin';
+          this.viewType = (res as any).viewType || 'full';
+          
+          // Establecer título y descripción según el rol
+          this.setViewInfo();
+          
           this.processGraph();
           this.calculateStats();
         }
@@ -156,6 +170,26 @@ export class SRICredentialsGraphComponent implements OnInit {
     this.stats.clientes = this.graph.nodes.filter(n => n.type === 'customer').length;
     this.stats.credenciales = this.graph.nodes.filter(n => n.type === 'credential').length;
     this.stats.delegaciones = this.graph.edges.filter(e => e.relationship === 'DELEGATED_TO').length;
+  }
+
+  setViewInfo() {
+    switch (this.viewType) {
+      case 'full':
+        this.viewTitle = 'Grafo Completo del Sistema';
+        this.viewDescription = 'Vista completa: Admin → Contadores → Clientes → Credenciales';
+        break;
+      case 'contador':
+        this.viewTitle = 'Mis Clientes y Credenciales';
+        this.viewDescription = 'Vista de contador: Tus clientes asignados y sus credenciales SRI';
+        break;
+      case 'cliente':
+        this.viewTitle = 'Mis Credenciales SRI';
+        this.viewDescription = 'Vista de cliente: Tus credenciales y contador asignado';
+        break;
+      default:
+        this.viewTitle = 'Grafo de Credenciales SRI';
+        this.viewDescription = 'Visualización jerárquica del sistema';
+    }
   }
 
   createHierarchyGroups() {

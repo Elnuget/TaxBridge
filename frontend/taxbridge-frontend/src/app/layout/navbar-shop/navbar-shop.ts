@@ -44,12 +44,37 @@ export class NavbarShopComponent {
     }
   });
 
+  isContador = computed(() => {
+    if (!isPlatformBrowser(this.platformId)) return false;
+    try {
+      if (!this.isLoggedIn()) return false;
+      const raw = localStorage.getItem('taxbridge_user');
+      if (!raw) return false;
+      const user = JSON.parse(raw);
+      return user && (user.rol === 'contador' || user.rol === 'Contador');
+    } catch (e) {
+      return false;
+    }
+  });
+
   // Link dinámico del dashboard según rol
-  dashboardLink = computed(() => this.isAdmin() ? '/admin-dashboard' : '/customer-dashboard');
+  dashboardLink = computed(() => {
+    if (this.isAdmin()) return '/admin-dashboard';
+    if (this.isContador()) return '/contador-dashboard';
+    return '/customer-dashboard';
+  });
 
   // Estilos dinámicos para el botón
-  dashboardButtonColor = computed(() => this.isAdmin() ? 'primary' : 'success');
-  dashboardButtonVariant = computed(() => this.isAdmin() ? 'filled' : 'outline');
+  dashboardButtonColor = computed(() => {
+    if (this.isAdmin()) return 'primary';
+    if (this.isContador()) return 'warning';
+    return 'success';
+  });
+  dashboardButtonVariant = computed(() => {
+    if (this.isAdmin()) return 'filled';
+    if (this.isContador()) return 'filled';
+    return 'outline';
+  });
 
   constructor(
     private cartService: CartService,
