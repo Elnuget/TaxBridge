@@ -171,7 +171,19 @@ export class SRICredentialsIndexComponent implements OnInit {
 
   closeCreateModal() {
     this.showCreateModal = false;
+    this.errorMessage = null;
     this.resetNewCredential();
+    // Recargar página para limpiar cualquier estado bloqueado
+    window.location.reload();
+  }
+
+  onCreateModalVisibleChange(visible: boolean) {
+    if (!visible) {
+      this.showCreateModal = false;
+      this.errorMessage = null;
+      this.resetNewCredential();
+      window.location.reload();
+    }
   }
 
   // Modal de detalle
@@ -183,6 +195,16 @@ export class SRICredentialsIndexComponent implements OnInit {
   closeDetailModal() {
     this.showDetailModal = false;
     this.selectedCredential = null;
+    // Recargar página para limpiar cualquier estado bloqueado
+    window.location.reload();
+  }
+
+  onDetailModalVisibleChange(visible: boolean) {
+    if (!visible) {
+      this.showDetailModal = false;
+      this.selectedCredential = null;
+      window.location.reload();
+    }
   }
 
   // Modal de edición
@@ -204,6 +226,17 @@ export class SRICredentialsIndexComponent implements OnInit {
     this.showEditModal = false;
     this.editCredential = null;
     this.editErrorMessage = null;
+    // Recargar página para limpiar cualquier estado bloqueado
+    window.location.reload();
+  }
+
+  onEditModalVisibleChange(visible: boolean) {
+    if (!visible) {
+      this.showEditModal = false;
+      this.editCredential = null;
+      this.editErrorMessage = null;
+      window.location.reload();
+    }
   }
 
   updateCredential() {
