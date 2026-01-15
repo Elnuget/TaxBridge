@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { 
   ContainerComponent,
   RowComponent,
@@ -70,6 +71,20 @@ export class SRICredentialsIndexComponent implements OnInit {
     notes: ''
   };
   creating = false;
+  errorMessage: string | null = null;
+
+  // Modal de detalle
+  showDetailModal = false;
+  selectedCredential: SRICredential | null = null;
+
+  // Modal de edición
+  showEditModal = false;
+  editCredential: any = null;
+  updating = false;
+  editErrorMessage: string | null = null;
+
+  // Estado de eliminación
+  deleting: { [key: string]: boolean } = {};
 
   // KPIs
   kpis = {
@@ -80,6 +95,7 @@ export class SRICredentialsIndexComponent implements OnInit {
   };
 
   private sriService = inject(SRICredentialService);
+  private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
@@ -145,11 +161,85 @@ export class SRICredentialsIndexComponent implements OnInit {
   openCreateModal() {
     this.showCreateModal = true;
     this.resetNewCredential();
+    // Obtener el número de cliente del usuario logueado
+    const user = this.authService.user();
+    if (user && user.customerNumber) {
+      this.newCredential.customerNumber = user.customerNumber;
+    }
+    this.errorMessage = null;
   }
 
   closeCreateModal() {
     this.showCreateModal = false;
     this.resetNewCredential();
+  }
+
+  // Modal de detalle
+  openDetailModal(credential: SRICredential) {
+    this.selectedCredential = credential;
+    this.showDetailModal = true;
+  }
+
+  closeDetailModal() {
+    this.showDetailModal = false;
+    this.selectedCredential = null;
+  }
+
+  // Modal de edición
+  openEditModal(credential: SRICredential) {
+    this.editCredential = {
+      _id: credential._id,
+      sriUsername: credential.sriUsername,
+      ruc: credential.ruc,
+      tipoContribuyente: credential.tipoContribuyente,
+      razonSocial: credential.razonSocial || '',
+      notes: credential.notes || '',
+      status: credential.status
+    };
+    this.showEditModal = true;
+    this.editErrorMessage = null;
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+    this.editCredential = null;
+    this.editErrorMessage = null;
+  }
+
+  updateCredential() {
+    if (!this.editCredential || !this.editCredential._id) {
+      return;
+    }
+
+    this.updating = true;
+    this.editErrorMessage = null;
+
+    this.sriService.updateCredential(this.editCredential._id, this.editCredential).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.closeEditModal();
+          this.loadCredentials();
+        } else {
+          this.editErrorMessage = res.message || 'Error al actualizar la credencial';
+        }
+        this.updating = false;
+      },
+      error: (err) => {
+        console.error('Error al actualizar credencial:', err);
+        
+        if (err.error && err.error.message) {
+          this.editErrorMessage = err.error.message;
+        } else if (err.status === 404) {
+          this.editErrorMessage = 'Credencial no encontrada.';
+        } else if (err.status === 400) {
+          this.editErrorMessage = 'Datos inválidos. Verifica la información.';
+        } else {
+          this.editErrorMessage = 'Error al actualizar la credencial.';
+        }
+        
+        this.updating = false;
+      }
+    });
   }
 
   resetNewCredential() {
@@ -167,38 +257,77 @@ export class SRICredentialsIndexComponent implements OnInit {
   createCredential() {
     if (!this.newCredential.customerNumber || !this.newCredential.sriUsername || 
         !this.newCredential.sriPassword || !this.newCredential.ruc) {
+      this.errorMessage = 'Por favor complete todos los campos requeridos';
       return;
     }
 
     this.creating = true;
+    this.errorMessage = null;
+    
     this.sriService.createCredential(this.newCredential).subscribe({
       next: (res) => {
         if (res.success) {
           this.closeCreateModal();
           this.loadCredentials();
+        } else {
+          this.errorMessage = res.message || 'Error al crear la credencial';
         }
         this.creating = false;
       },
       error: (err) => {
         console.error('Error al crear credencial:', err);
+        
+        // Mostrar mensaje de error amigable al usuario
+        if (err.error && err.error.message) {
+          this.errorMessage = err.error.message;
+        } else if (err.status === 404) {
+          this.errorMessage = 'Cliente no encontrado. Verifica tu número de cliente.';
+        } else if (err.status === 400) {
+          this.errorMessage = 'Ya existe una credencial para este RUC o datos inválidos.';
+        } else if (err.status === 0) {
+          this.errorMessage = 'No se puede conectar con el servidor. Verifica que el backend esté corriendo.';
+        } else {
+          this.errorMessage = 'Error al crear la credencial. Intenta de nuevo.';
+        }
+        
         this.creating = false;
       }
     });
   }
 
-  deleteCredential(id: string) {
-    if (!confirm('¿Está seguro de eliminar esta credencial?')) {
+  deleteCredential(id: string, credentialId: string) {
+    const confirmMessage = `¿Está seguro de eliminar la credencial ${credentialId}?\n\nEsta acción no se puede deshacer y eliminará permanentemente:\n- La credencial del SRI\n- Historial de accesos\n- Delegaciones asociadas`;
+    
+    if (!confirm(confirmMessage)) {
       return;
     }
+
+    this.deleting[id] = true;
 
     this.sriService.deleteCredential(id).subscribe({
       next: (res) => {
         if (res.success) {
+          alert('Credencial eliminada exitosamente');
           this.loadCredentials();
+        } else {
+          alert('Error al eliminar: ' + (res.message || 'Error desconocido'));
         }
+        delete this.deleting[id];
       },
       error: (err) => {
         console.error('Error al eliminar credencial:', err);
+        
+        let errorMsg = 'Error al eliminar la credencial.';
+        if (err.error && err.error.message) {
+          errorMsg = err.error.message;
+        } else if (err.status === 404) {
+          errorMsg = 'Credencial no encontrada.';
+        } else if (err.status === 403) {
+          errorMsg = 'No tiene permisos para eliminar esta credencial.';
+        }
+        
+        alert(errorMsg);
+        delete this.deleting[id];
       }
     });
   }

@@ -1,76 +1,217 @@
 <div class="customer-dashboard">
-  <c-container>
-    <c-row>
+  <c-container fluid>
+    <!-- Header -->
+    <c-row class="mb-4">
       <c-col>
-        <c-card>
-          <c-card-header>
-            <h1>¡Bienvenido Cliente!</h1>
-          </c-card-header>
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+          <div>
+            <h1 class="mb-1">
+              <i class="cil-user me-2"></i>
+              Mi Panel de Cliente
+            </h1>
+            <p class="text-muted mb-0" *ngIf="user">
+              <strong>{{ user.fullName || user.nombre }}</strong> | 
+              Número: <code>{{ user.customerNumber }}</code>
+            </p>
+          </div>
+        </div>
+      </c-col>
+    </c-row>
+
+    <!-- Tarjetas de Acceso Rápido -->
+    <c-row class="mb-4">
+      <c-col sm="6" lg="3">
+        <c-card class="h-100 border-start border-primary border-start-4 card-hover" style="cursor: pointer;" (click)="goToAsientos()">
           <c-card-body>
-            <p>Panel de cliente de TaxBridge</p>
-            <p *ngIf="user">Número de cliente: {{ user.customerNumber }}</p>
-            <p *ngIf="user">Nombre: {{ user.fullName || user.nombre }}</p>
-            <p *ngIf="user">Email: {{ user.email }}</p>
-            <div class="cta-actions mt-4">
-              <button
-                cButton
-                color="primary"
-                size="lg"
-                class="cta-button"
-                (click)="goToAsientos()"
-                [disabled]="!hasValidCustomer || isGenerating"
-              >
-                <i class="cil-calculator me-2"></i>
-                {{ isGenerating ? 'Generando asiento...' : 'Generar Asientos Contables' }}
-              </button>
-              <p class="text-muted mt-2" *ngIf="!hasValidCustomer">
-                Completa tu perfil para habilitar la generación de asientos.
-              </p>
-              <p class="text-info mt-2" *ngIf="isGenerating">
-                Calculando asiento simulado en base a tu última compra...
-              </p>
-              <p class="text-danger mt-2" *ngIf="generationError">
-                {{ generationError }}
-              </p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-body-secondary text-uppercase fw-semibold small">Asientos</div>
+                <div class="fs-5 fw-semibold">Generar Nuevo</div>
+              </div>
+              <div class="text-primary">
+                <i class="cil-calculator" style="font-size: 2rem;"></i>
+              </div>
+            </div>
+          </c-card-body>
+        </c-card>
+      </c-col>
+      <c-col sm="6" lg="3">
+        <c-card class="h-100 border-start border-success border-start-4 card-hover" [routerLink]="['/sri-credentials']" style="cursor: pointer;">
+          <c-card-body>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-body-secondary text-uppercase fw-semibold small">Credenciales SRI</div>
+                <div class="fs-5 fw-semibold">Mis Credenciales</div>
+              </div>
+              <div class="text-success">
+                <i class="cil-lock-locked" style="font-size: 2rem;"></i>
+              </div>
+            </div>
+          </c-card-body>
+        </c-card>
+      </c-col>
+      <c-col sm="6" lg="3">
+        <c-card class="h-100 border-start border-warning border-start-4 card-hover" [routerLink]="['/asientos-contables']" style="cursor: pointer;">
+          <c-card-body>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-body-secondary text-uppercase fw-semibold small">Historial</div>
+                <div class="fs-5 fw-semibold">Ver Asientos</div>
+              </div>
+              <div class="text-warning">
+                <i class="cil-history" style="font-size: 2rem;"></i>
+              </div>
+            </div>
+          </c-card-body>
+        </c-card>
+      </c-col>
+      <c-col sm="6" lg="3">
+        <c-card class="h-100 border-start border-info border-start-4 card-hover" [routerLink]="['/contacto']" style="cursor: pointer;">
+          <c-card-body>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-body-secondary text-uppercase fw-semibold small">Soporte</div>
+                <div class="fs-5 fw-semibold">Contactar</div>
+              </div>
+              <div class="text-info">
+                <i class="cil-envelope-closed" style="font-size: 2rem;"></i>
+              </div>
             </div>
           </c-card-body>
         </c-card>
       </c-col>
     </c-row>
 
-    <c-row class="mt-4" *ngIf="hasValidCustomer">
+    <!-- Información del Cliente -->
+    <c-row class="mb-4">
+      <c-col lg="6">
+        <c-card class="h-100">
+          <c-card-header>
+            <i class="cil-user me-2"></i>
+            <strong>Mi Información</strong>
+          </c-card-header>
+          <c-card-body>
+            <div class="info-grid" *ngIf="user">
+              <div class="info-item">
+                <span class="info-label">Número de Cliente</span>
+                <span class="info-value"><code>{{ user.customerNumber }}</code></span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Nombre</span>
+                <span class="info-value">{{ user.fullName || user.nombre }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ user.email }}</span>
+              </div>
+              <div class="info-item" *ngIf="user.phone">
+                <span class="info-label">Teléfono</span>
+                <span class="info-value">{{ user.phone }}</span>
+              </div>
+            </div>
+          </c-card-body>
+        </c-card>
+      </c-col>
+      <c-col lg="6">
+        <c-card class="h-100">
+          <c-card-header>
+            <i class="cil-lock-locked me-2"></i>
+            <strong>Credenciales SRI</strong>
+          </c-card-header>
+          <c-card-body>
+            <p class="text-muted">Gestiona tus credenciales del Servicio de Rentas Internas para la generación automática de declaraciones.</p>
+            <div class="d-flex flex-wrap gap-2">
+              <button cButton color="success" [routerLink]="['/sri-credentials']">
+                <i class="cil-lock-locked me-1"></i> Ver Mis Credenciales
+              </button>
+              <button cButton color="outline-primary" [routerLink]="['/sri-credentials']" fragment="create">
+                <i class="cil-plus me-1"></i> Añadir Credencial
+              </button>
+            </div>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+
+    <!-- Acción Principal de Asientos -->
+    <c-row class="mb-4" *ngIf="hasValidCustomer">
+      <c-col>
+        <c-card class="bg-gradient-primary text-white">
+          <c-card-body class="py-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+              <div>
+                <h4 class="mb-1">Generar Asiento Contable</h4>
+                <p class="mb-0 opacity-75">Crea un nuevo asiento basado en tus compras y transacciones.</p>
+              </div>
+              <button 
+                cButton 
+                color="light" 
+                size="lg"
+                (click)="goToAsientos()"
+                [disabled]="isGenerating">
+                <c-spinner *ngIf="isGenerating" size="sm" class="me-2"></c-spinner>
+                <i *ngIf="!isGenerating" class="cil-calculator me-2"></i>
+                {{ isGenerating ? 'Generando...' : 'Generar Asiento' }}
+              </button>
+            </div>
+            <p class="text-danger mt-2 mb-0" *ngIf="generationError">
+              <i class="cil-warning me-1"></i>{{ generationError }}
+            </p>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+
+    <!-- Alerta si no tiene customer válido -->
+    <c-row class="mb-4" *ngIf="!hasValidCustomer">
+      <c-col>
+        <div class="alert alert-warning d-flex align-items-center">
+          <i class="cil-warning me-3" style="font-size: 1.5rem;"></i>
+          <div>
+            <strong>Perfil incompleto</strong>
+            <p class="mb-0">Completa tu perfil para habilitar todas las funcionalidades del panel.</p>
+          </div>
+        </div>
+      </c-col>
+    </c-row>
+
+    <!-- Historial de Asientos -->
+    <c-row *ngIf="hasValidCustomer">
       <c-col>
         <c-card>
           <c-card-header>
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-              <h2 class="mb-0">Historial de asientos contables</h2>
-              <small class="text-muted">Solo se muestran las últimas 5 simulaciones</small>
+              <div>
+                <i class="cil-history me-2"></i>
+                <strong>Historial de Asientos Contables</strong>
+              </div>
+              <small class="text-muted">Últimos 5 registros</small>
             </div>
           </c-card-header>
           <c-card-body>
             <ng-container *ngIf="asientos.length; else emptyHistory">
               <div class="table-responsive">
-                <table cTable class="table table-hover align-middle">
+                <table cTable hover class="align-middle">
                   <thead>
                     <tr>
                       <th>ID</th>
                       <th>Fecha</th>
                       <th>Total</th>
-                      <th>Huella</th>
+                      <th>Huella Digital</th>
                       <th class="text-end">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let asiento of asientos; trackBy: trackByAsiento">
-                      <td>{{ asiento.id || asiento._id }}</td>
+                      <td><code>{{ asiento.id || asiento._id }}</code></td>
                       <td>{{ asiento.fecha | date:'short' }}</td>
-                      <td>{{ asiento.totalDebe | currency:'USD':'symbol':'1.2-2' }}</td>
+                      <td class="fw-semibold text-success">{{ asiento.totalDebe | currency:'USD':'symbol':'1.2-2' }}</td>
                       <td>
-                        <code>{{ asiento.hashResumen }}</code>
+                        <code class="text-muted small">{{ asiento.hashResumen }}</code>
                       </td>
                       <td class="text-end">
                         <button cButton color="primary" size="sm" (click)="viewAsiento(asiento)">
-                          Ver detalle
+                          <i class="cil-magnifying-glass me-1"></i> Ver
                         </button>
                       </td>
                     </tr>
@@ -79,7 +220,10 @@
               </div>
             </ng-container>
             <ng-template #emptyHistory>
-              <p class="text-muted mb-0">Aún no generas asientos contables. Usa el botón superior para crear el primero.</p>
+              <div class="text-center py-4">
+                <i class="cil-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                <p class="text-muted mt-2 mb-0">Aún no tienes asientos contables. ¡Genera el primero!</p>
+              </div>
             </ng-template>
           </c-card-body>
         </c-card>

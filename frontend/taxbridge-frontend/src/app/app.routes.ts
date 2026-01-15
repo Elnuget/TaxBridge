@@ -3,6 +3,7 @@ import { WelcomeComponent } from './pages/welcome/welcome';
 import { DashboardComponent } from './pages/dashboard/dashboard';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard';
 import { CustomerDashboardComponent } from './pages/customer-dashboard/customer-dashboard';
+import { ContadorDashboardComponent } from './pages/contador-dashboard/contador-dashboard';
 import { AuthComponent } from './auth/auth/auth';
 import { LoginComponent } from './auth/login/login';
 import { CheckoutComponent } from './pages/checkout/checkout';
@@ -32,6 +33,7 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [authGuard] },
   { path: 'customer-dashboard', component: CustomerDashboardComponent, canActivate: [authGuard] },
+  { path: 'contador-dashboard', component: ContadorDashboardComponent, canActivate: [authGuard] },
   { path: 'asientos-contables', component: AsientosContablesShowComponent, canActivate: [authGuard] },
   { path: 'asientos-contables/show', component: AsientosContablesShowComponent, canActivate: [authGuard] },
   { path: 'taxes', component: DashboardComponent }, // Placeholder

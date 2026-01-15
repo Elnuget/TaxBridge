@@ -1,0 +1,57 @@
+.sidebar {
+  background-color: #1a1a2e;
+  min-height: 100vh;
+  width: 260px;
+  color: #fff;
+  
+  .sidebar-section {
+    margin-top: 0.5rem;
+    
+    small {
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+    }
+  }
+  
+  .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin: 0.1rem 0.5rem;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    
+    i {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      text-decoration: none;
+    }
+    
+    &.active {
+      background-color: #4361ee;
+      color: #fff;
+      font-weight: 500;
+      
+      &:hover {
+        background-color: #3a56d4;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+}

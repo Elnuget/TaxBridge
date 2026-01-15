@@ -1,51 +1,68 @@
 <div class="sidebar d-flex flex-column p-3">
   <nav class="nav flex-column">
-    <!-- Dashboard -->
+    <!-- Dashboard Principal -->
+    <div class="sidebar-section">
+      <small class="text-muted text-uppercase px-3 mb-2 d-block">Principal</small>
+    </div>
     <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
-      <i class="fas fa-tachometer-alt me-2"></i>
+      <i class="cil-speedometer me-2"></i>
       Dashboard
     </a>
-
-    <!-- Gestión Tributaria -->
-    <a class="nav-link" routerLink="/taxes" routerLinkActive="active">
-      <i class="fas fa-calculator me-2"></i>
-      Gestión Tributaria
+    <a class="nav-link" routerLink="/admin-dashboard" routerLinkActive="active">
+      <i class="cil-shield-alt me-2"></i>
+      Admin Dashboard
+    </a>
+    <a class="nav-link" routerLink="/contador-dashboard" routerLinkActive="active">
+      <i class="cil-calculator me-2"></i>
+      Contador Dashboard
+    </a>
+    <a class="nav-link" routerLink="/customer-dashboard" routerLinkActive="active">
+      <i class="cil-user me-2"></i>
+      Cliente Dashboard
     </a>
 
-    <!-- Declaraciones -->
-    <a class="nav-link" routerLink="/taxes/declarations" routerLinkActive="active">
-      <i class="fas fa-file-alt me-2"></i>
-      Declaraciones
-    </a>
-
-    <!-- Pagos -->
-    <a class="nav-link" routerLink="/taxes/payments" routerLinkActive="active">
-      <i class="fas fa-credit-card me-2"></i>
-      Pagos
-    </a>
-
-    <!-- Clientes -->
+    <!-- Gestión -->
+    <div class="sidebar-section mt-3">
+      <small class="text-muted text-uppercase px-3 mb-2 d-block">Gestión</small>
+    </div>
     <a class="nav-link" routerLink="/clients" routerLinkActive="active">
-      <i class="fas fa-users me-2"></i>
-      Clientes
+      <i class="cil-people me-2"></i>
+      Clientes y Usuarios
+    </a>
+    <a class="nav-link" routerLink="/sri-credentials" routerLinkActive="active">
+      <i class="cil-lock-locked me-2"></i>
+      Credenciales SRI
+    </a>
+    <a class="nav-link" routerLink="/sri-credentials/graph" routerLinkActive="active">
+      <i class="cil-graph me-2"></i>
+      Grafo de Credenciales
+    </a>
+    <a class="nav-link" routerLink="/asientos-contables" routerLinkActive="active">
+      <i class="cil-notes me-2"></i>
+      Asientos Contables
     </a>
 
     <!-- Reportes -->
+    <div class="sidebar-section mt-3">
+      <small class="text-muted text-uppercase px-3 mb-2 d-block">Reportes</small>
+    </div>
     <a class="nav-link" routerLink="/reports" routerLinkActive="active">
-      <i class="fas fa-chart-pie me-2"></i>
+      <i class="cil-chart-pie me-2"></i>
       Reportes
     </a>
 
-    <!-- Configuración -->
+    <!-- Sistema -->
+    <div class="sidebar-section mt-3">
+      <small class="text-muted text-uppercase px-3 mb-2 d-block">Sistema</small>
+    </div>
     <a class="nav-link" routerLink="/settings" routerLinkActive="active">
-      <i class="fas fa-cog me-2"></i>
+      <i class="cil-settings me-2"></i>
       Configuración
     </a>
-
-    <!-- Ayuda -->
     <a class="nav-link" routerLink="/help" routerLinkActive="active">
-      <i class="fas fa-info-circle me-2"></i>
+      <i class="cil-info me-2"></i>
       Ayuda
     </a>
   </nav>
 </div>
+

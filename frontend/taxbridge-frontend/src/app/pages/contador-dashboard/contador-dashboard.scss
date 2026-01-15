@@ -1,4 +1,4 @@
-.admin-dashboard {
+.contador-dashboard {
   padding: 2rem 0;
 
   h1 {
@@ -24,6 +24,10 @@
 
   .border-start-4 {
     border-left-width: 4px !important;
+  }
+
+  .font-monospace {
+    font-family: 'Roboto Mono', monospace;
   }
 
   // Quick Links

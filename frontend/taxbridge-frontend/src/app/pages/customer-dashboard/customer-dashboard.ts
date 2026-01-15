@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import {
   ContainerComponent,
@@ -10,7 +10,8 @@ import {
   CardBodyComponent,
   CardHeaderComponent,
   ButtonDirective,
-  TableDirective
+  TableDirective,
+  SpinnerComponent
 } from '@coreui/angular';
 import { AuthService } from '../../services/auth';
 import { AsientosService, AsientoContable } from '../../services/asientos.service';
@@ -20,6 +21,7 @@ import { AsientosService, AsientoContable } from '../../services/asientos.servic
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     ContainerComponent,
     RowComponent,
     ColComponent,
@@ -27,7 +29,8 @@ import { AsientosService, AsientoContable } from '../../services/asientos.servic
     CardBodyComponent,
     CardHeaderComponent,
     ButtonDirective,
-    TableDirective
+    TableDirective,
+    SpinnerComponent
   ],
   templateUrl: './customer-dashboard.html',
   styleUrl: './customer-dashboard.scss'
