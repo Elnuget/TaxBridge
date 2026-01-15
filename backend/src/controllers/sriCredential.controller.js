@@ -489,81 +489,145 @@ exports.getFullCredentialsGraph = async (req, res) => {
     // Construir estructura del grafo completo
     const graph = {
       nodes: [],
-      edges: []
+      edges: [],
+      hierarchy: {} // Nueva estructura para organizar la jerarquía
     };
 
     // Nodo raíz: Admin
     graph.nodes.push({
       id: 'admin-root',
       type: 'admin',
-      label: 'Administración',
-      level: 0
+      label: 'Administración TaxBridge',
+      level: 0,
+      depth: 0
     });
+
+    graph.hierarchy['admin-root'] = { children: [] };
 
     // Agregar contadores (nivel 1)
     contadores.forEach(contador => {
+      const contadorId = `contador-${contador._id}`;
       graph.nodes.push({
-        id: `contador-${contador._id}`,
+        id: contadorId,
         type: 'contador',
         label: contador.nombre,
         email: contador.email,
-        level: 1
+        level: 1,
+        depth: 1,
+        mongoId: contador._id.toString()
       });
       
       graph.edges.push({
         from: 'admin-root',
-        to: `contador-${contador._id}`,
-        relationship: 'MANAGES'
+        to: contadorId,
+        relationship: 'MANAGES',
+        label: 'gestiona'
       });
+
+      graph.hierarchy[contadorId] = { children: [], parent: 'admin-root' };
+      graph.hierarchy['admin-root'].children.push(contadorId);
     });
 
-    // Agregar clientes y sus credenciales (niveles 2-3)
+    // Mapear clientes por contador
+    const clientesPorContador = {};
+    
     credentials.forEach(cred => {
-      // Nodo del cliente
-      const customerNodeId = `customer-${cred.customer?._id || cred.customerNumber}`;
+      if (cred.assignedContador) {
+        const contadorId = cred.assignedContador._id?.toString() || cred.assignedContador.toString();
+        if (!clientesPorContador[contadorId]) {
+          clientesPorContador[contadorId] = new Set();
+        }
+        clientesPorContador[contadorId].add(cred.customer?._id?.toString() || cred.customerNumber);
+      }
+    });
+
+    // Agregar clientes (nivel 2) agrupados por contador
+    const clientesAgregados = new Set();
+    
+    Object.entries(clientesPorContador).forEach(([contadorId, clienteIds]) => {
+      const contadorNodeId = `contador-${contadorId}`;
       
-      if (!graph.nodes.find(n => n.id === customerNodeId)) {
+      // Asegurar que el nodo contador existe en hierarchy
+      if (!graph.hierarchy[contadorNodeId]) {
+        graph.hierarchy[contadorNodeId] = { children: [], parent: 'admin-root' };
+      }
+      
+      clienteIds.forEach(clienteId => {
+        if (clientesAgregados.has(clienteId)) return;
+        
+        const cred = credentials.find(c => 
+          (c.customer?._id?.toString() || c.customerNumber) === clienteId
+        );
+        
+        if (!cred) return;
+        
+        const customerNodeId = `customer-${clienteId}`;
+        clientesAgregados.add(clienteId);
+        
         graph.nodes.push({
           id: customerNodeId,
           type: 'customer',
           label: cred.customerName,
           customerNumber: cred.customerNumber,
-          level: 2
+          level: 2,
+          depth: 2,
+          parentContador: contadorNodeId
         });
-      }
+        
+        // Arista: Contador → Cliente
+        graph.edges.push({
+          from: contadorNodeId,
+          to: customerNodeId,
+          relationship: 'ASSIGNED_TO',
+          label: 'atiende a'
+        });
 
-      // Nodo de la credencial
+        graph.hierarchy[customerNodeId] = { children: [], parent: contadorNodeId };
+        graph.hierarchy[contadorNodeId].children.push(customerNodeId);
+      });
+    });
+
+    // Agregar credenciales (nivel 3) agrupadas por cliente
+    credentials.forEach(cred => {
+      const customerNodeId = `customer-${cred.customer?._id?.toString() || cred.customerNumber}`;
+      const credentialNodeId = `credential-${cred._id}`;
+      
       graph.nodes.push({
-        id: `credential-${cred._id}`,
+        id: credentialNodeId,
         type: 'credential',
-        label: `SRI: ${cred.ruc}`,
+        label: cred.razonSocial || `Credencial ${cred.ruc}`,
+        subtitle: cred.ruc,
         credentialId: cred.credentialId,
         status: cred.status,
-        level: 3
+        tipoContribuyente: cred.tipoContribuyente,
+        level: 3,
+        depth: 3,
+        parentCustomer: customerNodeId
       });
-
-      // Arista: Contador → Cliente (si tiene contador asignado)
-      if (cred.assignedContador) {
-        graph.edges.push({
-          from: `contador-${cred.assignedContador._id || cred.assignedContador}`,
-          to: customerNodeId,
-          relationship: 'ASSIGNED_TO'
-        });
-      }
-
+      
       // Arista: Cliente → Credencial
       graph.edges.push({
         from: customerNodeId,
-        to: `credential-${cred._id}`,
-        relationship: 'OWNS'
+        to: credentialNodeId,
+        relationship: 'OWNS',
+        label: 'posee'
       });
 
+      // Asegurar que el nodo customer existe en hierarchy antes de agregar children
+      if (!graph.hierarchy[customerNodeId]) {
+        graph.hierarchy[customerNodeId] = { children: [] };
+      }
+      
+      graph.hierarchy[credentialNodeId] = { parent: customerNodeId };
+      graph.hierarchy[customerNodeId].children.push(credentialNodeId);
+      
       // Aristas de delegaciones
       cred.delegations?.filter(d => d.isActive).forEach(del => {
         graph.edges.push({
-          from: `credential-${cred._id}`,
+          from: credentialNodeId,
           to: `contador-${del.delegatedTo}`,
           relationship: 'DELEGATED_TO',
+          label: 'delegado a',
           dashed: true,
           expiresAt: del.expiresAt
         });
@@ -577,6 +641,7 @@ exports.getFullCredentialsGraph = async (req, res) => {
         totalNodes: graph.nodes.length,
         totalEdges: graph.edges.length,
         contadores: contadores.length,
+        clientes: clientesAgregados.size,
         credentials: credentials.length
       }
     });

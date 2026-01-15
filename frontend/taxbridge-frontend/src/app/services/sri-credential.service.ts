@@ -101,18 +101,25 @@ export interface GraphNode {
   type: 'admin' | 'contador' | 'customer' | 'credential';
   label: string;
   level: number;
+  depth?: number;
   // Propiedades adicionales según el tipo
   email?: string;
   customerNumber?: string;
   credentialId?: string;
+  subtitle?: string;
   status?: string;
   ruc?: string;
+  mongoId?: string;
+  tipoContribuyente?: string;
+  parentContador?: string;
+  parentCustomer?: string;
 }
 
 export interface GraphEdge {
   from: string;
   to: string;
   relationship: 'MANAGES' | 'ASSIGNED_TO' | 'OWNS' | 'DELEGATED_TO';
+  label?: string;
   dashed?: boolean;
   expiresAt?: Date;
 }
@@ -120,6 +127,7 @@ export interface GraphEdge {
 export interface CredentialGraph {
   nodes: GraphNode[];
   edges: GraphEdge[];
+  hierarchy?: { [key: string]: any };
 }
 
 export interface SingleCredentialGraph {

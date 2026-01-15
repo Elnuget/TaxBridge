@@ -79,8 +79,11 @@ export class SRICredentialsGraphComponent implements OnInit {
   // Nodos organizados por nivel para visualización
   nodesByLevel: { [level: number]: GraphNode[] } = {};
 
+  // Agrupación jerárquica (contador -> clientes -> credenciales)
+  hierarchyGroups: { [contadorId: string]: { contador: GraphNode; clientes: { cliente: GraphNode; credenciales: GraphNode[] }[] } } = {};
+
   // Conexiones para dibujar líneas
-  connections: { from: GraphNode; to: GraphNode; type: string; dashed: boolean }[] = [];
+  connections: { from: GraphNode; to: GraphNode; type: string; label: string; dashed: boolean }[] = [];
 
   private sriService = inject(SRICredentialService);
   private cdr = inject(ChangeDetectorRef);
@@ -124,17 +127,24 @@ export class SRICredentialsGraphComponent implements OnInit {
       this.nodesByLevel[node.level].push(node);
     });
 
-    // Procesar conexiones
+    // Crear agrupación jerárquica
+    this.createHierarchyGroups();
+
+    // Procesar conexiones con información de relación
     this.connections = this.graph.edges.map(edge => {
       const fromNode = this.graph!.nodes.find(n => n.id === edge.from);
       const toNode = this.graph!.nodes.find(n => n.id === edge.to);
+      
+      if (!fromNode || !toNode) return null;
+      
       return {
-        from: fromNode!,
-        to: toNode!,
+        from: fromNode,
+        to: toNode,
         type: edge.relationship,
+        label: edge.label || this.getRelationshipLabel(edge.relationship),
         dashed: edge.dashed || false
       };
-    }).filter(c => c.from && c.to);
+    }).filter(c => c !== null) as { from: GraphNode; to: GraphNode; type: string; label: string; dashed: boolean }[];
   }
 
   calculateStats() {
@@ -146,6 +156,45 @@ export class SRICredentialsGraphComponent implements OnInit {
     this.stats.clientes = this.graph.nodes.filter(n => n.type === 'customer').length;
     this.stats.credenciales = this.graph.nodes.filter(n => n.type === 'credential').length;
     this.stats.delegaciones = this.graph.edges.filter(e => e.relationship === 'DELEGATED_TO').length;
+  }
+
+  createHierarchyGroups() {
+    if (!this.graph) return;
+
+    this.hierarchyGroups = {};
+
+    // Obtener contadores (nivel 1)
+    const contadores = this.graph.nodes.filter(n => n.type === 'contador');
+
+    contadores.forEach(contador => {
+      this.hierarchyGroups[contador.id] = {
+        contador,
+        clientes: []
+      };
+
+      // Encontrar clientes de este contador
+      const clientesDeContador = this.graph!.nodes.filter(n => 
+        n.type === 'customer' && 
+        this.graph!.edges.some(e => e.from === contador.id && e.to === n.id)
+      );
+
+      clientesDeContador.forEach(cliente => {
+        // Encontrar credenciales de este cliente
+        const credencialesDeCliente = this.graph!.nodes.filter(n =>
+          n.type === 'credential' &&
+          this.graph!.edges.some(e => e.from === cliente.id && e.to === n.id)
+        );
+
+        this.hierarchyGroups[contador.id].clientes.push({
+          cliente,
+          credenciales: credencialesDeCliente
+        });
+      });
+    });
+  }
+
+  getHierarchyGroupKeys(): string[] {
+    return Object.keys(this.hierarchyGroups);
   }
 
   getNodeClass(type: string): string {

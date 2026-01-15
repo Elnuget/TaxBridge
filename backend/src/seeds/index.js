@@ -4,12 +4,14 @@ require('dotenv').config();
 // Importar todas las semillas
 const { clearTestimonials, seedTestimonials } = require('./testimonials.seed');
 const { clearUsers, seedUsers } = require('./users.seed');
+const { clearSRIData, seedSRICredentials } = require('./sriCredentials.seed');
 
 // Función para limpiar toda la base de datos
 async function clearDatabase() {
   try {
     console.log('\n🗑️  Limpiando base de datos...\n');
     
+    await clearSRIData();
     await clearTestimonials();
     await clearUsers();
     
@@ -27,6 +29,7 @@ async function runAllSeeds() {
     
     await seedUsers();
     await seedTestimonials();
+    await seedSRICredentials();
     
     console.log('✅ Todas las semillas ejecutadas\n');
   } catch (error) {
