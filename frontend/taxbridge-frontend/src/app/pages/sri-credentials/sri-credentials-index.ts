@@ -94,6 +94,28 @@ export class SRICredentialsIndexComponent implements OnInit {
     expiring: 0
   };
 
+  // Obtener el rol del usuario para controles de visualización
+  get userRole(): string {
+    const user = this.authService.user();
+    // Si es un cliente (tiene customerNumber), retornar 'cliente'
+    if (user?.customerNumber) {
+      return 'cliente';
+    }
+    // Si tiene rol explícito (admin, contador), usarlo
+    if (user?.rol) {
+      return user.rol;
+    }
+    return 'guest';
+  }
+
+  get isCliente(): boolean {
+    return this.userRole === 'cliente';
+  }
+
+  get isAdmin(): boolean {
+    return this.userRole === 'admin';
+  }
+
   private sriService = inject(SRICredentialService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);

@@ -64,12 +64,15 @@ export class AuthService {
     }).pipe(
       tap(response => {
         if (response.success && response.data) {
-          // Si es customer, mantener la compatibilidad; si es user guardar token
+          // Si es customer, guardar token y datos del cliente
           if (response.type === 'customer') {
             if (typeof window !== 'undefined') {
+              // Guardar token para autenticación
+              if (response.token) {
+                localStorage.setItem('taxbridge_token', response.token);
+              }
               // Remove any admin user data left in localStorage
               localStorage.removeItem('taxbridge_user');
-              localStorage.removeItem('taxbridge_token');
             }
             this.setSession(response.data);
             this.router.navigate(['/customer-dashboard']);
@@ -118,10 +121,14 @@ export class AuthService {
 
   logout() {
     if (isPlatformBrowser(this.platformId)) {
+      // Eliminar datos de cliente
       localStorage.removeItem('customerNumber');
       localStorage.removeItem('customerEmail');
       localStorage.removeItem('customerName');
       localStorage.removeItem('temporaryPassword');
+      // Eliminar token de autenticación
+      localStorage.removeItem('taxbridge_token');
+      localStorage.removeItem('taxbridge_user');
     }
     
     this.isLoggedIn.set(false);

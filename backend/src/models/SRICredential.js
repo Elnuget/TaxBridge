@@ -264,12 +264,13 @@ sriCredentialSchema.statics.generateCredentialId = async function() {
  * FUNCIÓN DE GRAFO: Obtener todas las credenciales accesibles por un usuario
  * Implementa la traversía del grafo según los permisos del usuario
  * 
- * @param {ObjectId} userId - ID del usuario
+ * @param {ObjectId} userId - ID del usuario o customerNumber
  * @param {String} userRole - Rol del usuario (admin, contador, cliente)
+ * @param {String} customerNumber - Número de cliente (opcional, para clientes)
  * @returns {Array} Credenciales accesibles
  */
-sriCredentialSchema.statics.getAccessibleCredentials = async function(userId, userRole) {
-  const query = { status: 'active' };
+sriCredentialSchema.statics.getAccessibleCredentials = async function(userId, userRole, customerNumber = null) {
+  const query = {};
   
   switch (userRole) {
     case 'admin':
@@ -289,14 +290,18 @@ sriCredentialSchema.statics.getAccessibleCredentials = async function(userId, us
       break;
     
     case 'cliente':
-      // Cliente solo ve sus propias credenciales
-      // Necesitamos buscar el customer asociado al usuario
-      const Customer = mongoose.model('Customer');
-      const customer = await Customer.findOne({ /* buscar por email o relación */ });
-      if (customer) {
-        query.customer = customer._id;
+      // Cliente solo ve sus propias credenciales usando customerNumber
+      if (customerNumber) {
+        query.customerNumber = customerNumber;
       } else {
-        return []; // No tiene credenciales
+        // Intentar buscar por customer ID si es un ObjectId
+        const Customer = mongoose.model('Customer');
+        const customer = await Customer.findById(userId);
+        if (customer) {
+          query.customerNumber = customer.customerNumber;
+        } else {
+          return []; // No tiene credenciales
+        }
       }
       break;
     

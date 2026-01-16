@@ -156,6 +156,13 @@ exports.getAllCredentials = async (req, res) => {
     // El usuario y su rol vienen del middleware de autenticación
     const userId = req.user?._id;
     const userRole = req.user?.rol || 'cliente';
+    const customerNumber = req.user?.customerNumber; // Para clientes
+
+    console.log('📋 Obteniendo credenciales para:', { 
+      userId, 
+      userRole, 
+      customerNumber 
+    });
 
     // Usar la función de grafo para obtener credenciales accesibles
     let credentials;
@@ -167,9 +174,15 @@ exports.getAllCredentials = async (req, res) => {
         .populate('assignedContador', 'nombre email')
         .select('-sriPassword -accessLog');
     } else {
-      // Clientes solo ven sus propias credenciales
-      credentials = await SRICredential.getAccessibleCredentials(userId, userRole);
+      // Clientes solo ven sus propias credenciales usando customerNumber
+      credentials = await SRICredential.getAccessibleCredentials(
+        userId, 
+        userRole, 
+        customerNumber
+      );
     }
+
+    console.log(`✅ Credenciales encontradas: ${credentials.length}`);
 
     res.json({
       success: true,
