@@ -1,13 +1,180 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
+  <!-- ============================================ -->
+  <!-- METADATOS BÁSICOS ESENCIALES -->
+  <!-- ============================================ -->
+  
+  <!-- Codificación de caracteres - Debe ser lo primero para procesar correctamente el contenido -->
   <meta charset="utf-8">
-  <title>TaxbridgeFrontend</title>
+  
+  <!-- Título de la página - Aparece en la pestaña del navegador y resultados de búsqueda (50-60 caracteres ideal) -->
+  <title>TaxBridge | Servicios Contables y Tributarios en Ecuador</title>
+  
+  <!-- Ruta base para el enrutamiento de Angular -->
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Viewport - Hace que el sitio sea responsive en dispositivos móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <!-- ============================================ -->
+  <!-- METADATOS SEO PRINCIPALES -->
+  <!-- ============================================ -->
+  
+  <!-- Descripción de la página - Aparece en resultados de búsqueda (150-160 caracteres ideal) -->
+  <meta name="description" content="TaxBridge ofrece servicios profesionales de contabilidad, declaración de impuestos, gestión tributaria SRI y asesoría fiscal en Ecuador. Soluciones contables para personas naturales y empresas.">
+  
+  <!-- Palabras clave - Ayudan a los motores de búsqueda a entender el contenido -->
+  <meta name="keywords" content="contabilidad Ecuador, declaración impuestos, servicios tributarios, SRI Ecuador, contador online, asesoría fiscal, TaxBridge, contabilidad empresarial, persona natural, RISE">
+  
+  <!-- Autor del sitio web -->
+  <meta name="author" content="TaxBridge Ecuador">
+  
+  <!-- Robots - Instrucciones para los motores de búsqueda -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  
+  <!-- ============================================ -->
+  <!-- METADATOS OPEN GRAPH (Redes Sociales) -->
+  <!-- ============================================ -->
+  
+  <!-- Open Graph - Controla cómo se ve el sitio cuando se comparte en Facebook, LinkedIn, etc. -->
+  <meta property="og:title" content="TaxBridge | Servicios Contables y Tributarios en Ecuador">
+  <meta property="og:description" content="Servicios profesionales de contabilidad, declaración de impuestos y gestión tributaria SRI en Ecuador. Soluciones para personas y empresas.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.taxbridge.ec">
+  <meta property="og:image" content="https://www.taxbridge.ec/assets/images/og-image.jpg">
+  <meta property="og:image:alt" content="TaxBridge - Servicios Contables Ecuador">
+  <meta property="og:site_name" content="TaxBridge">
+  <meta property="og:locale" content="es_EC">
+  
+  <!-- ============================================ -->
+  <!-- METADATOS TWITTER CARD -->
+  <!-- ============================================ -->
+  
+  <!-- Twitter Card - Controla cómo se ve el sitio cuando se comparte en Twitter/X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TaxBridge | Servicios Contables y Tributarios en Ecuador">
+  <meta name="twitter:description" content="Servicios profesionales de contabilidad, declaración de impuestos y gestión tributaria SRI en Ecuador.">
+  <meta name="twitter:image" content="https://www.taxbridge.ec/assets/images/twitter-card.jpg">
+  <meta name="twitter:image:alt" content="TaxBridge - Servicios Contables Ecuador">
+  <!-- <meta name="twitter:site" content="@TaxBridgeEC"> -->
+  <!-- <meta name="twitter:creator" content="@TaxBridgeEC"> -->
+  
+  <!-- ============================================ -->
+  <!-- METADATOS DE LOCALIZACIÓN -->
+  <!-- ============================================ -->
+  
+  <!-- Idioma y región del contenido -->
+  <meta http-equiv="content-language" content="es-EC">
+  <link rel="alternate" hreflang="es-ec" href="https://www.taxbridge.ec">
+  
+  <!-- Información geográfica para búsquedas locales -->
+  <meta name="geo.region" content="EC">
+  <meta name="geo.placename" content="Ecuador">
+  
+  <!-- ============================================ -->
+  <!-- METADATOS TÉCNICOS Y SEGURIDAD -->
+  <!-- ============================================ -->
+  
+  <!-- Compatibilidad con Internet Explorer -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <!-- Tema de color para navegadores móviles (barra de dirección) -->
+  <meta name="theme-color" content="#1e40af">
+  <meta name="msapplication-navbutton-color" content="#1e40af">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#1e40af">
+  
+  <!-- Configuración para Progressive Web App (PWA) -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="TaxBridge">
+  
+  <!-- Formato de número de teléfono para iOS -->
+  <meta name="format-detection" content="telephone=yes">
+  
+  <!-- Cache control - Define cómo los navegadores deben cachear la página -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- ============================================ -->
+  <!-- ICONOS Y FAVICONS -->
+  <!-- ============================================ -->
+  
+  <!-- Favicon estándar -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- Favicon SVG (mejor calidad, escalable) -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Apple Touch Icon (cuando se agrega a pantalla de inicio en iOS) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  
+  <!-- Iconos para diferentes dispositivos -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  
+  <!-- Manifest para PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+  
+  <!-- ============================================ -->
+  <!-- ENLACES CANÓNICOS Y ALTERNATIVOS -->
+  <!-- ============================================ -->
+  
+  <!-- Canonical URL - Evita contenido duplicado en SEO -->
+  <link rel="canonical" href="https://www.taxbridge.ec">
+  
+  <!-- ============================================ -->
+  <!-- PRECONNECT Y PRELOAD (Optimización de rendimiento) -->
+  <!-- ============================================ -->
+  
+  <!-- Preconnect - Establece conexión anticipada con dominios externos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- DNS Prefetch - Resuelve DNS de dominios externos antes de usarlos -->
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
+  
+  <!-- ============================================ -->
+  <!-- SCHEMA.ORG - Datos estructurados para búsquedas enriquecidas -->
+  <!-- ============================================ -->
+  
+  <!-- Schema.org JSON-LD - Ayuda a Google a entender mejor tu negocio -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "TaxBridge",
+    "description": "Servicios profesionales de contabilidad y tributación en Ecuador",
+    "url": "https://www.taxbridge.ec",
+    "logo": "https://www.taxbridge.ec/assets/images/logo.png",
+    "image": "https://www.taxbridge.ec/assets/images/og-image.jpg",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "EC",
+      "addressLocality": "Ecuador"
+    },
+    "areaServed": "EC",
+    "serviceType": ["Contabilidad", "Servicios Tributarios", "Asesoría Fiscal", "Declaración de Impuestos"],
+    "knowsAbout": ["Contabilidad", "Impuestos", "SRI Ecuador", "Tributación"],
+    "telephone": "+593-XX-XXX-XXXX",
+    "email": "info@taxbridge.ec"
+  }
+  </script>
+  
 </head>
 <body>
+  <!-- Aplicación Angular -->
   <app-root></app-root>
+  
+  <!-- Noscript - Mensaje si JavaScript está deshabilitado -->
+  <noscript>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h1>⚠️ JavaScript Requerido</h1>
+      <p>Esta aplicación requiere JavaScript para funcionar correctamente.</p>
+      <p>Por favor, habilita JavaScript en tu navegador.</p>
+    </div>
+  </noscript>
 </body>
 </html>
