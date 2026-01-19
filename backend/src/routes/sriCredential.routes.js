@@ -41,11 +41,11 @@ router.get('/', authMiddleware, sriCredentialController.getAllCredentials);
 
 // Obtener credencial por ID
 // GET /api/sri-credentials/:id
-router.get('/:id', sriCredentialController.getCredentialById);
+router.get('/:id', authMiddleware, sriCredentialController.getCredentialById);
 
 // Obtener credencial por número de cliente
 // GET /api/sri-credentials/customer/:customerNumber
-router.get('/customer/:customerNumber', sriCredentialController.getCredentialByCustomer);
+router.get('/customer/:customerNumber', authMiddleware, sriCredentialController.getCredentialByCustomer);
 
 // Actualizar credencial
 // PUT /api/sri-credentials/:id

@@ -27,7 +27,7 @@ exports.login = exports.login = exports.login = async (req, res) => {
 
       const token = jwt.sign(
         { id: user._id, email: user.email, rol: user.rol },
-        process.env.JWT_SECRET || 'changeme',
+        process.env.JWT_SECRET || 'dev_secret_key_change_in_production',
         { expiresIn: '7d' }
       );
 
@@ -56,7 +56,7 @@ exports.login = exports.login = exports.login = async (req, res) => {
 
       const token = jwt.sign(
         { id: customer._id, email: customer.email, rol: 'cliente', customerNumber: customer.customerNumber },
-        process.env.JWT_SECRET || 'changeme',
+        process.env.JWT_SECRET || 'dev_secret_key_change_in_production',
         { expiresIn: '7d' }
       );
 
