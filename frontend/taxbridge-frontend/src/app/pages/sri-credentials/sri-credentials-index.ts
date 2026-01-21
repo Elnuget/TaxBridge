@@ -86,6 +86,9 @@ export class SRICredentialsIndexComponent implements OnInit {
   // Estado de eliminación
   deleting: { [key: string]: boolean } = {};
 
+  // Estado de tomar credencial
+  taking: { [key: string]: boolean } = {};
+
   // KPIs
   kpis = {
     total: 0,
@@ -116,11 +119,19 @@ export class SRICredentialsIndexComponent implements OnInit {
     return this.userRole === 'admin';
   }
 
+  get isContador(): boolean {
+    return this.userRole === 'contador';
+  }
+
   private sriService = inject(SRICredentialService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
+    // Debug: verificar rol del usuario
+    console.log('🔍 Usuario actual:', this.authService.user());
+    console.log('🔍 Rol detectado:', this.userRole);
+    console.log('🔍 isContador:', this.isContador);
     this.loadCredentials();
   }
 
@@ -136,6 +147,12 @@ export class SRICredentialsIndexComponent implements OnInit {
           this.credentials = res.data;
           this.filteredCredentials = [...this.credentials];
           this.calculateKPIs();
+          // Debug: verificar datos de credenciales
+          console.log('🔍 Credenciales cargadas:', this.credentials.map(c => ({
+            id: c.credentialId,
+            assignedContador: c.assignedContador,
+            assignedContadorName: c.assignedContadorName
+          })));;
           console.log(`✅ Credenciales cargadas: ${this.credentials.length}`);
         } else {
           this.credentials = [];
@@ -417,5 +434,48 @@ export class SRICredentialsIndexComponent implements OnInit {
       case 'rise': return 'RISE';
       default: return tipo;
     }
+  }
+
+  /**
+   * Tomar una credencial sin contador asignado
+   * Solo disponible para contadores
+   */
+  takeCredential(id: string, credentialId: string) {
+    const confirmMessage = `¿Desea tomar la credencial ${credentialId}?\n\nSe le asignará como contador responsable de esta credencial.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    this.taking[id] = true;
+
+    this.sriService.takeCredential(id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          alert('Credencial asignada exitosamente. Ahora eres el contador responsable.');
+          this.loadCredentials();
+        } else {
+          alert('Error: ' + (res.message || 'No se pudo tomar la credencial'));
+        }
+        delete this.taking[id];
+      },
+      error: (err) => {
+        console.error('Error al tomar credencial:', err);
+        
+        let errorMsg = 'Error al tomar la credencial.';
+        if (err.error && err.error.message) {
+          errorMsg = err.error.message;
+        } else if (err.status === 400) {
+          errorMsg = 'Esta credencial ya tiene un contador asignado.';
+        } else if (err.status === 403) {
+          errorMsg = 'Solo los contadores pueden tomar credenciales.';
+        } else if (err.status === 404) {
+          errorMsg = 'Credencial no encontrada.';
+        }
+        
+        alert(errorMsg);
+        delete this.taking[id];
+      }
+    });
   }
 }

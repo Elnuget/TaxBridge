@@ -43,6 +43,24 @@ export class AuthService {
   }
 
   private checkStoredSession() {
+    // Primero verificar si hay sesión de usuario (admin/contador)
+    const storedUser = localStorage.getItem('taxbridge_user');
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        if (userData && userData.email) {
+          this.isLoggedIn.set(true);
+          this.currentUser.set(userData);
+          console.log('✅ Sesión de usuario restaurada:', userData.rol);
+          return;
+        }
+      } catch (e) {
+        console.error('Error parsing stored user:', e);
+        localStorage.removeItem('taxbridge_user');
+      }
+    }
+
+    // Si no hay sesión de usuario, verificar sesión de cliente
     const customerNumber = localStorage.getItem('customerNumber');
     const customerEmail = localStorage.getItem('customerEmail');
     const customerName = localStorage.getItem('customerName');
@@ -54,6 +72,7 @@ export class AuthService {
         email: customerEmail,
         fullName: customerName || 'Cliente'
       });
+      console.log('✅ Sesión de cliente restaurada:', customerNumber);
     }
   }
 

@@ -217,6 +217,14 @@ export class SRICredentialService {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
   }
 
+  /**
+   * Tomar credencial (contador se asigna a sí mismo)
+   * Solo funciona si la credencial no tiene contador asignado
+   */
+  takeCredential(id: string): Observable<ApiResponse<SRICredential>> {
+    return this.http.post<ApiResponse<SRICredential>>(`${this.apiUrl}/${id}/take`, {});
+  }
+
   // ==========================================
   // OPERACIONES DEL GRAFO
   // ==========================================

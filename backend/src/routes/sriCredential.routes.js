@@ -74,6 +74,14 @@ router.get('/admin/full-graph', authMiddleware, sriCredentialController.getFullC
 router.get('/contador/:contadorId', sriCredentialController.getCredentialsByContador);
 
 // ========================
+// RUTA PARA TOMAR CREDENCIAL
+// ========================
+
+// Tomar credencial (contador se asigna a sí mismo)
+// POST /api/sri-credentials/:id/take
+router.post('/:id/take', authMiddleware, sriCredentialController.takeCredential);
+
+// ========================
 // RUTAS DE DELEGACIÓN
 // ========================
 

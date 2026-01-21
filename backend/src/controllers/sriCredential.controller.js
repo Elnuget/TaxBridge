@@ -943,3 +943,98 @@ exports.getCredentialsByContador = async (req, res) => {
     });
   }
 };
+
+// =====================================
+// TOMAR CREDENCIAL (ASIGNAR CONTADOR)
+// =====================================
+/**
+ * Permite a un contador tomar una credencial sin contador asignado
+ * El contador se asigna a sí mismo como responsable de la credencial
+ */
+exports.takeCredential = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?._id;
+    const userRole = req.user?.rol;
+
+    // Verificar que el usuario es un contador
+    if (userRole !== 'contador') {
+      return res.status(403).json({
+        success: false,
+        message: 'Solo los contadores pueden tomar credenciales'
+      });
+    }
+
+    // Buscar el usuario completo para obtener el nombre
+    const contador = await User.findById(userId);
+    if (!contador) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario contador no encontrado'
+      });
+    }
+
+    const userName = contador.nombre || contador.email || 'Contador';
+
+    // Buscar la credencial
+    const credential = await SRICredential.findById(id);
+    if (!credential) {
+      return res.status(404).json({
+        success: false,
+        message: 'Credencial no encontrada'
+      });
+    }
+
+    // Verificar que no tiene contador asignado
+    if (credential.assignedContador) {
+      return res.status(400).json({
+        success: false,
+        message: 'Esta credencial ya tiene un contador asignado'
+      });
+    }
+
+    // Asignar el contador
+    credential.assignedContador = userId;
+    credential.assignedContadorName = userName;
+
+    // Actualizar nodos padres del grafo
+    const contadorNode = credential.parentNodes.find(n => n.nodeType === 'contador');
+    if (contadorNode) {
+      contadorNode.nodeId = userId;
+    } else {
+      credential.parentNodes.push({ nodeType: 'contador', nodeId: userId });
+    }
+
+    // Guardar sin registrar acceso primero
+    await credential.save();
+
+    // Registrar acceso con manejo de errores
+    try {
+      await credential.logAccess(
+        userId,
+        userName,
+        'edit',
+        req.ip,
+        req.get('User-Agent')
+      );
+    } catch (logError) {
+      console.warn('⚠️ No se pudo registrar el acceso:', logError.message);
+    }
+
+    console.log(`✅ Contador ${userName} tomó credencial ${credential.credentialId}`);
+
+    res.json({
+      success: true,
+      message: 'Credencial asignada exitosamente',
+      data: credential.toSafeJSON()
+    });
+
+  } catch (error) {
+    console.error('Error al tomar credencial:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al asignar credencial',
+      error: error.message
+    });
+  }
+};
