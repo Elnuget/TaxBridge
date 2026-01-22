@@ -86,7 +86,7 @@ export class SRICredentialsGraphComponent implements OnInit {
   nodesByLevel: { [level: number]: GraphNode[] } = {};
 
   // Agrupación jerárquica (contador -> clientes -> credenciales)
-  hierarchyGroups: { [contadorId: string]: { contador: GraphNode; clientes: { cliente: GraphNode; credenciales: GraphNode[] }[] } } = {};
+  hierarchyGroups: { [contadorId: string]: { contador: GraphNode; clientes: { cliente: GraphNode; credenciales: GraphNode[] }[]; totalHijos: number } } = {};
 
   // Conexiones para dibujar líneas
   connections: { from: GraphNode; to: GraphNode; type: string; label: string; dashed: boolean }[] = [];
@@ -203,7 +203,8 @@ export class SRICredentialsGraphComponent implements OnInit {
     contadores.forEach(contador => {
       this.hierarchyGroups[contador.id] = {
         contador,
-        clientes: []
+        clientes: [],
+        totalHijos: 0
       };
 
       // Encontrar clientes de este contador
@@ -212,6 +213,8 @@ export class SRICredentialsGraphComponent implements OnInit {
         this.graph!.edges.some(e => e.from === contador.id && e.to === n.id)
       );
 
+      let totalCredenciales = 0;
+
       clientesDeContador.forEach(cliente => {
         // Encontrar credenciales de este cliente
         const credencialesDeCliente = this.graph!.nodes.filter(n =>
@@ -219,11 +222,16 @@ export class SRICredentialsGraphComponent implements OnInit {
           this.graph!.edges.some(e => e.from === cliente.id && e.to === n.id)
         );
 
+        totalCredenciales += credencialesDeCliente.length;
+
         this.hierarchyGroups[contador.id].clientes.push({
           cliente,
           credenciales: credencialesDeCliente
         });
       });
+
+      // Calcular total de hijos (solo clientes directos)
+      this.hierarchyGroups[contador.id].totalHijos = clientesDeContador.length;
     });
   }
 
